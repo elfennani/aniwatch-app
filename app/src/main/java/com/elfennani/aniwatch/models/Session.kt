@@ -1,4 +1,4 @@
-package com.elfennani.aniwatch.domain.models
+package com.elfennani.aniwatch.models
 
 import java.util.Date
 

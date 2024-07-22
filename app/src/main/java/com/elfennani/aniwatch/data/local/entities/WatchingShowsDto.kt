@@ -5,9 +5,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.elfennani.aniwatch.data.remote.models.SerializableShowBasic
 import com.elfennani.aniwatch.data.remote.models.toDomain
-import com.elfennani.aniwatch.domain.models.ShowBasic
-import com.elfennani.aniwatch.domain.models.ShowImage
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.models.ShowBasic
+import com.elfennani.aniwatch.models.ShowImage
+import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.toColor
 import com.elfennani.aniwatch.toHexString
 

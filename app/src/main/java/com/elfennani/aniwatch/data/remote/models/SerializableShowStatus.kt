@@ -1,7 +1,7 @@
 package com.elfennani.aniwatch.data.remote.models
 
-import com.elfennani.aniwatch.domain.models.ShowSeason
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.models.ShowSeason
+import com.elfennani.aniwatch.models.ShowStatus
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 

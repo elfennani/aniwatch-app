@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.elfennani.aniwatch.data.remote.models.SerializableShowStatus
 import com.elfennani.aniwatch.presentation.Navigation
-import com.elfennani.aniwatch.presentation.theme.AniWatchTheme
+import com.elfennani.aniwatch.presentation.theme.AppTheme
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AniWatchTheme {
+            AppTheme {
                 Navigation()
             }
         }
@@ -53,7 +53,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    AniWatchTheme {
+    AppTheme {
         Greeting("Android")
     }
 }

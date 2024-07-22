@@ -1,4 +1,4 @@
-package com.elfennani.aniwatch.domain.models
+package com.elfennani.aniwatch.models
 
 enum class ShowSeason {
     WINTER,

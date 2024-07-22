@@ -1,8 +1,8 @@
 package com.elfennani.aniwatch.data.local
 
 import androidx.room.TypeConverter
-import com.elfennani.aniwatch.domain.models.ShowBasic
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.models.ShowBasic
+import com.elfennani.aniwatch.models.ShowStatus
 import java.util.Date
 
 class Converters {

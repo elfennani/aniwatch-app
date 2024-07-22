@@ -1,6 +1,6 @@
 package com.elfennani.aniwatch.data.remote.models
 
-import com.elfennani.aniwatch.domain.models.Episode
+import com.elfennani.aniwatch.models.Episode
 
 data class SerializableEpisode(
     val id: String,

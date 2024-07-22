@@ -1,7 +1,7 @@
 package com.elfennani.aniwatch.data.remote.models
 
 import androidx.compose.ui.graphics.Color
-import com.elfennani.aniwatch.domain.models.ShowImage
+import com.elfennani.aniwatch.models.ShowImage
 
 data class SerializableShowImage(
     val large: String,

@@ -1,13 +1,13 @@
-package com.elfennani.aniwatch.data.usecases
+package com.elfennani.aniwatch.data.repository
 
 import android.database.sqlite.SQLiteException
 import com.elfennani.aniwatch.data.local.dao.SessionDao
 import com.elfennani.aniwatch.data.local.entities.SessionEntity
-import com.elfennani.aniwatch.domain.Resource
-import com.elfennani.aniwatch.domain.usecases.SaveUserSessionUseCase
+import com.elfennani.aniwatch.models.Resource
 
-class SaveUserSessionUseCaseImpl(private val sessionDao: SessionDao) : SaveUserSessionUseCase {
-    override suspend fun invoke(accessToken: String, expiration: Long): Resource<Long> {
+
+class SessionRepository(private val sessionDao: SessionDao) {
+    suspend fun saveSession(accessToken: String, expiration: Long): Resource<Long> {
         try {
             val sessionId = sessionDao.insertSession(SessionEntity(id = 0, token = accessToken, expiration=expiration))
             return Resource.Success(sessionId)
