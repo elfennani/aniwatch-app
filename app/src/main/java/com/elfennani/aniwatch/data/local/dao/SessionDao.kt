@@ -8,7 +8,7 @@ import com.elfennani.aniwatch.data.local.entities.SessionEntity
 @Dao
 interface SessionDao {
     @Query("SELECT * FROM session WHERE id=:id")
-    fun getSessionById(id: Long): SessionEntity
+    fun getSessionById(id: Long): SessionEntity?
 
     @Insert
     suspend fun insertSession(sessionEntity: SessionEntity):Long

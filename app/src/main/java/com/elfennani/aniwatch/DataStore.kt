@@ -20,3 +20,6 @@ var MutablePreferences.sessionId: Long? get() = this[longPreferencesKey(SESSION_
             this[longPreferencesKey(SESSION_ID_KEY)] = value
         }
     }
+
+val Preferences.sessionIdKey: Preferences.Key<Long>
+    get() = longPreferencesKey(SESSION_ID_KEY)

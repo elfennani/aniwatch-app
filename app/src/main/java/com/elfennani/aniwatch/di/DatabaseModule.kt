@@ -16,10 +16,17 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): Database {
-        return Room.databaseBuilder(context, Database::class.java, "db").build()
+        return Room
+            .databaseBuilder(context, Database::class.java, "db")
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides
     @Singleton
     fun provideSessionDao(database: Database) = database.sessionDao()
+
+    @Provides
+    @Singleton
+    fun provideWatchingShowsDao(database: Database) = database.watchingShowsDao()
 }

@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.elfennani.aniwatch.data.local.Database
 import com.elfennani.aniwatch.data.local.dao.SessionDao
+import com.elfennani.aniwatch.data.local.dao.WatchingShowsDao
 import com.elfennani.aniwatch.data.remote.APIService
-import com.elfennani.aniwatch.data.repository.ShowPagingSource
 import com.elfennani.aniwatch.data.repository.ShowRepositoryImpl
 import com.elfennani.aniwatch.data.usecases.SaveUserSessionUseCaseImpl
 import com.elfennani.aniwatch.domain.repository.ShowRepository
@@ -25,8 +25,11 @@ import javax.inject.Singleton
 class AppModule {
     @Provides
     @Singleton
-    fun provideShowRepository(apiService: APIService): ShowRepository =
-        ShowRepositoryImpl(apiService)
+    fun provideShowRepository(
+        apiService: APIService,
+        watchingShowsDao: WatchingShowsDao
+    ): ShowRepository =
+        ShowRepositoryImpl(apiService, watchingShowsDao)
 
     @Provides
     @Singleton
@@ -41,8 +44,4 @@ class AppModule {
     @Singleton
     fun provideSaveUserSessionUseCase(sessionDao: SessionDao): SaveUserSessionUseCase =
         SaveUserSessionUseCaseImpl(sessionDao)
-
-    @Provides
-    @Singleton
-    fun provideShowPagingSource(showRepository: ShowRepository) = ShowPagingSource(showRepository)
 }

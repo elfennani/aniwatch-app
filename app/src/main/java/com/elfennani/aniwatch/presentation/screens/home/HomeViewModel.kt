@@ -1,58 +1,54 @@
 package com.elfennani.aniwatch.presentation.screens.home
 
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.elfennani.aniwatch.data.repository.ShowPagingSource
+import androidx.paging.map
+import com.elfennani.aniwatch.data.local.Database
+import com.elfennani.aniwatch.data.local.entities.asDomain
 import com.elfennani.aniwatch.domain.Resource
 import com.elfennani.aniwatch.domain.models.ShowBasic
 import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.repository.ShowRepository
 import com.elfennani.aniwatch.domain.usecases.GetShowsByStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getShowsByStatusUseCase: GetShowsByStatusUseCase,
-    private val showPagingSource: ShowPagingSource
-): ViewModel() {
-    private val _shows = MutableStateFlow<List<ShowBasic>>(listOf())
-    val shows: StateFlow<List<ShowBasic>> = _shows
+    private val showRepository: ShowRepository,
+) : ViewModel() {
+    val shows = showRepository.getWatchingShows().shareIn(
+        viewModelScope,
+        SharingStarted.Lazily,
+    ).stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
-    private val page = MutableStateFlow(1)
-
-    val flow = Pager(PagingConfig(pageSize = 20)){
-        showPagingSource
-    }.flow.cachedIn(viewModelScope)
-
     init {
-//        getShowsByStatus()
-    }
-
-    fun loadMore() {
-        page.value++
-        getShowsByStatus()
-    }
-
-    private fun getShowsByStatus() {
-        viewModelScope.launch{
-            when(val result = getShowsByStatusUseCase(ShowStatus.COMPLETED,page.value)){
-                is Resource.Success -> {
-                    _shows.value = result.data!!
-                }
-                is Resource.Error -> {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val result = showRepository.syncWatchingShows()
+                if (result is Resource.Error) {
                     _error.value = result.message
                 }
             }
         }
     }
-
 }

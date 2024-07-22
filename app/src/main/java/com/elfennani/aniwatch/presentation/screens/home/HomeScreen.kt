@@ -30,9 +30,8 @@ import com.elfennani.aniwatch.domain.models.ShowBasic
 
 @Composable
 fun HomeScreen(
-    shows: LazyPagingItems<ShowBasic>,
-    error: String? = null,
-    onLoadMore: () -> Unit = {}
+    shows: List<ShowBasic>,
+    error: String? = null
 ) {
     val state = rememberLazyListState()
 
@@ -50,21 +49,9 @@ fun HomeScreen(
                     Text(text = error, color = MaterialTheme.colorScheme.error)
                 }
             }
-            items(
-                count = shows.itemCount,
-                key = shows.itemKey { show -> show.id },
-                contentType = shows.itemContentType { "MyPagingItems" }
-            ) { index ->
-                val item = shows[index]!!
-                Text(item.name)
+            items(shows) { show ->
+                Text(show.name)
             }
-
-
-//            item {
-//                LaunchedEffect(key1 = true) {
-//                    onLoadMore()
-//                }
-//            }
         }
     }
 }
@@ -73,13 +60,12 @@ const val HomeScreenPattern = "auth/home"
 fun NavGraphBuilder.homeScreen(navController: NavController) {
     composable(HomeScreenPattern) {
         val viewModel: HomeViewModel = hiltViewModel();
-        val shows = viewModel.flow.collectAsLazyPagingItems()
+        val shows = viewModel.shows.collectAsState()
         val error by viewModel.error.collectAsState()
 
         HomeScreen(
-            shows = shows,
+            shows = shows.value,
             error = error,
-            onLoadMore = { viewModel.loadMore() }
         )
     }
 }
