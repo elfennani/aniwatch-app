@@ -5,17 +5,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 
 data class AppColorScheme(
     val primary: Color,
+    val primaryAlt: Color,
     val secondary: Color,
     val background: Color,
     val onPrimary: Color,
     val onSecondary: Color,
     val onBackground: Color,
     val card: Color,
-    val onCard: Color
+    val onCard: Color,
+    val primaryContainer:Color,
+    val onPrimaryContainer:Color,
 )
 
 data class AppTypography(
@@ -25,6 +29,7 @@ data class AppTypography(
     val labelLarge: TextStyle,
     val labelNormal: TextStyle,
     val labelSmall: TextStyle,
+    val labelSmallBold: TextStyle = labelSmall.copy(fontWeight = FontWeight.SemiBold),
 )
 
 data class AppShape(
@@ -50,7 +55,10 @@ val LocalAppColorScheme = staticCompositionLocalOf {
         onSecondary = Color.Unspecified,
         onBackground = Color.Unspecified,
         card = Color.Unspecified,
-        onCard = Color.Unspecified
+        onCard = Color.Unspecified,
+        primaryAlt = Color.Unspecified,
+        primaryContainer = Color.Unspecified,
+        onPrimaryContainer = Color.Unspecified,
     )
 }
 

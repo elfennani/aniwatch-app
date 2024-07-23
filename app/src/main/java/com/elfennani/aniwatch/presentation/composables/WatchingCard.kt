@@ -38,15 +38,13 @@ fun WatchingCard(show: ShowBasic, onPress: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .clip(AppTheme.shapes.card)
-            .background(AppTheme.colorScheme.card, AppTheme.shapes.card)
             .clickable { onPress() },
     ) {
         Box(
             modifier = Modifier
                 .aspectRatio((16 / 9f))
                 .clip(AppTheme.shapes.card)
-                .background(AppTheme.colorScheme.onSecondary)
-                ,
+                .background(AppTheme.colorScheme.onSecondary)                ,
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
@@ -76,7 +74,7 @@ fun WatchingCard(show: ShowBasic, onPress: () -> Unit = {}) {
             }
         }
         Column(
-            modifier = Modifier.padding(AppTheme.sizes.large),
+            modifier = Modifier.padding(AppTheme.sizes.medium),
             verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller)
         ) {
             Text(text = show.name, style = AppTheme.typography.titleNormal)

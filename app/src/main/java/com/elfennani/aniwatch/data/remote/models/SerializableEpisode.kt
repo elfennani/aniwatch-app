@@ -10,7 +10,7 @@ data class SerializableEpisode(
     val name: String,
     val dubbed: Boolean,
     val thumbnail: String?,
-    val duration: Int?
+    val duration: Float?
 )
 
 fun SerializableEpisode.toDomain() = Episode(
@@ -21,5 +21,5 @@ fun SerializableEpisode.toDomain() = Episode(
     name = this.name,
     dubbed = this.dubbed,
     thumbnail = this.thumbnail,
-    duration = this.duration
+    duration = this.duration?.toInt()
 )

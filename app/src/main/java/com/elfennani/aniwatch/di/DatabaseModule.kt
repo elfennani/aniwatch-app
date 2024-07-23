@@ -18,7 +18,6 @@ class DatabaseModule {
     fun provideDatabase(@ApplicationContext context: Context): Database {
         return Room
             .databaseBuilder(context, Database::class.java, "db")
-            .fallbackToDestructiveMigration()
             .build()
     }
 
@@ -29,4 +28,8 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideWatchingShowsDao(database: Database) = database.watchingShowsDao()
+
+    @Provides
+    @Singleton
+    fun provideCachedShowDao(database: Database) = database.cachedShowDao()
 }

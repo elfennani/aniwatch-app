@@ -1,5 +1,6 @@
 package com.elfennani.aniwatch.di
 
+import com.elfennani.aniwatch.data.local.dao.CachedShowDao
 import com.elfennani.aniwatch.data.local.dao.SessionDao
 import com.elfennani.aniwatch.data.local.dao.WatchingShowsDao
 import com.elfennani.aniwatch.data.remote.APIService
@@ -19,8 +20,9 @@ class AppModule {
     @Singleton
     fun provideShowRepository(
         apiService: APIService,
-        watchingShowsDao: WatchingShowsDao
-    ): ShowRepository = ShowRepository(apiService, watchingShowsDao)
+        watchingShowsDao: WatchingShowsDao,
+        cachedShowDao: CachedShowDao
+    ): ShowRepository = ShowRepository(apiService, watchingShowsDao, cachedShowDao)
 
     @Provides
     @Singleton

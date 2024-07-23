@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
+import com.elfennani.aniwatch.presentation.graphs.navigateToMainGraph
 import com.elfennani.aniwatch.presentation.screens.home.navigateToHomeScreen
 
 @Composable
@@ -51,7 +52,7 @@ fun NavGraphBuilder.validateTokenScreen(navController: NavController) {
 
         LaunchedEffect(key1 = "") {
             viewModel.validate(context){
-                navController.navigateToHomeScreen(true)
+                navController.navigateToMainGraph(true)
             }
         }
 
