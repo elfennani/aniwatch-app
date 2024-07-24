@@ -3,7 +3,7 @@ package com.elfennani.aniwatch.data.local.entities
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.elfennani.aniwatch.data.remote.models.SerializableShowBasic
+import com.elfennani.aniwatch.data.remote.models.NetworkShowBasic
 import com.elfennani.aniwatch.data.remote.models.toDomain
 import com.elfennani.aniwatch.models.ShowBasic
 import com.elfennani.aniwatch.models.ShowImage
@@ -60,7 +60,7 @@ fun ShowBasic.toDto() = WatchingShowsDto(
 
 )
 
-fun SerializableShowBasic.toDto() = WatchingShowsDto(
+fun NetworkShowBasic.toDto() = WatchingShowsDto(
     id = id,
     name = name,
     status = status?.toDomain(),

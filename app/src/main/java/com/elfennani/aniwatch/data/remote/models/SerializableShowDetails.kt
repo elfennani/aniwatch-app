@@ -8,7 +8,7 @@ data class SerializableShowDetails(
     val name: String,
     val description: String,
     val episodesCount: Int,
-    val episodes: List<SerializableEpisode>,
+    val episodes: List<NetworkEpisode>,
     val genres: List<String>,
     val tags: List<SerializableTag>,
     val season: SerializableShowSeason,

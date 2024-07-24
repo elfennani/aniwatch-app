@@ -27,13 +27,15 @@ class ShowViewModel @Inject constructor(
         fetchShow()
     }
 
+    fun dismissError() {
+        _state.update { it.copy(error = null) }
+    }
+
     private fun fetchShow() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            Log.e("ShowViewModel", "Fetching show")
             showRepository.getShowByIdCached(showId).collect { result ->
-                Log.e("ShowViewModel", result.toString())
                 _state.update {
                     when (result) {
                         is Resource.Success -> it.copy(show = result.data, isLoading = false)
@@ -41,7 +43,6 @@ class ShowViewModel @Inject constructor(
                     }
                 }
             }
-            Log.e("ShowViewModel", "Fetched show")
         }
     }
 

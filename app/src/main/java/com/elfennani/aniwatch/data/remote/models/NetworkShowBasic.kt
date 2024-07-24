@@ -2,7 +2,7 @@ package com.elfennani.aniwatch.data.remote.models
 
 import com.elfennani.aniwatch.models.ShowBasic
 
-data class SerializableShowBasic(
+data class NetworkShowBasic(
     val id: Int,
     val name: String,
     val status: SerializableShowStatus?,
@@ -12,7 +12,7 @@ data class SerializableShowBasic(
     val image: SerializableShowImage
 )
 
-fun SerializableShowBasic.toDomain() = ShowBasic(
+fun NetworkShowBasic.toDomain() = ShowBasic(
     id = this.id,
     name = this.name,
     description = this.description,

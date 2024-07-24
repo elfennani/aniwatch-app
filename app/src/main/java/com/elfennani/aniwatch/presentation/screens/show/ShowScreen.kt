@@ -21,10 +21,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,17 +47,34 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import coil.compose.AsyncImage
 import com.elfennani.aniwatch.formatSeconds
+import com.elfennani.aniwatch.presentation.screens.episode.navigateToEpisodeScreen
 import com.elfennani.aniwatch.presentation.theme.AppTheme
 import java.util.Locale
 
 @Composable
 fun ShowScreen(
     navController: NavController,
-    state: ShowUiState
+    state: ShowUiState,
+    onSnackBarDismiss: () -> Unit = {}
 ) {
-    val dir = LocalLayoutDirection.current
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
+
+    if (state.error != null) {
+        LaunchedEffect(Unit) {
+            val result = snackbarHostState.showSnackbar(
+                state.error,
+                duration = SnackbarDuration.Short,
+                withDismissAction = true
+            )
+            if (result == SnackbarResult.Dismissed)
+                onSnackBarDismiss()
+        }
+    }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         containerColor = AppTheme.colorScheme.background,
         contentColor = AppTheme.colorScheme.onBackground
     ) {
@@ -58,7 +82,7 @@ fun ShowScreen(
             modifier = Modifier.padding(horizontal = AppTheme.sizes.large),
             verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
         ) {
-            item{ Box(modifier = Modifier.height(it.calculateTopPadding() + AppTheme.sizes.large)) }
+            item { Box(modifier = Modifier.height(it.calculateTopPadding() + AppTheme.sizes.large)) }
             item {
                 if (state.show != null) {
                     val show = state.show
@@ -86,7 +110,7 @@ fun ShowScreen(
                                 color = AppTheme.colorScheme.onSecondary
                             )
                         }
-                        Divider(color = AppTheme.colorScheme.card)
+                        Divider(color = AppTheme.colorScheme.onBackground.copy(alpha = 0.1f))
                     }
                 }
             }
@@ -105,7 +129,7 @@ fun ShowScreen(
                     modifier = Modifier
                         .fillParentMaxWidth()
                         .clip(AppTheme.shapes.button)
-                        .clickable {  },
+                        .clickable { navController.navigateToEpisodeScreen(state.show?.id!!,state.show.allanimeId, episode.episode) },
                     horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -118,7 +142,10 @@ fun ShowScreen(
                             .clip(AppTheme.shapes.button)
                     )
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller,Alignment.CenterVertically),
+                        verticalArrangement = Arrangement.spacedBy(
+                            AppTheme.sizes.smaller,
+                            Alignment.CenterVertically
+                        ),
                         modifier = Modifier
                             .weight(1f)
                     ) {
@@ -126,9 +153,12 @@ fun ShowScreen(
                             text = "Episode ${episode.episode}",
                             style = AppTheme.typography.body,
                         )
-                        val dubbed = if(episode.dubbed) "• Dubbed" else ""
+                        val duration = if(episode.duration != null) episode.duration.formatSeconds() else ""
+                        val dubbed = if (episode.dubbed) "Dubbed" else ""
+                        val connector = if (duration.isNotEmpty() && dubbed.isNotEmpty()) " • " else ""
+
                         Text(
-                            text = "${episode.duration?.formatSeconds()} seconds $dubbed",
+                            text = "$duration$connector$dubbed",
                             style = AppTheme.typography.labelSmall,
                             color = AppTheme.colorScheme.onSecondary
                         )
@@ -136,7 +166,7 @@ fun ShowScreen(
                 }
             }
 
-            item{ Box(modifier = Modifier.height(it.calculateTopPadding() + AppTheme.sizes.large)) }
+            item { Box(modifier = Modifier.height(it.calculateTopPadding() + AppTheme.sizes.large)) }
         }
     }
 }
@@ -150,7 +180,11 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
         val viewModel: ShowViewModel = hiltViewModel()
         val showState by viewModel.state.collectAsState()
 
-        ShowScreen(navController = navController, state = showState)
+        ShowScreen(
+            navController = navController,
+            state = showState,
+            onSnackBarDismiss = viewModel::dismissError
+        )
     }
 }
 

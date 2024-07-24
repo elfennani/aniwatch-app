@@ -3,6 +3,7 @@ package com.elfennani.aniwatch.data.local.entities
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 import com.elfennani.aniwatch.models.Episode
 import com.elfennani.aniwatch.models.ShowDetails
 import com.elfennani.aniwatch.models.ShowImage
@@ -27,7 +28,7 @@ data class CachedShowDto(
     val banner: String?,
     val progress: Int?,
     val status: ShowStatus?,
-)
+    )
 
 data class CachedShowImage(
     val large: String,

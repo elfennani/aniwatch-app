@@ -2,7 +2,7 @@ package com.elfennani.aniwatch.data.remote.models
 
 import com.elfennani.aniwatch.models.Episode
 
-data class SerializableEpisode(
+data class NetworkEpisode(
     val id: String,
     val allanimeId: String,
     val animeId: Int,
@@ -13,7 +13,7 @@ data class SerializableEpisode(
     val duration: Float?
 )
 
-fun SerializableEpisode.toDomain() = Episode(
+fun NetworkEpisode.toDomain() = Episode(
     id = this.id,
     allanimeId = this.allanimeId,
     animeId = this.animeId,
