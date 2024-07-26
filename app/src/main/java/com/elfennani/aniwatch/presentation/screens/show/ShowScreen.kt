@@ -129,7 +129,13 @@ fun ShowScreen(
                     modifier = Modifier
                         .fillParentMaxWidth()
                         .clip(AppTheme.shapes.button)
-                        .clickable { navController.navigateToEpisodeScreen(state.show?.id!!,state.show.allanimeId, episode.episode) },
+                        .clickable {
+                            navController.navigateToEpisodeScreen(
+                                state.show?.id!!,
+                                state.show.allanimeId,
+                                episode.episode
+                            )
+                        },
                     horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -153,9 +159,11 @@ fun ShowScreen(
                             text = "Episode ${episode.episode}",
                             style = AppTheme.typography.body,
                         )
-                        val duration = if(episode.duration != null) episode.duration.formatSeconds() else ""
+                        val duration =
+                            if (episode.duration != null) episode.duration.formatSeconds() else ""
                         val dubbed = if (episode.dubbed) "Dubbed" else ""
-                        val connector = if (duration.isNotEmpty() && dubbed.isNotEmpty()) " • " else ""
+                        val connector =
+                            if (duration.isNotEmpty() && dubbed.isNotEmpty()) " • " else ""
 
                         Text(
                             text = "$duration$connector$dubbed",

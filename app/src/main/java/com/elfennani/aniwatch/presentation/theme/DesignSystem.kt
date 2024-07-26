@@ -36,6 +36,7 @@ data class AppShape(
     val card: Shape,
     val button: Shape,
     val input: Shape,
+    val thumbnail: Shape
 )
 
 data class AppSize(
@@ -77,7 +78,8 @@ val LocalAppShape = staticCompositionLocalOf {
     AppShape(
         card = RectangleShape,
         button = RectangleShape,
-        input = RectangleShape
+        input = RectangleShape,
+        thumbnail = RectangleShape
     )
 }
 

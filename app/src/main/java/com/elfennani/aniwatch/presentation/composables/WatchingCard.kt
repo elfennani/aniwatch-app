@@ -24,8 +24,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import coil.compose.AsyncImage
 import com.elfennani.aniwatch.models.ShowBasic
 import com.elfennani.aniwatch.models.ShowImage
@@ -37,53 +39,46 @@ fun WatchingCard(show: ShowBasic, onPress: () -> Unit = {}) {
     val nextEpisode = (show.progress ?: 0) + 1
     Column(
         modifier = Modifier
-            .clip(AppTheme.shapes.card)
+            .clip(AppTheme.shapes.thumbnail)
+            .width(256.dp)
             .clickable { onPress() },
     ) {
         Box(
             modifier = Modifier
-                .aspectRatio((16 / 9f))
-                .clip(AppTheme.shapes.card)
-                .background(AppTheme.colorScheme.onSecondary)                ,
+                .aspectRatio((21 / 9f))
+                .clip(AppTheme.shapes.thumbnail)
+                .background(AppTheme.colorScheme.secondary),
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
-                model = show.image.large,
+                model = show.image.original,
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .blur(AppTheme.sizes.normal),
+                    .fillMaxSize(),
                 contentScale = ContentScale.FillWidth,
             )
             Box(
                 modifier = Modifier
-                    .background(AppTheme.colorScheme.background.copy(0.1f))
+                    .background(Color.Black.copy(0.1f))
                     .fillMaxSize()
-            )
-            Box(
-                modifier = Modifier
-                    .background(Color.White.copy(alpha = 0.25f), CircleShape)
-                    .padding(AppTheme.sizes.small)
+                    .padding(AppTheme.sizes.small),
+                contentAlignment = Alignment.BottomStart
             ) {
-                Icon(
-                    imageVector = Icons.Rounded.PlayArrow,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(32.dp)
+                Text(
+                    text = "Episode ${show.progress!! + 1}",
+                    style = AppTheme.typography.labelSmall,
+                    color = Color.White
                 )
             }
         }
-        Column(
-            modifier = Modifier.padding(AppTheme.sizes.medium),
-            verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller)
-        ) {
-            Text(text = show.name, style = AppTheme.typography.titleNormal)
-            Text(
-                text = "Watch Episode $nextEpisode",
-                style = AppTheme.typography.labelSmall,
-                color = AppTheme.colorScheme.onSecondary
-            )
-        }
+
+        Text(
+            text = show.name,
+            style = AppTheme.typography.labelNormal,
+            modifier = Modifier.padding(AppTheme.sizes.small),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -92,7 +87,7 @@ fun WatchingCard(show: ShowBasic, onPress: () -> Unit = {}) {
 fun WatchingCardPreview() {
     val fakeShow = ShowBasic(
         id = 100077,
-        name = "HINAMATSURI",
+        name = "Sound Euphonium S3",
         status = ShowStatus.WATCHING,
         progress = 8,
         description = "The comedy manga centers around a super-powered girl named Hina and Nitta, a young member of the yakuza. Hina suddenly appears in Nitta's room and threatens him with her extraordinary powers. However, they end up living together.<br><br>\\n\\n(Source: Anime News Network)",

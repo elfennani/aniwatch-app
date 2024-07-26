@@ -93,6 +93,7 @@ class ShowRepository(
         try {
             val shows = apiService
                 .getShowsByStatus(ShowStatus.WATCHING.toSerializable(), all = true)
+            Log.d("ShowRepository", shows.size.toString())
             watchingShowsDao.deleteAll()
             watchingShowsDao.insertAll(shows.map(NetworkShowBasic::toDto))
             return Resource.Success(Unit)

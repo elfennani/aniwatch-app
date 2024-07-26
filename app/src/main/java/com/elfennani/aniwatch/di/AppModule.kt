@@ -5,8 +5,10 @@ import com.elfennani.aniwatch.data.local.dao.CachedShowDao
 import com.elfennani.aniwatch.data.local.dao.SessionDao
 import com.elfennani.aniwatch.data.local.dao.WatchingShowsDao
 import com.elfennani.aniwatch.data.remote.APIService
+import com.elfennani.aniwatch.data.repository.ActivityRepository
 import com.elfennani.aniwatch.data.repository.SessionRepository
 import com.elfennani.aniwatch.data.repository.ShowRepository
+import dagger.Binds
 import dagger.Module
 
 import dagger.Provides
@@ -23,11 +25,16 @@ class AppModule {
         apiService: APIService,
         watchingShowsDao: WatchingShowsDao,
         cachedShowDao: CachedShowDao,
-        cachedEpisodesDao: CachedEpisodesDao
-    ): ShowRepository = ShowRepository(apiService, watchingShowsDao, cachedShowDao, cachedEpisodesDao)
+        cachedEpisodesDao: CachedEpisodesDao,
+    ): ShowRepository =
+        ShowRepository(apiService, watchingShowsDao, cachedShowDao, cachedEpisodesDao)
 
     @Provides
     @Singleton
     fun provideSessionRepository(sessionDao: SessionDao) =
         SessionRepository(sessionDao)
+
+    @Provides
+    @Singleton
+    fun provideActivityRepository(apiService: APIService) = ActivityRepository(apiService)
 }

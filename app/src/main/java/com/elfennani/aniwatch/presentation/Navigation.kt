@@ -9,6 +9,8 @@ import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -30,6 +32,7 @@ import kotlinx.coroutines.runBlocking
 import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
 const val ANIM_DURATION_MILLIS = 250
+
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
@@ -44,25 +47,22 @@ fun Navigation() {
             fadeIn() + slideIntoContainer(
                 towards = AnimatedContentTransitionScope.SlideDirection.Left,
                 animationSpec = tween(ANIM_DURATION_MILLIS),
-            )
+            ) + scaleIn(initialScale = 0.9f)
         },
         exitTransition = {
-            fadeOut() + slideOutOfContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(ANIM_DURATION_MILLIS, easing = Ease),
+            fadeOut(animationSpec = tween(ANIM_DURATION_MILLIS)) + scaleOut(
+                targetScale = 0.75f
             )
         },
         popEnterTransition = {
-            fadeIn() + slideIntoContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(ANIM_DURATION_MILLIS),
+            fadeIn(animationSpec = tween(ANIM_DURATION_MILLIS)) + scaleIn(
+                initialScale = 0.75f
             )
         },
         popExitTransition = {
-            fadeOut() + slideOutOfContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(ANIM_DURATION_MILLIS),
-            )
+            fadeOut() +
+                    slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right) +
+                    scaleOut(targetScale = 0.9f)
         },
     ) {
         authGraph(navController)

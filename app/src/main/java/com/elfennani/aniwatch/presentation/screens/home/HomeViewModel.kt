@@ -2,6 +2,7 @@ package com.elfennani.aniwatch.presentation.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elfennani.aniwatch.data.repository.ActivityRepository
 import com.elfennani.aniwatch.data.repository.ShowRepository
 import com.elfennani.aniwatch.models.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val showRepository: ShowRepository,
+    private val activityRepository: ActivityRepository
 ) : ViewModel() {
     private val shows = showRepository.getWatchingShows().shareIn(
         viewModelScope,
@@ -32,9 +34,23 @@ class HomeViewModel @Inject constructor(
 
     init {
         refetch()
+        fetchFeed()
 
         viewModelScope.launch {
             shows.collect { shows -> _state.update { it.copy(shows = shows) } }
+        }
+    }
+
+    private fun fetchFeed() {
+        viewModelScope.launch {
+            val result = activityRepository.getFeed(1)
+
+            _state.update {
+                when(result){
+                    is Resource.Success -> it.copy(feed = result.data ?: emptyList())
+                    is Resource.Error -> it.copy(error = result.message)
+                }
+            }
         }
     }
 

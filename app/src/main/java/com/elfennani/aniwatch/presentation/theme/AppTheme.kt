@@ -78,7 +78,8 @@ private val typography = AppTypography(
 private val shape = AppShape(
     card = RoundedCornerShape(16.dp),
     button = RoundedCornerShape(6.dp),
-    input = CircleShape
+    thumbnail=RoundedCornerShape(6.dp),
+    input = RoundedCornerShape(10.dp)
 )
 
 private val size = AppSize(
