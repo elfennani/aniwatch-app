@@ -24,9 +24,10 @@ class ActivityRepository(
                 Resource.Error("Something went wrong")
             }
         } catch (e: JsonDataException) {
-            Log.e("ShowRepository", e.message.toString())
+            Log.e("ActivityRepository", e.message.toString())
             Resource.Error("Parsing error")
         } catch (e: Exception) {
+            Log.e("ActivityRepository", e.message.toString())
             Resource.Error("Something went wrong")
         }
     }

@@ -3,8 +3,10 @@ package com.elfennani.aniwatch.data.remote.models
 import com.elfennani.aniwatch.models.Activity
 import com.elfennani.aniwatch.models.ActivityType
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.util.Date
 
+@JsonClass(generateAdapter = true)
 data class NetworkActivity(
     val id: Int,
     val content: String,

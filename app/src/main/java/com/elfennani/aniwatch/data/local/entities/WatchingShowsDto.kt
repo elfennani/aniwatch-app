@@ -44,22 +44,6 @@ fun WatchingShowsDto.toDomain() = ShowBasic(
     )
 )
 
-fun ShowBasic.toDto() = WatchingShowsDto(
-    id = id,
-    name = name,
-    status = status,
-    description = description,
-    episodes = episodes,
-    progress = progress,
-    image = WatchingShowImage(
-        large = image.large,
-        medium = image.medium,
-        original = image.original,
-        color = image.color?.toHexString()
-    )
-
-)
-
 fun NetworkShowBasic.toDto() = WatchingShowsDto(
     id = id,
     name = name,

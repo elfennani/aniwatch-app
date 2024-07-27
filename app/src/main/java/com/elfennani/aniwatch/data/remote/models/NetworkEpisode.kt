@@ -1,7 +1,9 @@
 package com.elfennani.aniwatch.data.remote.models
 
 import com.elfennani.aniwatch.models.Episode
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class NetworkEpisode(
     val id: String,
     val allanimeId: String,

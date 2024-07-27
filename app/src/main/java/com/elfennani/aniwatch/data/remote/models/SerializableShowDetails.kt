@@ -1,7 +1,9 @@
 package com.elfennani.aniwatch.data.remote.models
 
 import com.elfennani.aniwatch.models.ShowDetails
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class SerializableShowDetails(
     val id: Int,
     val allanimeId: String,

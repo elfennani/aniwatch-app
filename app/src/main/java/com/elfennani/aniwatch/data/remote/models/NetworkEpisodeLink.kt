@@ -1,7 +1,9 @@
 package com.elfennani.aniwatch.data.remote.models
 
 import com.elfennani.aniwatch.models.EpisodeLink
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class NetworkEpisodeLink(
     val hls: NetworkHlsLink?,
     val mp4: String?,

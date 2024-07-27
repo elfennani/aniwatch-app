@@ -2,13 +2,12 @@ package com.elfennani.aniwatch.presentation.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.add
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,14 +15,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -40,12 +37,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.elfennani.aniwatch.models.Activity
 import com.elfennani.aniwatch.models.MediaType
 import com.elfennani.aniwatch.plus
 import com.elfennani.aniwatch.presentation.composables.SearchBoxButton
 import com.elfennani.aniwatch.presentation.composables.Section
+import com.elfennani.aniwatch.presentation.composables.items
 import com.elfennani.aniwatch.presentation.screens.home.composables.ActivityCard
-import com.elfennani.aniwatch.presentation.screens.home.composables.Header
+import com.elfennani.aniwatch.presentation.screens.home.composables.WatchingCardSkeleton
 import com.elfennani.aniwatch.presentation.screens.home.composables.WatchingShowsSection
 import com.elfennani.aniwatch.presentation.screens.show.navigateToShowScreen
 import com.elfennani.aniwatch.presentation.theme.AppTheme
@@ -58,6 +59,7 @@ fun HomeScreen(
     onRefetch: () -> Unit,
     onDismissError: () -> Unit,
     rootPadding: PaddingValues,
+    feed: LazyPagingItems<Activity>,
 ) {
     val lazyListState = rememberLazyListState()
     val pullState = rememberPullToRefreshState(positionalThreshold = 100.dp)
@@ -106,30 +108,39 @@ fun HomeScreen(
                     bottom = containerPadding.calculateBottomPadding()
                 )
             ) {
-                item {
-                    Box(Modifier.padding(horizontal = AppTheme.sizes.medium)) {
-                        SearchBoxButton()
+                item{
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
+                    ) {
+                        Box(Modifier.padding(horizontal = AppTheme.sizes.medium)) {
+                            SearchBoxButton()
+                        }
+
+                        WatchingShowsSection(
+                            shows = state.shows,
+                            onPressShow = { navController.navigateToShowScreen(it) },
+                            isLoading = state.isLoading
+                        )
+
+                        Section(
+                            title = "My Feed",
+                            modifier = Modifier.padding(horizontal = AppTheme.sizes.medium)
+                        )
+
+                        Spacer(modifier = Modifier)
                     }
                 }
-                item { Spacer(modifier = Modifier.height(AppTheme.sizes.medium)) }
-                item {
-                    WatchingShowsSection(
-                        shows = state.shows,
-                        onPressShow = { navController.navigateToShowScreen(it) }
-                    )
-                }
-                item { Spacer(modifier = Modifier.height(AppTheme.sizes.medium)) }
-                item {
-                    Section(title = "My Feed", modifier = Modifier.padding(horizontal = AppTheme.sizes.medium))
-                }
-                item { Spacer(modifier = Modifier.height(AppTheme.sizes.medium)) }
-                items(state.feed) {
-                    ActivityCard(activity = it, onClick = {
-                        if(it.show != null && it.show.type == MediaType.ANIME){
-                            navController.navigateToShowScreen(it.show.id)
-                        }
-                    })
-                    Divider(color = AppTheme.colorScheme.onBackground.copy(alpha = 0.1f))
+
+                items(count = feed.itemCount, key = {index -> feed[index]?.id ?: index }) { index ->
+                    val item = feed[index]
+                    if (item != null) {
+                        ActivityCard(activity = item, onClick = {
+                            if (item.show != null && item.show.type == MediaType.ANIME) {
+                                navController.navigateToShowScreen(item.show.id)
+                            }
+                        })
+                        Divider(color = AppTheme.colorScheme.onBackground.copy(alpha = 0.1f))
+                    }
                 }
             }
 
@@ -152,10 +163,12 @@ fun NavGraphBuilder.homeScreen(navController: NavController, padding: PaddingVal
     composable(route = HomeScreenPattern) {
         val viewModel: HomeViewModel = hiltViewModel()
         val homeState by viewModel.state.collectAsState()
+        val feed = viewModel.feedPagingFlow.collectAsLazyPagingItems()
 
         HomeScreen(
             navController = navController,
             state = homeState,
+            feed = feed,
             onRefetch = viewModel::refetch,
             onDismissError = viewModel::hideError,
             rootPadding = padding

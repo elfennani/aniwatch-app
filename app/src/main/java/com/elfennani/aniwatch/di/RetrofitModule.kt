@@ -4,7 +4,9 @@ import android.content.Context
 import com.elfennani.aniwatch.data.local.dao.SessionDao
 import com.elfennani.aniwatch.data.remote.APIService
 import com.elfennani.aniwatch.data.remote.AuthInterceptor
+import com.elfennani.aniwatch.data.remote.models.SerializableShowStatus
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.EnumJsonAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -42,6 +44,7 @@ class RetrofitModule {
             .build()
 
         val moshi = Moshi.Builder()
+            .add(SerializableShowStatus::class.java, EnumJsonAdapter.create(SerializableShowStatus::class.java).withUnknownFallback(null))
             .addLast(KotlinJsonAdapterFactory())
             .build()
 

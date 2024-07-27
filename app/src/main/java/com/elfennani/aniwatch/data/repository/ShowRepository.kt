@@ -22,6 +22,7 @@ import com.elfennani.aniwatch.models.ShowDetails
 import com.elfennani.aniwatch.models.ShowStatus
 import com.squareup.moshi.JsonDataException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import okio.IOException
@@ -102,11 +103,12 @@ class ShowRepository(
         } catch (e: SQLiteException) {
             return Resource.Error("Failed to sync")
         } catch (e: Exception) {
-            return Resource.Error("Something went wrong")
+            e.printStackTrace()
+            return Resource.Error("Something went wrong: ${e.message}")
         }
     }
 
     fun getWatchingShows(): Flow<List<ShowBasic>> {
-        return watchingShowsDao.getShows().map { it.map(WatchingShowsDto::toDomain) }
+        return watchingShowsDao.getShowsFlow().map { it.map(WatchingShowsDto::toDomain) }
     }
 }

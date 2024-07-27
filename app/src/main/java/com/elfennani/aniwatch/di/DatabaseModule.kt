@@ -36,4 +36,8 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideCachedEpisodesDao(database: Database) = database.cachedEpisodesDao()
+
+    @Provides
+    @Singleton
+    fun provideFeedDao(database: Database) = database.feedDao()
 }

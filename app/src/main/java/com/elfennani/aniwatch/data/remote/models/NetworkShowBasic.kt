@@ -1,6 +1,7 @@
 package com.elfennani.aniwatch.data.remote.models
 
 import com.elfennani.aniwatch.models.ShowBasic
+import com.squareup.moshi.JsonClass
 
 data class NetworkShowBasic(
     val id: Int,
