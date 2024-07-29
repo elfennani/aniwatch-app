@@ -24,7 +24,7 @@ import com.elfennani.aniwatch.presentation.composables.Skeleton
 import com.elfennani.aniwatch.presentation.theme.AppTheme
 
 @Composable
-fun WatchingCardSkeleton() {
+fun WatchingCardSkeleton(animated: Boolean = true) {
     val context = LocalContext.current
     val lineHeightSp: TextUnit = 18.sp
     val lineHeightDp: Dp = with(LocalDensity.current) {
@@ -42,13 +42,15 @@ fun WatchingCardSkeleton() {
                 .aspectRatio((21 / 9f))
                 .fillMaxWidth()
                 .clip(AppTheme.shapes.thumbnail),
+            animated = animated
         )
         Box(Modifier.padding(vertical = AppTheme.sizes.small)) {
             Skeleton(
                 Modifier
                     .height(lineHeightDp)
                     .width(140.dp)
-                    .clip(AppTheme.shapes.thumbnail)
+                    .clip(AppTheme.shapes.thumbnail),
+                animated = animated
             )
         }
     }

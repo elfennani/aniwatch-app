@@ -21,10 +21,12 @@ import com.elfennani.aniwatch.models.ShowBasic
 import com.elfennani.aniwatch.models.ShowDetails
 import com.elfennani.aniwatch.models.ShowStatus
 import com.squareup.moshi.JsonDataException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import okio.IOException
 import retrofit2.HttpException
 
@@ -109,6 +111,12 @@ class ShowRepository(
     }
 
     fun getWatchingShows(): Flow<List<ShowBasic>> {
-        return watchingShowsDao.getShowsFlow().map { it.map(WatchingShowsDto::toDomain) }
+        return flow{
+            val show = withContext(Dispatchers.IO){ watchingShowsDao.getShows().map(WatchingShowsDto::toDomain) }
+            emit(show)
+
+            val shows = withContext(Dispatchers.IO) { watchingShowsDao.getShowsFlow().map { it.map(WatchingShowsDto::toDomain) } }
+            emitAll(shows)
+        }
     }
 }

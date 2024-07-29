@@ -5,6 +5,7 @@ import android.system.Os.remove
 import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -18,10 +19,14 @@ import com.elfennani.aniwatch.dataStore
 import com.elfennani.aniwatch.models.Activity
 import com.elfennani.aniwatch.models.Resource
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 import kotlin.math.floor
 
 private const val FEED_REMOTE_KEY = "feed_remote_key"
+private const val FEED_REMOTE_LAST_UPDATE = "feed_remote_last_update"
 
 @Suppress("FoldInitializerAndIfToElvis")
 @OptIn(ExperimentalPagingApi::class)
@@ -29,10 +34,38 @@ class FeedRemoteMediator(
     private val activityRepository: ActivityRepository,
     private val database: Database,
     private val feedDao: FeedDao,
-    private val context: Context
+    private val context: Context,
 ) : RemoteMediator<Int, ActivityDto>() {
 
-    private var currentPage = 1
+    override suspend fun initialize(): InitializeAction {
+        val cacheTimeout = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
+        val lastUpdated = getLastUpdated() ?: 0
+
+        return if (System.currentTimeMillis() - lastUpdated <= cacheTimeout) {
+            InitializeAction.SKIP_INITIAL_REFRESH
+        } else {
+            InitializeAction.LAUNCH_INITIAL_REFRESH
+        }
+    }
+
+    private suspend fun getLastUpdated(): Long? {
+        val value = withContext(Dispatchers.IO) {
+            context
+                .dataStore
+                .data
+                .first()[longPreferencesKey(FEED_REMOTE_LAST_UPDATE)]
+        }
+
+        return value
+    }
+
+    private suspend fun setLastUpdated(value: Long) {
+        withContext(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[longPreferencesKey(FEED_REMOTE_LAST_UPDATE)] = value
+            }
+        }
+    }
 
     override suspend fun load(
         loadType: LoadType,
@@ -42,16 +75,16 @@ class FeedRemoteMediator(
         Log.d("FeedRemoteMediator", state.toString())
         val loadKey = when (loadType) {
             LoadType.REFRESH -> {
-                currentPage = 1
                 null
             }
+
             LoadType.PREPEND ->
                 return MediatorResult.Success(endOfPaginationReached = true)
 
             LoadType.APPEND -> {
                 val remoteKey = context.dataStore.data.first()[intPreferencesKey(FEED_REMOTE_KEY)]
 
-                if(remoteKey == null){
+                if (remoteKey == null) {
                     return MediatorResult.Success(endOfPaginationReached = true)
                 }
 
@@ -68,6 +101,7 @@ class FeedRemoteMediator(
                         context.dataStore.edit {
                             it.remove(intPreferencesKey(FEED_REMOTE_KEY))
                         }
+                        setLastUpdated(System.currentTimeMillis())
                         feedDao.clearAll()
                     }
 
@@ -80,6 +114,7 @@ class FeedRemoteMediator(
 
                 MediatorResult.Success(endOfPaginationReached = response.data!!.isEmpty())
             }
+
             is Resource.Error -> {
                 MediatorResult.Error(Exception(response.message))
             }

@@ -1,12 +1,31 @@
 package com.elfennani.aniwatch.presentation.screens.home.composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import com.elfennani.aniwatch.models.ShowBasic
 import com.elfennani.aniwatch.presentation.composables.Section
 import com.elfennani.aniwatch.presentation.theme.AppTheme
@@ -15,27 +34,79 @@ import com.elfennani.aniwatch.presentation.theme.AppTheme
 fun WatchingShowsSection(
     onPressShow: (showId: Int) -> Unit = {},
     shows: List<ShowBasic>,
-    isLoading: Boolean = false
+    isLoading: Boolean = false,
 ) {
+    val isEmpty = !isLoading && shows.isEmpty();
+
     Section(
         title = "Continue Watching",
         modifier = Modifier
             .padding(horizontal = AppTheme.sizes.medium)
     )
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium),
-        contentPadding = PaddingValues(horizontal = AppTheme.sizes.medium),
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
     ) {
-        if(isLoading){
-            item {
-                WatchingCardSkeleton()
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium),
+            contentPadding = PaddingValues(horizontal = AppTheme.sizes.medium),
+            userScrollEnabled = !isLoading && !shows.isEmpty(),
+            modifier = Modifier.emptyFade(isEmpty)
+        ) {
+            if (isLoading) {
+                item {
+                    WatchingCardSkeleton()
+                }
+            }
+            if (isEmpty) {
+                item { WatchingCardSkeleton(animated = false) }
+                item { WatchingCardSkeleton(animated = false) }
+            }
+            items(shows, key = { it.id }) { show ->
+                WatchingCard(
+                    show = show,
+                    onPress = { onPressShow(show.id) }
+                )
             }
         }
-        items(shows, key = {it.id}) { show ->
-            WatchingCard(
-                show = show,
-                onPress = { onPressShow(show.id) }
-            )
+
+        if (isEmpty) {
+            Column(
+                modifier = Modifier.matchParentSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Nothing to see",
+                    style = AppTheme.typography.labelSmall,
+                    color = AppTheme.colorScheme.secondary
+                )
+            }
         }
     }
+}
+
+@Composable
+private fun Modifier.emptyFade(enabled: Boolean = false): Modifier {
+    val background = AppTheme.colorScheme.background
+
+    if (enabled) {
+        return this
+            .alpha(0.25f)
+            .drawWithContent {
+                val colors = listOf(Color.Transparent, background)
+                drawContent()
+                drawRect(
+                    brush = Brush.horizontalGradient(
+                        colors,
+                        startX = Float.POSITIVE_INFINITY,
+                        endX = 0f
+                    ),
+                    blendMode = BlendMode.DstIn
+                )
+            }
+    }
+
+    return this
 }

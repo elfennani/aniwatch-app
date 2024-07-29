@@ -1,11 +1,15 @@
 package com.elfennani.aniwatch
 
+import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.LayoutDirection
+import coil.ImageLoader
+import coil.disk.DiskCache
+import coil.memory.MemoryCache
 import com.elfennani.aniwatch.data.remote.models.toDomain
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
@@ -42,3 +46,18 @@ operator fun PaddingValues.plus(other: PaddingValues): PaddingValues = PaddingVa
             other.calculateEndPadding(LayoutDirection.Ltr),
     bottom = this.calculateBottomPadding() + other.calculateBottomPadding(),
 )
+
+fun Context.imageLoader() = ImageLoader.Builder(this)
+    .memoryCache {
+        MemoryCache.Builder(this)
+            .maxSizePercent(0.25)
+            .build()
+    }
+    .diskCache {
+        DiskCache.Builder()
+            .directory(this.cacheDir.resolve("image_cache"))
+            .maxSizePercent(0.02)
+            .build()
+    }
+    .crossfade(true)
+    .build()

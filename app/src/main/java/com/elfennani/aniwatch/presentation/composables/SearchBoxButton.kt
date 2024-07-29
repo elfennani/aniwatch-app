@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elfennani.aniwatch.presentation.theme.AppTheme
@@ -30,8 +31,9 @@ import com.elfennani.aniwatch.presentation.theme.AppTheme
 fun SearchBoxButton(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
-            .clip(AppTheme.shapes.input)
-            .background(AppTheme.colorScheme.card, AppTheme.shapes.input)
+            .shadow(AppTheme.sizes.smaller,AppTheme.shapes.thumbnail)
+            .clip(AppTheme.shapes.thumbnail)
+            .background(AppTheme.colorScheme.card, AppTheme.shapes.thumbnail)
             .clickable {  }
             .fillMaxWidth()
             .padding(horizontal = AppTheme.sizes.medium, vertical = AppTheme.sizes.normal),
@@ -39,7 +41,7 @@ fun SearchBoxButton(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = AppTheme.colorScheme.secondary)
-        Text(text = "Attack on Titan S3", style = AppTheme.typography.body, color = AppTheme.colorScheme.secondary)
+        Text(text = "Attack on Titan S3 ...", style = AppTheme.typography.body, color = AppTheme.colorScheme.secondary)
     }
 }
 

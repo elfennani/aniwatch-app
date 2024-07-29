@@ -1,9 +1,13 @@
 package com.elfennani.aniwatch.presentation.screens.home
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.absoluteOffset
@@ -32,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -39,6 +44,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
+import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.models.Activity
 import com.elfennani.aniwatch.models.MediaType
 import com.elfennani.aniwatch.plus
@@ -51,7 +58,7 @@ import com.elfennani.aniwatch.presentation.screens.home.composables.WatchingShow
 import com.elfennani.aniwatch.presentation.screens.show.navigateToShowScreen
 import com.elfennani.aniwatch.presentation.theme.AppTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -65,10 +72,14 @@ fun HomeScreen(
     val pullState = rememberPullToRefreshState(positionalThreshold = 100.dp)
     val snackbarHostState = remember { SnackbarHostState() }
     val dir = LocalLayoutDirection.current
+    val isDarkMode = isSystemInDarkTheme()
+    val logoResource =
+        if (isDarkMode) R.drawable.aniwatch_dark_mode else R.drawable.aniwatch_light_mode
 
     LaunchedEffect(pullState.isRefreshing) {
         if (pullState.isRefreshing) {
             onRefetch()
+            feed.refresh()
         }
     }
 
@@ -108,14 +119,27 @@ fun HomeScreen(
                     bottom = containerPadding.calculateBottomPadding()
                 )
             ) {
-                item{
+                item {
+                    Column(
+                        Modifier
+                            .padding(AppTheme.sizes.medium)
+                            .padding(bottom = AppTheme.sizes.small),
+                        verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
+                    ) {
+                        Row {
+                            Image(
+                                painter = painterResource(id = logoResource),
+                                contentDescription = null,
+                                modifier = Modifier.height(AppTheme.sizes.medium)
+                            )
+                        }
+                        SearchBoxButton()
+                    }
+                }
+                item {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
                     ) {
-                        Box(Modifier.padding(horizontal = AppTheme.sizes.medium)) {
-                            SearchBoxButton()
-                        }
-
                         WatchingShowsSection(
                             shows = state.shows,
                             onPressShow = { navController.navigateToShowScreen(it) },
@@ -131,7 +155,10 @@ fun HomeScreen(
                     }
                 }
 
-                items(count = feed.itemCount, key = {index -> feed[index]?.id ?: index }) { index ->
+                items(
+                    count = feed.itemCount,
+                    key = feed.itemKey { activity -> activity.id }
+                ) { index ->
                     val item = feed[index]
                     if (item != null) {
                         ActivityCard(activity = item, onClick = {

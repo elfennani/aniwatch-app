@@ -30,10 +30,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.elfennani.aniwatch.imageLoader
 import com.elfennani.aniwatch.models.Activity
 import com.elfennani.aniwatch.models.ActivityType
 import com.elfennani.aniwatch.models.ActivtyShow
@@ -65,6 +67,8 @@ fun ActivityCard(modifier: Modifier = Modifier, activity: Activity, onClick: () 
         }
     }
 
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .clickable { onClick() }
@@ -84,6 +88,7 @@ fun ActivityCard(modifier: Modifier = Modifier, activity: Activity, onClick: () 
                     .size(AppTheme.sizes.large * 1.5f)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop,
+                imageLoader = context.imageLoader()
             )
 
             Column(

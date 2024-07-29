@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.elfennani.aniwatch.presentation.theme.AppTheme
 
 @Composable
-fun Skeleton(modifier: Modifier = Modifier) {
+fun Skeleton(modifier: Modifier = Modifier, animated: Boolean = true) {
     val transition = rememberInfiniteTransition(label = "")
 
     val transitionAnimation by transition.animateFloat(
@@ -27,12 +27,17 @@ fun Skeleton(modifier: Modifier = Modifier) {
             tween(durationMillis = 1000, easing = LinearEasing),
             RepeatMode.Reverse
         ),
-        label = ""
+        label = "",
     )
 
-    Box(modifier = modifier.background(AppTheme.colorScheme.secondary.copy(transitionAnimation),
-        RoundedCornerShape(4.dp)
-    ))
+    Box(
+        modifier = modifier.background(
+            AppTheme.colorScheme.secondary.copy(
+                alpha = if(animated) transitionAnimation else 0.5f
+            ),
+            RoundedCornerShape(4.dp)
+        )
+    )
 }
 
 @Preview

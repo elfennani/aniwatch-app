@@ -16,11 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.ImageLoader
 import coil.compose.AsyncImage
+import com.elfennani.aniwatch.imageLoader
 import com.elfennani.aniwatch.models.ShowBasic
 import com.elfennani.aniwatch.models.ShowImage
 import com.elfennani.aniwatch.models.ShowStatus
@@ -28,7 +31,7 @@ import com.elfennani.aniwatch.presentation.theme.AppTheme
 
 @Composable
 fun WatchingCard(show: ShowBasic, onPress: () -> Unit = {}) {
-    val nextEpisode = (show.progress ?: 0) + 1
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .clip(AppTheme.shapes.thumbnail)
@@ -48,6 +51,7 @@ fun WatchingCard(show: ShowBasic, onPress: () -> Unit = {}) {
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize(),
+                imageLoader = context.imageLoader(),
                 contentScale = ContentScale.FillWidth,
             )
             Box(
