@@ -1,22 +1,17 @@
 package com.elfennani.aniwatch.presentation.screens.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -45,15 +39,12 @@ import androidx.navigation.compose.composable
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.models.Activity
 import com.elfennani.aniwatch.models.MediaType
 import com.elfennani.aniwatch.plus
-import com.elfennani.aniwatch.presentation.composables.SearchBoxButton
 import com.elfennani.aniwatch.presentation.composables.Section
-import com.elfennani.aniwatch.presentation.composables.items
 import com.elfennani.aniwatch.presentation.screens.home.composables.ActivityCard
-import com.elfennani.aniwatch.presentation.screens.home.composables.WatchingCardSkeleton
+import com.elfennani.aniwatch.presentation.screens.home.composables.HomeHeader
 import com.elfennani.aniwatch.presentation.screens.home.composables.WatchingShowsSection
 import com.elfennani.aniwatch.presentation.screens.show.navigateToShowScreen
 import com.elfennani.aniwatch.presentation.theme.AppTheme
@@ -72,9 +63,6 @@ fun HomeScreen(
     val pullState = rememberPullToRefreshState(positionalThreshold = 100.dp)
     val snackbarHostState = remember { SnackbarHostState() }
     val dir = LocalLayoutDirection.current
-    val isDarkMode = isSystemInDarkTheme()
-    val logoResource =
-        if (isDarkMode) R.drawable.aniwatch_dark_mode else R.drawable.aniwatch_light_mode
 
     LaunchedEffect(pullState.isRefreshing) {
         if (pullState.isRefreshing) {
@@ -109,77 +97,65 @@ fun HomeScreen(
             )
         )
     ) { containerPadding ->
-        Box(Modifier.nestedScroll(pullState.nestedScrollConnection)) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-//                verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium),
-                state = lazyListState,
-                contentPadding = PaddingValues(vertical = AppTheme.sizes.medium) + PaddingValues(
-                    top = containerPadding.calculateTopPadding(),
-                    bottom = containerPadding.calculateBottomPadding()
-                )
-            ) {
-                item {
-                    Column(
-                        Modifier
-                            .padding(AppTheme.sizes.medium)
-                            .padding(bottom = AppTheme.sizes.small),
-                        verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
-                    ) {
-                        Row {
-                            Image(
-                                painter = painterResource(id = logoResource),
-                                contentDescription = null,
-                                modifier = Modifier.height(AppTheme.sizes.medium)
+        val horizontal = PaddingValues(bottom = containerPadding.calculateBottomPadding())
+        val vertical = PaddingValues(vertical = AppTheme.sizes.medium)
+        val contentPadding = horizontal + vertical
+
+        Column(
+            modifier = Modifier.padding(top = containerPadding.calculateTopPadding())
+        ) {
+            HomeHeader(border = lazyListState.canScrollBackward)
+            Box(Modifier.nestedScroll(pullState.nestedScrollConnection)) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = lazyListState,
+                    contentPadding = contentPadding
+                ) {
+                    item {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
+                        ) {
+                            WatchingShowsSection(
+                                shows = state.shows,
+                                onPressShow = { navController.navigateToShowScreen(it) },
+                                isLoading = state.isLoading
                             )
+
+                            Section(
+                                title = "My Feed",
+                                modifier = Modifier.padding(horizontal = AppTheme.sizes.medium)
+                            )
+
+                            Spacer(modifier = Modifier)
                         }
-                        SearchBoxButton()
                     }
-                }
-                item {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
-                    ) {
-                        WatchingShowsSection(
-                            shows = state.shows,
-                            onPressShow = { navController.navigateToShowScreen(it) },
-                            isLoading = state.isLoading
-                        )
 
-                        Section(
-                            title = "My Feed",
-                            modifier = Modifier.padding(horizontal = AppTheme.sizes.medium)
-                        )
-
-                        Spacer(modifier = Modifier)
+                    items(
+                        count = feed.itemCount,
+                        key = feed.itemKey { activity -> activity.id }
+                    ) { index ->
+                        val item = feed[index]
+                        if (item != null) {
+                            ActivityCard(activity = item, onClick = {
+                                if (item.show != null && item.show.type == MediaType.ANIME) {
+                                    navController.navigateToShowScreen(item.show.id)
+                                }
+                            })
+                            Divider(color = AppTheme.colorScheme.onBackground.copy(alpha = 0.07f))
+                        }
                     }
                 }
 
-                items(
-                    count = feed.itemCount,
-                    key = feed.itemKey { activity -> activity.id }
-                ) { index ->
-                    val item = feed[index]
-                    if (item != null) {
-                        ActivityCard(activity = item, onClick = {
-                            if (item.show != null && item.show.type == MediaType.ANIME) {
-                                navController.navigateToShowScreen(item.show.id)
-                            }
-                        })
-                        Divider(color = AppTheme.colorScheme.onBackground.copy(alpha = 0.1f))
-                    }
+                if (pullState.progress > 0 || pullState.isRefreshing) {
+                    val extraTopPadding = if (pullState.isRefreshing) 20.dp else 0.dp
+                    PullToRefreshContainer(
+                        modifier = Modifier
+                            .padding(top = containerPadding.calculateTopPadding() + extraTopPadding)
+                            .align(Alignment.TopCenter)
+                            .absoluteOffset(y = (-50).dp),
+                        state = pullState,
+                    )
                 }
-            }
-
-            if (pullState.progress > 0 || pullState.isRefreshing) {
-                val extraTopPadding = if (pullState.isRefreshing) 20.dp else 0.dp
-                PullToRefreshContainer(
-                    modifier = Modifier
-                        .padding(top = containerPadding.calculateTopPadding() + extraTopPadding)
-                        .align(Alignment.TopCenter)
-                        .absoluteOffset(y = (-50).dp),
-                    state = pullState,
-                )
             }
         }
     }
