@@ -1,5 +1,7 @@
 package com.elfennani.aniwatch.presentation.screens.episode
 
+import android.app.ProgressDialog.show
+import android.content.pm.ActivityInfo
 import android.text.TextUtils.replace
 import android.util.Log
 import android.view.ViewGroup
@@ -11,12 +13,14 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -26,8 +30,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
@@ -42,6 +50,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.elfennani.aniwatch.presentation.theme.AppTheme
+import com.elfennani.aniwatch.requireActivity
 
 const val TAG = "EpisodeScreen"
 
@@ -54,24 +63,30 @@ fun EpisodeScreen(
     onRefresh: () -> Unit = {},
     onSetResolution: (index: Int) -> Unit = {}
 ) {
-    LaunchedEffect(key1 = state.exoPlayer) {
-        Log.d(TAG, "EpisodeScreen: exoplayer state")
+    val context = LocalContext.current
+
+
+    DisposableEffect(context) {
+        context.requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
+        onDispose {
+            context.requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
     }
 
-    Scaffold(
-        containerColor = AppTheme.colorScheme.background,
-        contentColor = AppTheme.colorScheme.onBackground
+    HideSystemBars()
+    Surface(
+        color = Color.Black,
+        contentColor = Color.White
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(it),
+                .fillMaxSize()
         ) {
             AndroidView(
                 factory = { ctx ->
                     PlayerView(ctx).apply {
                         player = state.exoPlayer
-                        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+                        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
                         layoutParams = FrameLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -80,35 +95,8 @@ fun EpisodeScreen(
                 },
                 modifier = Modifier
                     .background(Color.Black)
-                    .aspectRatio(16 / 9f)
+                    .fillMaxSize()
             )
-
-            Column(
-                verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium),
-                modifier = Modifier.padding(AppTheme.sizes.medium)
-            ) {
-                Column {
-                    Text(
-                        text = state.show?.name ?: "Loading...",
-                        style = AppTheme.typography.titleLarge
-                    )
-                    Text(
-                        text = state.episodeDetails?.name?.replace("Ep", "Episode") ?: "Loading...",
-                        style = AppTheme.typography.labelSmall,
-                        color = AppTheme.colorScheme.onSecondary
-                    )
-                    Text(
-                        text = state.currentPosition.toString(),
-                        style = AppTheme.typography.labelSmall,
-                        color = AppTheme.colorScheme.onSecondary
-                    )
-                }
-
-                if (state.trackGroup != null && state.exoPlayer != null) {
-                    QualitySelector(state.exoPlayer, state.trackGroup, onSetResolution)
-                }
-
-            }
         }
     }
 }
@@ -144,6 +132,30 @@ private fun QualitySelector(
     }
 }
 
+@Composable
+fun HideSystemBars() {
+    val context = LocalContext.current
+
+    DisposableEffect(Unit) {
+        val window = context.requireActivity().window ?: return@DisposableEffect onDispose {}
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+
+        insetsController.apply {
+            hide(WindowInsetsCompat.Type.statusBars())
+            hide(WindowInsetsCompat.Type.navigationBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+
+        onDispose {
+            insetsController.apply {
+                show(WindowInsetsCompat.Type.statusBars())
+                show(WindowInsetsCompat.Type.navigationBars())
+                systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+            }
+        }
+    }
+}
+
 const val EPISODE_SCREEN_PATTERN = "episode/{id}/{allanimeId}/{episode}"
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -158,12 +170,6 @@ fun NavGraphBuilder.episodeScreen(navController: NavController) {
     ) {
         val viewModel: EpisodeViewModel = hiltViewModel()
         val state by viewModel.state.collectAsState()
-
-        DisposableEffect(key1 = Unit) {
-            onDispose {
-                viewModel.disposePlayer()
-            }
-        }
 
         EpisodeScreen(
             navController = navController,

@@ -51,7 +51,7 @@ fun WatchingShowsSection(
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium),
             contentPadding = PaddingValues(horizontal = AppTheme.sizes.medium),
-            userScrollEnabled = !isLoading && !shows.isEmpty(),
+            userScrollEnabled = !isLoading && shows.isNotEmpty(),
             modifier = Modifier.emptyFade(isEmpty)
         ) {
             if (isLoading) {

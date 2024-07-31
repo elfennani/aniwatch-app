@@ -48,30 +48,36 @@ private val typography = AppTypography(
     titleLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Bold,
-        fontSize = 24.sp
+        fontSize = 24.sp,
+        lineHeight = 33.sp
     ),
     titleNormal = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp
+        fontSize = 20.sp,
+        lineHeight = 27.sp
     ),
     body = TextStyle(
         fontFamily = Inter,
-        fontSize = 16.sp
+        fontSize = 16.sp,
+        lineHeight = 22.sp
     ),
     labelLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp
+        fontSize = 16.sp,
+        lineHeight = 22.sp
     ),
     labelNormal = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp
+        fontSize = 14.sp,
+        lineHeight = 19.sp
     ),
     labelSmall = TextStyle(
         fontFamily = Inter,
-        fontSize = 12.sp
+        fontSize = 12.sp,
+        lineHeight = 16.sp
     )
 )
 

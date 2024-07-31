@@ -1,6 +1,8 @@
 package com.elfennani.aniwatch
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -61,3 +63,12 @@ fun Context.imageLoader() = ImageLoader.Builder(this)
     }
     .crossfade(true)
     .build()
+
+fun Context.requireActivity(): Activity {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    throw IllegalStateException("No activity was present but it is required.")
+}

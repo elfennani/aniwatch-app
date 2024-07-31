@@ -119,6 +119,11 @@ class EpisodeViewModel @Inject constructor(
         }
     }
 
+    override fun onCleared() {
+        exoPlayer.release()
+        super.onCleared()
+    }
+
     fun changeResolution(index: Int) {
         if(state.value.trackGroup == null) return;
 

@@ -8,17 +8,26 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.elfennani.aniwatch.presentation.theme.AppTheme
 
 @Composable
-fun Skeleton(modifier: Modifier = Modifier, animated: Boolean = true, content: @Composable () -> Unit = {}) {
+fun TextSkeleton(
+    modifier: Modifier = Modifier,
+    size: TextUnit = AppTheme.typography.body.lineHeight,
+    animated: Boolean = true,
+) {
     val transition = rememberInfiniteTransition(label = "")
+    val lineHeightDp: Dp = with(LocalDensity.current) { size.toDp() }
 
     val transitionAnimation by transition.animateFloat(
         initialValue = 0.25f,
@@ -31,19 +40,20 @@ fun Skeleton(modifier: Modifier = Modifier, animated: Boolean = true, content: @
     )
 
     Box(
-        modifier = modifier.background(
-            AppTheme.colorScheme.secondary.copy(
-                alpha = if(animated) transitionAnimation else 0.5f
-            ),
-            RoundedCornerShape(4.dp)
-        )
+        modifier = modifier
+            .height(lineHeightDp)
+            .background(
+                AppTheme.colorScheme.secondary.copy(alpha = if (animated) transitionAnimation else 0.5f),
+                RoundedCornerShape(4.dp)
+            )
     )
 }
 
-@Preview
 @Composable
-private fun SkeletonPreview() {
-    AppTheme {
-        Skeleton()
-    }
+fun TextSkeleton(
+    modifier: Modifier = Modifier,
+    style: TextStyle = AppTheme.typography.body,
+    animated: Boolean = true,
+) {
+    TextSkeleton(modifier, style.lineHeight, animated)
 }
