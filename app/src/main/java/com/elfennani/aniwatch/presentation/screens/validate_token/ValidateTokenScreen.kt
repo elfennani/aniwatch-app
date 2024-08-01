@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -25,7 +26,7 @@ import com.elfennani.aniwatch.presentation.graphs.navigateToMainGraph
 import com.elfennani.aniwatch.presentation.screens.home.navigateToHomeScreen
 
 @Composable
-fun ValidateTokenScreen(error:String?) {
+fun ValidateTokenScreen(errors: List<Int>) {
     Scaffold {
         Column(
             modifier = Modifier
@@ -35,9 +36,14 @@ fun ValidateTokenScreen(error:String?) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CircularProgressIndicator()
-            if(!error.isNullOrEmpty()) {
-                Text(text = error, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+            if (errors.isEmpty())
+                CircularProgressIndicator()
+            errors.forEach { error ->
+                Text(
+                    text = stringResource(error),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -45,19 +51,22 @@ fun ValidateTokenScreen(error:String?) {
 
 const val ValidateTokenScreenPattern = "auth/validate/{params}"
 fun NavGraphBuilder.validateTokenScreen(navController: NavController) {
-    composable(ValidateTokenScreenPattern, deepLinks = listOf(navDeepLink { uriPattern="aniwatch://redirect#{params}" })) {
+    composable(
+        ValidateTokenScreenPattern,
+        deepLinks = listOf(navDeepLink { uriPattern = "aniwatch://redirect#{params}" })
+    ) {
         val viewModel: ValidateTokenViewModel = hiltViewModel();
-        val error by viewModel.error.collectAsState()
+        val errors by viewModel.errors.collectAsState()
         val context = LocalContext.current
 
         LaunchedEffect(key1 = "") {
-            viewModel.validate(context){
+            viewModel.validate(context) {
                 navController.navigateToMainGraph(true)
             }
         }
 
         ValidateTokenScreen(
-            error = error
+            errors = errors
         )
     }
 }

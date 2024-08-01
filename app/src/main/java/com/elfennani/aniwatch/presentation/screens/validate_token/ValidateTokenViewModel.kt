@@ -5,13 +5,15 @@ import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.data.repository.SessionRepository
 import com.elfennani.aniwatch.dataStore
 import com.elfennani.aniwatch.models.Resource
 import com.elfennani.aniwatch.sessionId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.time.Instant
@@ -23,8 +25,8 @@ class ValidateTokenViewModel @Inject constructor(
     private val sessionRepository: SessionRepository
 ) : ViewModel() {
     private val params = savedStateHandle.get<String>("params")
-    private val _error = MutableStateFlow<String?>(null);
-    val error: StateFlow<String?> get() = _error
+    private val _errors = MutableStateFlow<List<Int>>(emptyList());
+    val errors = _errors.asStateFlow()
 
     fun validate(context: Context, onSuccess: () -> Unit = {}){
         val fakeUrl = "https://example.com/?$params"
@@ -34,7 +36,7 @@ class ValidateTokenViewModel @Inject constructor(
         val expiration = (httpUrl.queryParameter("expires_in"))
 
         if(accessToken.isNullOrEmpty() || expiration.isNullOrEmpty()){
-            _error.value = "Invalid Access Token Or Expiration date"
+            _errors.update { it + R.string.invalid_token }
             return;
         }
 
@@ -51,7 +53,7 @@ class ValidateTokenViewModel @Inject constructor(
                     onSuccess()
                 }
                 is Resource.Error -> {
-                    _error.value = result.message
+                    _errors.update { it + result.message!! }
                 }
             }
         }

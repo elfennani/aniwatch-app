@@ -27,8 +27,11 @@ class ShowViewModel @Inject constructor(
         fetchShow()
     }
 
-    fun dismissError() {
-        _state.update { it.copy(error = null) }
+    fun dismissError(errorRes: Int) {
+        _state.update { uiState ->
+            val errors = uiState.errors.filterNot { it == errorRes }
+            uiState.copy(errors=errors)
+        }
     }
 
     private fun fetchShow() {
@@ -39,7 +42,7 @@ class ShowViewModel @Inject constructor(
                 _state.update {
                     when (result) {
                         is Resource.Success -> it.copy(show = result.data, isLoading = false)
-                        is Resource.Error -> it.copy(error = result.message, isLoading = false)
+                        is Resource.Error -> it.copy(errors = it.errors + result.message!!, isLoading = false)
                     }
                 }
             }

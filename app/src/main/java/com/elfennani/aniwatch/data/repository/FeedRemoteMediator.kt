@@ -116,7 +116,13 @@ class FeedRemoteMediator(
             }
 
             is Resource.Error -> {
-                MediatorResult.Error(Exception(response.message))
+                MediatorResult.Error(
+                    Exception(
+                        response.message?.let {
+                            context.getString(it)
+                        }
+                    )
+                )
             }
         }
     }

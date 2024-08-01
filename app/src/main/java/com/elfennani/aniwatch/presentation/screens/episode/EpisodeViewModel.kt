@@ -30,7 +30,7 @@ import kotlin.math.log
 class EpisodeViewModel @Inject constructor(
     private val showRepository: ShowRepository,
     savedStateHandle: SavedStateHandle,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
     val id = savedStateHandle.get<Int>("id")!!
     val allanimeId = savedStateHandle.get<String>("allanimeId")!!
@@ -43,23 +43,14 @@ class EpisodeViewModel @Inject constructor(
             prepare()
             playWhenReady = true
             addListener(
-                object: Player.Listener {
+                object : Player.Listener {
                     override fun onTracksChanged(tracks: Tracks) {
                         super.onTracksChanged(tracks)
-                        onTracksUpdated(tracks)
-                    }
-
-                    private fun onTracksUpdated(tracks: Tracks) {
                         for (trackGroup in tracks.groups) {
                             if (trackGroup.type == C.TRACK_TYPE_VIDEO) {
                                 updateTracks(trackGroup)
                             }
                         }
-                    }
-
-                    override fun onTrackSelectionParametersChanged(parameters: TrackSelectionParameters) {
-                        super.onTrackSelectionParametersChanged(parameters)
-//                        onTracksUpdated(currentTracks)
                     }
                 }
             )
@@ -89,10 +80,6 @@ class EpisodeViewModel @Inject constructor(
         }
     }
 
-    fun disposePlayer() {
-        _state.value.exoPlayer?.release()
-    }
-
     fun fetchEpisode() {
         viewModelScope.launch {
             when (val result = showRepository.getEpisodeById(allanimeId, episode)) {
@@ -100,12 +87,12 @@ class EpisodeViewModel @Inject constructor(
                     _state.update { state ->
                         Log.d("EpisodeViewModel", "fetchEpisode: ${result.data}")
 
-                        if(exoPlayer.currentMediaItem == null && result.data?.hls != null){
+                        if (exoPlayer.currentMediaItem == null && result.data?.hls != null) {
                             val mediaItem = MediaItem
                                 .fromUri(result.data.hls.url)
                                 .buildUpon()
                                 .build()
-                            exoPlayer.replaceMediaItem(0,mediaItem)
+                            exoPlayer.replaceMediaItem(0, mediaItem)
                         }
 
                         state.copy(episode = result.data)
@@ -113,7 +100,7 @@ class EpisodeViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    _state.update { state -> state.copy(error = result.message) }
+                    _state.update { state -> state.copy(errors = state.errors + result.message!!) }
                 }
             }
         }
@@ -125,7 +112,7 @@ class EpisodeViewModel @Inject constructor(
     }
 
     fun changeResolution(index: Int) {
-        if(state.value.trackGroup == null) return;
+        if (state.value.trackGroup == null) return;
 
         exoPlayer.trackSelectionParameters =
             exoPlayer.trackSelectionParameters
@@ -133,8 +120,15 @@ class EpisodeViewModel @Inject constructor(
                 .setOverrideForType(
                     TrackSelectionOverride(state.value.trackGroup!!.mediaTrackGroup, index)
                 )
-                .setViewportSize(1920,1080, false)
+                .setViewportSize(1920, 1080, false)
                 .build()
+    }
+
+    fun dismissError(errorRes: Int) {
+        _state.update { uiState ->
+            val errors = uiState.errors.filterNot { it == errorRes }
+            uiState.copy(errors=errors)
+        }
     }
 
     private fun fetchShow() {
@@ -153,7 +147,7 @@ class EpisodeViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                        _state.update { state -> state.copy(error = it.message) }
+                        _state.update { state -> state.copy(errors = state.errors + it.message!!) }
                     }
                 }
             }

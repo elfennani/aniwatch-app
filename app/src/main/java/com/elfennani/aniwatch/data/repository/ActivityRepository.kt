@@ -1,6 +1,7 @@
 package com.elfennani.aniwatch.data.repository
 
 import android.util.Log
+import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.data.remote.APIService
 import com.elfennani.aniwatch.data.remote.models.asDomain
 import com.elfennani.aniwatch.models.Activity
@@ -16,19 +17,13 @@ class ActivityRepository(
         return try {
             Resource.Success(apiService.getFeedByPage(page).map { it.asDomain() })
         } catch (e: IOException) {
-            Resource.Error("Internet connection error")
-        } catch (e: HttpException) {
-            if (e.code() == 404) {
-                Resource.Error("Episode not found")
-            } else {
-                Resource.Error("Something went wrong")
-            }
+            Resource.Error(R.string.no_internet)
         } catch (e: JsonDataException) {
             Log.e("ActivityRepository", e.message.toString())
-            Resource.Error("Parsing error")
+            Resource.Error(R.string.fail_parse)
         } catch (e: Exception) {
             Log.e("ActivityRepository", e.message.toString())
-            Resource.Error("Something went wrong")
+            Resource.Error()
         }
     }
 }

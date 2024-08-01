@@ -1,8 +1,7 @@
 package com.elfennani.aniwatch.presentation.screens.episode
 
-import android.app.ProgressDialog.show
+import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
-import android.text.TextUtils.replace
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -11,27 +10,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -41,27 +31,27 @@ import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
-import androidx.media3.ui.AspectRatioFrameLayout.ResizeMode
 import androidx.media3.ui.PlayerView
-import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.elfennani.aniwatch.presentation.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.presentation.theme.AppTheme
 import com.elfennani.aniwatch.requireActivity
 
 const val TAG = "EpisodeScreen"
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @androidx.annotation.OptIn(UnstableApi::class)
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EpisodeScreen(
     navController: NavController,
     state: EpisodeUiState,
     onRefresh: () -> Unit = {},
-    onSetResolution: (index: Int) -> Unit = {}
+    onSetResolution: (index: Int) -> Unit = {},
+    onErrorDismiss: (errorId:Int) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -74,9 +64,10 @@ fun EpisodeScreen(
     }
 
     HideSystemBars()
-    Surface(
-        color = Color.Black,
-        contentColor = Color.White
+    Scaffold(
+        containerColor = Color.Black,
+        contentColor = Color.White,
+        snackbarHost = { ErrorSnackbarHost(errors = state.errors, onErrorDismiss)}
     ) {
         Column(
             modifier = Modifier
@@ -175,7 +166,8 @@ fun NavGraphBuilder.episodeScreen(navController: NavController) {
             navController = navController,
             state = state,
             onRefresh = { viewModel.fetchEpisode() },
-            onSetResolution = viewModel::changeResolution
+            onSetResolution = viewModel::changeResolution,
+            onErrorDismiss = viewModel::dismissError
         )
     }
 }

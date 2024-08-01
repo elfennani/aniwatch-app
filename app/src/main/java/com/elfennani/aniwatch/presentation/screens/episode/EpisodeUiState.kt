@@ -14,7 +14,7 @@ data class EpisodeUiState(
     val show: ShowDetails? = null,
     val episodeDetails: Episode? = null,
     val loading: Boolean = false,
-    val error: String? = null,
+    val errors: List<Int> = emptyList(),
     val exoPlayer: ExoPlayer? = null,
     val trackGroup: Tracks.Group? = null,
     val currentPosition: Long? = null,

@@ -37,6 +37,7 @@ fun ShowScreenHeader(
     show: ShowDetails,
     lazyListState: LazyListState,
     padding: PaddingValues,
+    onStatusClick: () -> Unit,
     onBack: () -> Unit,
 ) {
     var descriptionExpanded by remember { mutableStateOf(false) }
@@ -74,21 +75,12 @@ fun ShowScreenHeader(
                 )
             }
 
-            Button(
-                onClick = { /*TODO*/ },
-                colors = ButtonDefaults.buttonColors()
-                    .copy(
-                        containerColor = AppTheme.colorScheme.primary,
-                        contentColor = AppTheme.colorScheme.onPrimary
-                    ),
-                shape = AppTheme.shapes.button,
-                modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(vertical = 12.dp)
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = null)
-                Spacer(modifier = Modifier.width(AppTheme.sizes.small))
-                Text(text = "Set Status", style = AppTheme.typography.labelNormal)
-            }
+            StatusButton(
+                status = show.status,
+                progress = show.progress,
+                total = show.episodesCount,
+                onClick = { onStatusClick() }
+            )
 
             Column {
                 Text(

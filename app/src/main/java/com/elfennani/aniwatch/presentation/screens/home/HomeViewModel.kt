@@ -8,14 +8,12 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.map
 import com.elfennani.aniwatch.data.local.Database
 import com.elfennani.aniwatch.data.local.dao.FeedDao
 import com.elfennani.aniwatch.data.local.entities.ActivityDto
 import com.elfennani.aniwatch.data.local.entities.asDomain
 import com.elfennani.aniwatch.data.repository.ActivityRepository
-import com.elfennani.aniwatch.data.repository.FeedPagingSource
 import com.elfennani.aniwatch.data.repository.FeedRemoteMediator
 import com.elfennani.aniwatch.data.repository.ShowRepository
 import com.elfennani.aniwatch.models.Resource
@@ -25,12 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -79,21 +72,23 @@ class HomeViewModel @Inject constructor(
     }
 
     fun refetch() {
-
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                _state.update { it.copy(isFetching = true, error = null) }
+                _state.update { it.copy(isFetching = true) }
                 val result = showRepository.syncWatchingShows()
                 _state.update { it.copy(isFetching = false) }
 
                 if (result is Resource.Error) {
-                    _state.update { it.copy(error = result.message) }
+                    _state.update { it.copy(errors = it.errors + result.message!!) }
                 }
             }
         }
     }
 
-    fun hideError() {
-        _state.update { it.copy(error = null) }
+    fun dismissError(errorRes: Int) {
+        _state.update { uiState ->
+            val errors = uiState.errors.filterNot { it == errorRes }
+            uiState.copy(errors=errors)
+        }
     }
 }

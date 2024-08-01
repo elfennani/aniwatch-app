@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -42,6 +43,7 @@ import androidx.paging.compose.itemKey
 import com.elfennani.aniwatch.models.Activity
 import com.elfennani.aniwatch.models.MediaType
 import com.elfennani.aniwatch.plus
+import com.elfennani.aniwatch.presentation.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.presentation.composables.Section
 import com.elfennani.aniwatch.presentation.screens.home.composables.ActivityCard
 import com.elfennani.aniwatch.presentation.screens.home.composables.HomeHeader
@@ -55,7 +57,7 @@ fun HomeScreen(
     navController: NavController,
     state: HomeUiState,
     onRefetch: () -> Unit,
-    onDismissError: () -> Unit,
+    onErrorDismiss: (Int) -> Unit,
     rootPadding: PaddingValues,
     feed: LazyPagingItems<Activity>,
 ) {
@@ -75,17 +77,16 @@ fun HomeScreen(
         if (!state.isFetching) pullState.endRefresh()
     }
 
-    if (state.error != null) {
-        LaunchedEffect(key1 = state.error) {
-            val result = snackbarHostState.showSnackbar(state.error)
-            if (result == SnackbarResult.Dismissed) {
-                onDismissError()
-            }
+    if (state.errors.isNotEmpty()) {
+        val errorMessage = stringResource(id = state.errors.first())
+        LaunchedEffect(errorMessage, snackbarHostState) {
+            snackbarHostState.showSnackbar(message = errorMessage)
+            onErrorDismiss(state.errors.first())
         }
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        snackbarHost = { ErrorSnackbarHost(errors = state.errors, onErrorDismiss) },
         containerColor = AppTheme.colorScheme.background,
         contentColor = AppTheme.colorScheme.onBackground,
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets.add(
@@ -173,7 +174,7 @@ fun NavGraphBuilder.homeScreen(navController: NavController, padding: PaddingVal
             state = homeState,
             feed = feed,
             onRefetch = viewModel::refetch,
-            onDismissError = viewModel::hideError,
+            onErrorDismiss = viewModel::dismissError,
             rootPadding = padding
         )
     }

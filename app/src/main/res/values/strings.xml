@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">AniWatch</string>
+    <string name="something_wrong">Oops! Something went wrong!</string>
+    <string name="no_internet">Check your connection and try again!</string>
+    <string name="ep_not_found">Episode not found!</string>
+    <string name="fail_parse">Unable to process the response.</string>
+    <string name="sql_error">Database error.</string>
+    <string name="invalid_token">Invalid Access Token Or Expiration date!</string>
 </resources>

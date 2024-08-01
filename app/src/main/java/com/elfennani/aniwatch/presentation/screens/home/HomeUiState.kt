@@ -7,7 +7,7 @@ import com.elfennani.aniwatch.models.ShowBasic
 @Stable
 data class HomeUiState(
     val shows: List<ShowBasic> = emptyList(),
-    val error: String? = null,
+    val errors: List<Int> = emptyList(),
     val isLoading: Boolean = true,
     val isFetching: Boolean = false,
     val feed: List<Activity> = emptyList()
