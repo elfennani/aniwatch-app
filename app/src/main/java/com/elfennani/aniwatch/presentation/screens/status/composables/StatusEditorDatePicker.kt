@@ -8,6 +8,7 @@ import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import com.elfennani.aniwatch.presentation.screens.status.StatusDateModal
 import com.elfennani.aniwatch.presentation.theme.AppTheme
@@ -51,7 +52,16 @@ fun StatusEditorDatePicker(
                     dayInSelectionRangeContentColor = AppTheme.colorScheme.primary,
                     titleContentColor = AppTheme.colorScheme.primary,
                     selectedDayContainerColor = AppTheme.colorScheme.primary,
-                )
+                    dayContentColor = AppTheme.colorScheme.onSecondary,
+                    weekdayContentColor = AppTheme.colorScheme.onSecondary,
+                    headlineContentColor = AppTheme.colorScheme.onSecondary,
+                    navigationContentColor = AppTheme.colorScheme.onSecondary,
+                    dividerColor = AppTheme.colorScheme.secondary,
+                    todayDateBorderColor = AppTheme.colorScheme.primary,
+                    todayContentColor = AppTheme.colorScheme.primary,
+                    yearContentColor = AppTheme.colorScheme.secondary
+                ),
+            showModeToggle = false
         )
     }
 }
