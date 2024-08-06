@@ -133,22 +133,14 @@ class EpisodeViewModel @Inject constructor(
 
     private fun fetchShow() {
         viewModelScope.launch {
-            val result = showRepository.getShowByIdCached(id)
+            val result = showRepository.getShowFlowById(id)
 
             result.collect {
-                when (it) {
-                    is Resource.Success -> {
-                        _state.update { state ->
-                            state.copy(
-                                show = it.data,
-                                episodeDetails = it.data?.episodes?.find { ep -> ep.episode == episode }
-                            )
-                        }
-                    }
-
-                    is Resource.Error -> {
-                        _state.update { state -> state.copy(errors = state.errors + it.message!!) }
-                    }
+                _state.update { state ->
+                    state.copy(
+                        show = it,
+                        episodeDetails = it?.episodes?.find { ep -> ep.episode == episode }
+                    )
                 }
             }
         }

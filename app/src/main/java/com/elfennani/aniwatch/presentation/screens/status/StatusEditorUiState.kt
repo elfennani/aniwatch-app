@@ -8,5 +8,7 @@ data class StatusEditorUiState(
     val status: StatusDetails? = null,
     val errors: List<Int> = emptyList(),
     val isPending: Boolean = true,
-    val isEditingPending: Boolean = false
+    val isEditingPending: Boolean = false,
+    val dateModal: StatusDateModal? = null,
+    val bottomModal: EditorSheetModal? = null
 )

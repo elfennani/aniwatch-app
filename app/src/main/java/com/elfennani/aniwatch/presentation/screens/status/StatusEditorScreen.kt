@@ -1,99 +1,228 @@
 package com.elfennani.aniwatch.presentation.screens.status
 
+import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.models.StatusDate
 import com.elfennani.aniwatch.models.StatusDetails
-import com.elfennani.aniwatch.presentation.composables.ErrorSnackbarHost
+import com.elfennani.aniwatch.models.formatText
+import com.elfennani.aniwatch.models.toCalendar
+import com.elfennani.aniwatch.presentation.composables.Button
+import com.elfennani.aniwatch.presentation.composables.TextSkeleton
 import com.elfennani.aniwatch.presentation.composables.dummyShow
+import com.elfennani.aniwatch.presentation.screens.status.composables.BottomSheetContainer
+import com.elfennani.aniwatch.presentation.screens.status.composables.ProgressBottomSheet
+import com.elfennani.aniwatch.presentation.screens.status.composables.ScoreBottomSheet
+import com.elfennani.aniwatch.presentation.screens.status.composables.Setting
+import com.elfennani.aniwatch.presentation.screens.status.composables.StatusBottomSheet
+import com.elfennani.aniwatch.presentation.screens.status.composables.StatusEditorDatePicker
+import com.elfennani.aniwatch.presentation.screens.status.composables.StatusEditorScaffold
 import com.elfennani.aniwatch.presentation.theme.AppTheme
+import kotlinx.coroutines.launch
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatusEditorScreen(
     state: StatusEditorUiState,
+    onUiEvent: (StatusEditorUiEvent) -> Unit,
     onBack: () -> Unit,
     onErrorDismiss: (Int) -> Unit,
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AppTheme.colorScheme.primaryContainer,
-                ),
-                title = { Text(text = "Edit Show Status") },
-                navigationIcon = {
-                    IconButton(onClick = { onBack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = "back"
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "back",
-                            tint = Color(0xFFef4444)
-                        )
-                    }
+    val datePickerState = rememberDatePickerState()
+
+    LaunchedEffect(key1 = state.dateModal) {
+        when (state.dateModal) {
+            StatusDateModal.START ->
+                datePickerState.selectedDateMillis = state.status?.startedAt
+                    ?.toCalendar()
+                    ?.toInstant()
+                    ?.toEpochMilli()
+
+            StatusDateModal.FINISH ->
+                datePickerState.selectedDateMillis = state.status?.completedAt
+                    ?.toCalendar()
+                    ?.toInstant()
+                    ?.toEpochMilli()
+
+            else -> {}
+        }
+    }
+
+    StatusEditorScaffold(
+        errors = state.errors,
+        onErrorDismiss = onErrorDismiss,
+        onBack = onBack,
+        onDelete = { /*TODO*/ }
+    ) { paddingValues ->
+        if (state.dateModal != null) {
+            StatusEditorDatePicker(
+                datePickerState = datePickerState,
+                onConfirm = { onUiEvent(StatusEditorUiEvent.SetModalDate(state.dateModal, it)) },
+                onDismiss = { onUiEvent(StatusEditorUiEvent.CloseModal) }
+            )
+        }
+
+        when (state.bottomModal) {
+            EditorSheetModal.SCORE -> ScoreBottomSheet(
+                initialValue = state.status?.score ?: 0,
+                onDismiss = { onUiEvent(StatusEditorUiEvent.CloseBottomSheet) },
+                onConfirm = { onUiEvent(StatusEditorUiEvent.SetScore(it)) }
+            )
+
+            EditorSheetModal.PROGRESS -> ProgressBottomSheet(
+                initialValue = state.status?.progress ?: 0,
+                onDismiss = { onUiEvent(StatusEditorUiEvent.CloseBottomSheet) },
+                onConfirm = { onUiEvent(StatusEditorUiEvent.SetProgress(it)) })
+
+            EditorSheetModal.STATUS -> StatusBottomSheet(
+                selected = state.status?.status,
+                onDismiss = { onUiEvent(StatusEditorUiEvent.CloseBottomSheet) },
+                onConfirm = {
+                    onUiEvent(StatusEditorUiEvent.SetStatus(it))
                 }
             )
-        },
-        snackbarHost = {
-            ErrorSnackbarHost(errors = state.errors) {
-                onErrorDismiss(it)
-            }
-        },
-        containerColor = AppTheme.colorScheme.background,
-        contentColor = AppTheme.colorScheme.onBackground
-    ) {
+
+            else -> {}
+        }
+
         Column(
-            modifier = Modifier.padding(it)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             if (state.isPending) {
                 Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.padding(AppTheme.sizes.large),
+                    verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.large)
                 ) {
-                    CircularProgressIndicator(modifier = Modifier.size(AppTheme.sizes.large * 2.5f))
+                    TextSkeleton(
+                        style = AppTheme.typography.titleNormal,
+                        modifier = Modifier.width(256.dp)
+                    )
+
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
+                    ){
+                        (0..3).forEach{ _ ->
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.normal)
+                            ) {
+                                TextSkeleton(
+                                    style = AppTheme.typography.labelSmall,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                TextSkeleton(
+                                    style = AppTheme.typography.labelSmall,
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+                        }
+                    }
                 }
             } else {
+                val show = state.show!!
+                val status = state.status!!
 
+                Column(
+                    modifier = Modifier.padding(AppTheme.sizes.large),
+                    verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.large)
+                ) {
+                    Text(text = show.name, style = AppTheme.typography.titleNormal)
+                    Column {
+                        Setting(label = "Status", value = status.status?.formatText()) {
+                            onUiEvent(StatusEditorUiEvent.OpenBottomSheet(EditorSheetModal.STATUS))
+                        }
+                        Setting(label = "Score", value = status.score.toString()) {
+                            onUiEvent(StatusEditorUiEvent.OpenBottomSheet(EditorSheetModal.SCORE))
+                        }
+                        Setting(label = "Episode", value = status.progress.toString()) {
+                            onUiEvent(StatusEditorUiEvent.OpenBottomSheet(EditorSheetModal.PROGRESS))
+                        }
+                        Setting(
+                            label = "Start Date",
+                            value = status.startedAt?.format(),
+                            onClear = {
+                                onUiEvent(
+                                    StatusEditorUiEvent.SetModalDate(
+                                        StatusDateModal.START,
+                                        null
+                                    )
+                                )
+                            }
+                        ) {
+                            onUiEvent(StatusEditorUiEvent.OpenDateModal(StatusDateModal.START))
+                        }
+                        Setting(
+                            label = "Finish Date",
+                            value = status.completedAt?.format(),
+                            onClear = {
+                                onUiEvent(
+                                    StatusEditorUiEvent.SetModalDate(
+                                        StatusDateModal.FINISH,
+                                        null
+                                    )
+                                )
+                            }
+                        ) {
+                            onUiEvent(StatusEditorUiEvent.OpenDateModal(StatusDateModal.FINISH))
+                        }
+                    }
+                }
+                Box(modifier = Modifier.padding(AppTheme.sizes.large)) {
+                    Button(
+                        onClick = { onUiEvent(StatusEditorUiEvent.Save(onBack)) },
+                        enabled = !state.isEditingPending
+                    ) {
+                        Text(text = "Save")
+                    }
+                }
             }
         }
     }
@@ -118,6 +247,32 @@ private fun ShowEditorScreenPreview() {
             ),
             onBack = {},
             onErrorDismiss = {},
+            onUiEvent = {}
+        )
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ShowEditorScreenPreviewDark() {
+    AppTheme {
+        StatusEditorScreen(
+            state = StatusEditorUiState(
+                isPending = false,
+                show = dummyShow,
+                bottomModal = EditorSheetModal.STATUS,
+                status = StatusDetails(
+                    status = ShowStatus.WATCHING,
+                    score = 100,
+                    progress = 12,
+                    favorite = false,
+                    startedAt = StatusDate(year = 2024, month = 6, day = 29),
+                    completedAt = StatusDate(year = 2024, month = 7, day = 1)
+                )
+            ),
+            onBack = {},
+            onErrorDismiss = {},
+            onUiEvent = {}
         )
     }
 }
@@ -134,7 +289,8 @@ fun NavGraphBuilder.statusEditorScreen(navController: NavController) {
         StatusEditorScreen(
             state = state,
             onBack = { navController.popBackStack() },
-            onErrorDismiss = viewModel::dismissError
+            onErrorDismiss = viewModel::dismissError,
+            onUiEvent = viewModel::onEvent
         )
     }
 }

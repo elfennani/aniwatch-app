@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elfennani.aniwatch.models.ShowStatus
+import com.elfennani.aniwatch.models.formatText
+import com.elfennani.aniwatch.models.toIcon
 import com.elfennani.aniwatch.presentation.theme.AppTheme
 
 @Composable
@@ -72,31 +74,8 @@ fun StatusButton(
     total: Int? = null,
     onClick: () -> Unit = {},
 ) {
-    val text = when (status) {
-        ShowStatus.ON_HOLD -> "Paused"
-        ShowStatus.DROPPED -> "Dropped"
-        ShowStatus.REPEATING -> "Rewatching"
-        ShowStatus.WATCHING -> {
-            if (progress != null && total != null)
-                "Currently Watching $progress/$total"
-            else
-                "Currently Watching"
-        }
-
-        ShowStatus.COMPLETED -> "Finished"
-        ShowStatus.PLAN_TO_WATCH -> "Planned"
-        else -> "Set Status"
-    }
-
-    val icon = when (status) {
-        ShowStatus.WATCHING -> Icons.Default.SmartDisplay
-        ShowStatus.ON_HOLD -> Icons.Default.PausePresentation
-        ShowStatus.DROPPED -> Icons.Default.PlaylistRemove
-        ShowStatus.PLAN_TO_WATCH -> Icons.AutoMirrored.Default.PlaylistAdd
-        ShowStatus.COMPLETED -> Icons.Default.Done
-        ShowStatus.REPEATING -> Icons.Default.Repeat
-        else -> Icons.Default.Add
-    }
+    val text = status.formatText(progress, total)
+    val icon = status.toIcon()
 
     StatusButtonContainer(
         onClick = { onClick() },

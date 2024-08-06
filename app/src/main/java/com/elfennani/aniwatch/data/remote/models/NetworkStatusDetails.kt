@@ -20,3 +20,12 @@ fun NetworkStatusDetails.asDomain() = StatusDetails(
     startedAt = startedAt?.asDomain(),
     completedAt = completedAt?.asDomain()
 )
+
+fun StatusDetails.asNetwork() = NetworkStatusDetails(
+    status = status?.toSerializable(),
+    score = score,
+    progress = progress,
+    favorite = favorite,
+    startedAt = startedAt?.asNetwork(),
+    completedAt = completedAt?.asNetwork()
+)

@@ -14,6 +14,7 @@ import com.elfennani.aniwatch.data.local.entities.toDto
 import com.elfennani.aniwatch.data.remote.APIService
 import com.elfennani.aniwatch.data.remote.models.NetworkShowBasic
 import com.elfennani.aniwatch.data.remote.models.asDomain
+import com.elfennani.aniwatch.data.remote.models.asNetwork
 import com.elfennani.aniwatch.data.remote.models.toDomain
 import com.elfennani.aniwatch.data.remote.models.toSerializable
 import com.elfennani.aniwatch.models.Episode
@@ -60,31 +61,61 @@ class ShowRepository(
         }
     }
 
-    fun getShowByIdCached(showId: Int): Flow<Resource<ShowDetails>> = flow {
-        val cachedShow = cachedShowDao.getCachedShow(showId)
-        if (cachedShow != null) {
-            emit(Resource.Success(cachedShow.toDomain()))
-        }
+    suspend fun syncShowById(showId: Int): Resource<Unit> {
+        return try {
+            val show = apiService.getShowById(showId).toDomain()
+            cachedShowDao.insertCachedShow(show.asEntity())
+            cachedEpisodesDao.deleteByAnimeId(showId)
+            cachedEpisodesDao.insertAll(show.episodes.map(Episode::toCached))
 
-        val show = getShowById(showId = showId)
-        emit(show)
-
-        if (show is Resource.Success && show.data != null) {
-            try {
-                cachedShowDao.insertCachedShow(show.data.asEntity())
-                cachedEpisodesDao.deleteByAnimeId(showId)
-                cachedEpisodesDao.insertAll(show.data.episodes.map(Episode::toCached))
-            } catch (e: SQLiteException) {
-                emit(Resource.Error(R.string.sql_error))
-            } catch (e: Exception) {
-                emit(Resource.Error())
-            }
+            return Resource.Success(Unit)
+        } catch (e: IOException) {
+            Resource.Error(R.string.no_internet)
+        } catch (e: JsonDataException) {
+            Log.e("ShowRepository", e.message.toString())
+            Resource.Error(R.string.fail_parse)
+        } catch (e: SQLiteException) {
+            return (Resource.Error(R.string.sql_error))
+        } catch (e: Exception) {
+            return (Resource.Error())
         }
+    }
+
+    fun getShowFlowById(showId: Int): Flow<ShowDetails?> {
+        return cachedShowDao.getCachedShow(showId).map { it?.toDomain() }
     }
 
     suspend fun getShowById(showId: Int): Resource<ShowDetails> {
         return try {
-            Resource.Success(apiService.getShowById(showId).toDomain())
+            val show = apiService.getShowById(showId).toDomain()
+
+            return Resource.Success(show)
+        } catch (e: IOException) {
+            Resource.Error(R.string.no_internet)
+        } catch (e: JsonDataException) {
+            Log.e("ShowRepository", e.message.toString())
+            Resource.Error(R.string.fail_parse)
+        } catch (e: SQLiteException) {
+            return (Resource.Error(R.string.sql_error))
+        } catch (e: Exception) {
+            return (Resource.Error())
+        }
+    }
+
+    suspend fun setShowStatus(showId: Int, statusDetails: StatusDetails): Resource<Unit> {
+        return try {
+            apiService.setStatusDetailsById(showId, statusDetails.asNetwork())
+            val sync = withContext(Dispatchers.IO) { syncShowById(showId) }
+            val syncWatching = withContext(Dispatchers.IO) { syncWatchingShows() }
+
+            if (sync is Resource.Error) {
+                return sync
+            }
+
+            if (syncWatching is Resource.Error) {
+                return syncWatching
+            }
+            Resource.Success(Unit)
         } catch (e: IOException) {
             Resource.Error(R.string.no_internet)
         } catch (e: JsonDataException) {
@@ -108,6 +139,7 @@ class ShowRepository(
         } catch (e: SQLiteException) {
             return Resource.Error(R.string.sql_error)
         } catch (e: Exception) {
+            Log.d("ShowRepository", "syncWatchingShows: $e")
             return Resource.Error()
         }
     }

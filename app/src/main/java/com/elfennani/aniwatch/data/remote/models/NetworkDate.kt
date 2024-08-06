@@ -9,3 +9,4 @@ data class NetworkDate(
 )
 
 fun NetworkDate.asDomain() = StatusDate(year = year, month = month, day = day)
+fun StatusDate.asNetwork() = NetworkDate(year = year, month = month, day = day)
