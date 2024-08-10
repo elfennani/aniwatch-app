@@ -15,6 +15,7 @@ import com.elfennani.aniwatch.presentation.composables.MainScaffold
 import com.elfennani.aniwatch.presentation.screens.home.HomeScreenPattern
 import com.elfennani.aniwatch.presentation.screens.home.homeScreen
 import com.elfennani.aniwatch.presentation.screens.listings.listingScreen
+import com.elfennani.aniwatch.presentation.screens.downloads.downloadsScreen
 import com.elfennani.aniwatch.presentation.screens.settings.settingsScreen
 import com.elfennani.aniwatch.presentation.screens.show.SHOW_SCREEN_PATTERN
 
@@ -38,6 +39,7 @@ fun NavGraphBuilder.mainGraph(navController: NavHostController) {
                 homeScreen(navController,it)
                 listingScreen(navController,it)
                 settingsScreen(navController,it)
+                downloadsScreen(navController, it)
             }
         }
 

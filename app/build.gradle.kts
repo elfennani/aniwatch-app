@@ -90,6 +90,8 @@ dependencies {
     implementation(libs.media3.exoplayer)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.richeditor.compose)
+    implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.work.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -106,6 +108,7 @@ dependencies {
     // Dagger Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    kapt(libs.androidx.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
     //noinspection KaptUsageInsteadOfKsp

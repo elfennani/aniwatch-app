@@ -35,8 +35,8 @@ class RetrofitModule {
     @Provides
     @Singleton
     fun provideRetrofit(baseUrl: String, authInterceptor: AuthInterceptor): Retrofit {
-        val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.NONE)
         val client = OkHttpClient
             .Builder()
             .addInterceptor(authInterceptor)

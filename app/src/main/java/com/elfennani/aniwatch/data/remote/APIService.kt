@@ -8,12 +8,16 @@ import com.elfennani.aniwatch.data.remote.models.NetworkStatusDetails
 import com.elfennani.aniwatch.data.remote.models.SerializableShowDetails
 import com.elfennani.aniwatch.data.remote.models.SerializableShowStatus
 import com.elfennani.aniwatch.data.remote.models.TranslationNetwork
+import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Streaming
+import retrofit2.http.Url
 
 interface APIService {
     @GET("/shows/{status}")
@@ -48,4 +52,8 @@ interface APIService {
 
     @DELETE("/show/status/{id}")
     suspend fun deleteStatusDetailsById(@Path("id") id: Int)
+
+    @Streaming
+    @GET
+    suspend fun downloadFile(@Url fileUrl: String): Response<ResponseBody>
 }

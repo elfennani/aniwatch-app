@@ -40,4 +40,8 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideFeedDao(database: Database) = database.feedDao()
+
+    @Provides
+    @Singleton
+    fun provideDownloadDao(database: Database) = database.downloadDao()
 }

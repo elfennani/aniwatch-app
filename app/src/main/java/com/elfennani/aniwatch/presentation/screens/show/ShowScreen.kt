@@ -1,54 +1,25 @@
 package com.elfennani.aniwatch.presentation.screens.show
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import coil.ImageLoader
-import coil.compose.AsyncImage
 import com.elfennani.aniwatch.formatSeconds
-import com.elfennani.aniwatch.imageLoader
-import com.elfennani.aniwatch.models.Episode
-import com.elfennani.aniwatch.models.ShowDetails
-import com.elfennani.aniwatch.models.ShowImage
-import com.elfennani.aniwatch.models.ShowSeason
-import com.elfennani.aniwatch.models.ShowStatus
-import com.elfennani.aniwatch.models.Tag
+import com.elfennani.aniwatch.models.EpisodeAudio
 import com.elfennani.aniwatch.presentation.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.presentation.composables.dummyShow
 import com.elfennani.aniwatch.presentation.screens.episode.navigateToEpisodeScreen
@@ -63,7 +34,8 @@ fun ShowScreen(
     state: ShowUiState,
     onBack: () -> Unit = {},
     onErrorDismiss: (Int) -> Unit = {},
-    onOpenEpisode: (episode:Int) -> Unit = {},
+    onOpenEpisode: (episode: Int) -> Unit = {},
+    onDownloadEpisode: (episode: Int, audio: EpisodeAudio) -> Unit = { _, _ -> },
     onStatusClick: () -> Unit = {},
 ) {
     val lazyListState = rememberLazyListState()
@@ -71,10 +43,12 @@ fun ShowScreen(
     Scaffold(
         containerColor = AppTheme.colorScheme.background,
         contentColor = AppTheme.colorScheme.onBackground,
-        snackbarHost = { ErrorSnackbarHost(
-            errors = state.errors,
-            onErrorDismiss = onErrorDismiss
-        ) },
+        snackbarHost = {
+            ErrorSnackbarHost(
+                errors = state.errors,
+                onErrorDismiss = onErrorDismiss
+            )
+        },
     ) { padding ->
 
         if (state.show != null && !state.isLoading) {
@@ -89,7 +63,7 @@ fun ShowScreen(
                     )
                 }
 
-                item{
+                item {
                     Text(
                         text = "Episodes",
                         style = AppTheme.typography.labelLarge,
@@ -99,28 +73,32 @@ fun ShowScreen(
                     )
                 }
 
-                items(state.show.episodes.sortedBy { it.episode }, key = {ep -> ep.id}) {
+                items(
+                    state.show.episodes.sortedBy { it.episode },
+                    key = { ep -> ep.id }) { episode ->
                     var subtitle: String? = null
-                    if (it.dubbed || it.duration != null) {
-                        val dubbed = if (it.dubbed) "Dubbed" else ""
-                        val duration = if (it.duration != null) it.duration.formatSeconds() else ""
-                        val connect = if (it.dubbed && it.duration != null) " • " else ""
+                    if (episode.dubbed || episode.duration != null) {
+                        val dubbed = if (episode.dubbed) "Dubbed" else ""
+                        val duration =
+                            if (episode.duration != null) episode.duration.formatSeconds() else ""
+                        val connect = if (episode.dubbed && episode.duration != null) " • " else ""
 
                         subtitle = "$duration$connect$dubbed"
                     }
 
                     EpisodeCard(
-                        title = it.name,
-                        thumbnail = it.thumbnail,
+                        title = episode.name,
+                        thumbnail = episode.thumbnail,
                         subtitle = subtitle,
-                        onClick = {
-                            onOpenEpisode(it.episode)
-                        }
+                        onClick = { onOpenEpisode(episode.episode) },
+                        dubbed = episode.dubbed,
+                        episodeState = episode.state,
+                        onDownload = { onDownloadEpisode(episode.episode, it) }
                     )
                 }
             }
         }
-        if(state.isLoading){
+        if (state.isLoading) {
             ShowScreenSkeleton(padding = padding)
         }
     }
@@ -160,6 +138,7 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
                     episode = it,
                 )
             },
+            onDownloadEpisode = viewModel::downloadEpisode,
             onStatusClick = {
                 navController.navigateToStatusEditorScreen(showState.show?.id!!)
             }

@@ -2,6 +2,7 @@ package com.elfennani.aniwatch.presentation.screens.episode
 
 import android.content.Context
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,10 +10,10 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
-import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import com.elfennani.aniwatch.data.repository.DownloadRepository
 import com.elfennani.aniwatch.data.repository.ShowRepository
 import com.elfennani.aniwatch.models.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,13 +23,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
-import kotlin.math.log
 
 @UnstableApi
 @HiltViewModel
 class EpisodeViewModel @Inject constructor(
     private val showRepository: ShowRepository,
+    private val downloadRepository: DownloadRepository,
     savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
@@ -82,6 +84,21 @@ class EpisodeViewModel @Inject constructor(
 
     fun fetchEpisode() {
         viewModelScope.launch {
+            val savedEpisodes = downloadRepository.getDownloaded()
+            val saved = savedEpisodes.find { ep -> ep.episode == episode && ep.showId == id }
+
+            if (saved != null && exoPlayer.currentMediaItem == null) {
+                val file = File(context.filesDir, "shows/$id/$episode-${saved.audio.name}.mp4")
+
+                val mediaItem = MediaItem
+                    .fromUri(file.toUri())
+                    .buildUpon()
+                    .build()
+                exoPlayer.replaceMediaItem(0, mediaItem)
+
+                return@launch;
+            }
+
             when (val result = showRepository.getEpisodeById(allanimeId, episode)) {
                 is Resource.Success -> {
                     _state.update { state ->
@@ -127,7 +144,7 @@ class EpisodeViewModel @Inject constructor(
     fun dismissError(errorRes: Int) {
         _state.update { uiState ->
             val errors = uiState.errors.filterNot { it == errorRes }
-            uiState.copy(errors=errors)
+            uiState.copy(errors = errors)
         }
     }
 
