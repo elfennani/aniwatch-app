@@ -1,22 +1,13 @@
 package com.elfennani.aniwatch.data.repository
 
-import android.content.Context
 import android.database.sqlite.SQLiteException
 import android.util.Log
 import androidx.compose.ui.util.fastAny
-import androidx.work.Constraints
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.data.local.dao.CachedEpisodesDao
 import com.elfennani.aniwatch.data.local.dao.CachedShowDao
-import com.elfennani.aniwatch.data.local.dao.DownloadDao
 import com.elfennani.aniwatch.data.local.dao.WatchingShowsDao
-import com.elfennani.aniwatch.data.local.entities.DownloadDto
 import com.elfennani.aniwatch.data.local.entities.WatchingShowsDto
-import com.elfennani.aniwatch.data.local.entities.asDomain
 import com.elfennani.aniwatch.data.local.entities.asEntity
 import com.elfennani.aniwatch.data.local.entities.toCached
 import com.elfennani.aniwatch.data.local.entities.toDomain
@@ -27,8 +18,6 @@ import com.elfennani.aniwatch.data.remote.models.asDomain
 import com.elfennani.aniwatch.data.remote.models.asNetwork
 import com.elfennani.aniwatch.data.remote.models.toDomain
 import com.elfennani.aniwatch.data.remote.models.toSerializable
-import com.elfennani.aniwatch.models.Download
-import com.elfennani.aniwatch.models.DownloadStatus
 import com.elfennani.aniwatch.models.Episode
 import com.elfennani.aniwatch.models.EpisodeAudio
 import com.elfennani.aniwatch.models.EpisodeLink
@@ -43,14 +32,11 @@ import com.squareup.moshi.JsonDataException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import okio.IOException
 import retrofit2.HttpException
-import java.time.Instant
-import java.util.Date
 
 class ShowRepository(
     private val apiService: APIService,
@@ -94,7 +80,7 @@ class ShowRepository(
         return try {
             val show = apiService.getShowById(showId).toDomain()
             cachedShowDao.insertCachedShow(show.asEntity())
-            cachedEpisodesDao.deleteByAnimeId(showId)
+            cachedEpisodesDao.deleteByShowIdAndIds(showId, show.episodes.map { it.id })
             cachedEpisodesDao.insertAll(show.episodes.map(Episode::toCached))
 
             return Resource.Success(Unit)

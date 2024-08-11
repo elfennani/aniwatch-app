@@ -1,5 +1,6 @@
 package com.elfennani.aniwatch.presentation.screens.show
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -41,6 +43,11 @@ class ShowViewModel @Inject constructor(
 
     init {
         syncShow()
+        viewModelScope.launch {
+            state.collect{
+                Log.d("ShowViewModel", "state: ${state.value.show?.episodes?.size}")
+            }
+        }
     }
 
     fun dismissError(errorRes: Int) {

@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.elfennani.aniwatch.data.local.entities.CachedEpisodeDto
-import com.elfennani.aniwatch.models.Episode
 
 @Dao
 interface CachedEpisodesDao {
@@ -14,4 +13,7 @@ interface CachedEpisodesDao {
 
     @Query("DELETE FROM cached_episodes WHERE animeId=:animeId")
     suspend fun deleteByAnimeId(animeId: Int)
+
+    @Query("DELETE FROM cached_episodes WHERE animeId=:showId AND id NOT IN (:epIds)")
+    suspend fun deleteByShowIdAndIds(showId: Int, epIds: List<String>)
 }
