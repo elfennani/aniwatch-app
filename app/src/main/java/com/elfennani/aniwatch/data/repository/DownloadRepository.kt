@@ -16,6 +16,7 @@ import com.elfennani.aniwatch.models.EpisodeAudio
 import com.elfennani.aniwatch.models.ShowDetails
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.io.File
 import java.time.Instant
 import java.util.Date
 
@@ -37,9 +38,35 @@ class DownloadRepository(
         workManager.cancelUniqueWork("downloadWork")
     }
 
-    fun getDownloadedFlow() = downloadDao.getDownloadedFlow().map { list -> list.map { it.asDomain() } }
+    fun getDownloadedFlow() =
+        downloadDao.getDownloadedFlow().map { list -> list.map { it.asDomain() } }
 
     suspend fun getDownloaded() = downloadDao.getDownloaded().map { it.asDomain() }
+
+    fun startWorking() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val downloadRequest = OneTimeWorkRequest
+            .Builder(DownloadWork::class.java)
+            .setConstraints(constraints)
+            .build()
+
+        workManager.enqueueUniqueWork(
+            "downloadWork",
+            ExistingWorkPolicy.KEEP,
+            downloadRequest
+        )
+    }
+
+    suspend fun deleteEpisode(episode: Int, showId: Int) {
+        downloadDao.deleteDownload(showId, episode)
+
+        val directory = File(context.filesDir, "shows/$showId")
+        directory.listFiles()
+            ?.find { it.name.startsWith(episode.toString()) }
+            ?.delete()
+    }
 
     suspend fun downloadEpisode(show: ShowDetails, episode: Int, audio: EpisodeAudio) {
         downloadDao.insertDownload(
@@ -54,18 +81,6 @@ class DownloadRepository(
             ).asEntity()
         )
 
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-        val downloadRequest = OneTimeWorkRequest
-            .Builder(DownloadWork::class.java)
-            .setConstraints(constraints)
-            .build()
-
-        workManager.enqueueUniqueWork(
-            "downloadWork",
-            ExistingWorkPolicy.KEEP,
-            downloadRequest
-        )
+        startWorking()
     }
 }

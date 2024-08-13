@@ -5,11 +5,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,17 +23,18 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.elfennani.aniwatch.formatSeconds
 import com.elfennani.aniwatch.models.EpisodeAudio
 import com.elfennani.aniwatch.presentation.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.presentation.composables.dummyShow
 import com.elfennani.aniwatch.presentation.screens.episode.navigateToEpisodeScreen
 import com.elfennani.aniwatch.presentation.screens.show.composables.EpisodeCard
+import com.elfennani.aniwatch.presentation.screens.show.composables.EpisodeDialog
 import com.elfennani.aniwatch.presentation.screens.show.composables.ShowScreenHeader
 import com.elfennani.aniwatch.presentation.screens.show.composables.ShowScreenSkeleton
 import com.elfennani.aniwatch.presentation.screens.status.navigateToStatusEditorScreen
 import com.elfennani.aniwatch.presentation.theme.AppTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowScreen(
     state: ShowUiState,
@@ -36,9 +42,15 @@ fun ShowScreen(
     onErrorDismiss: (Int) -> Unit = {},
     onOpenEpisode: (episode: Int) -> Unit = {},
     onDownloadEpisode: (episode: Int, audio: EpisodeAudio) -> Unit = { _, _ -> },
+    onDeleteEpisode:(episode: Int) -> Unit = {},
     onStatusClick: () -> Unit = {},
 ) {
     val lazyListState = rememberLazyListState()
+    var selectedEpisode by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    val modalVisible by remember { derivedStateOf { selectedEpisode != null } }
 
     Scaffold(
         containerColor = AppTheme.colorScheme.background,
@@ -50,7 +62,6 @@ fun ShowScreen(
             )
         },
     ) { padding ->
-
         if (state.show != null && !state.isLoading) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxWidth()) {
                 item(key = "header") {
@@ -75,31 +86,27 @@ fun ShowScreen(
 
                 items(
                     state.show.episodes.sortedBy { it.episode },
-                    key = { ep -> ep.id }) { episode ->
-                    var subtitle: String? = null
-                    if (episode.dubbed || episode.duration != null) {
-                        val dubbed = if (episode.dubbed) "Dubbed" else ""
-                        val duration =
-                            if (episode.duration != null) episode.duration.formatSeconds() else ""
-                        val connect = if (episode.dubbed && episode.duration != null) " • " else ""
-
-                        subtitle = "$duration$connect$dubbed"
-                    }
-
+                    key = { ep -> ep.id }
+                ) { episode ->
                     EpisodeCard(
-                        title = episode.name,
-                        thumbnail = episode.thumbnail,
-                        subtitle = subtitle,
+                        episode = episode,
                         onClick = { onOpenEpisode(episode.episode) },
-                        dubbed = episode.dubbed,
-                        episodeState = episode.state,
-                        onDownload = { onDownloadEpisode(episode.episode, it) }
+                        onOptions = { selectedEpisode = episode.id }
                     )
                 }
             }
         }
         if (state.isLoading) {
             ShowScreenSkeleton(padding = padding)
+        }
+        if (selectedEpisode != null) {
+            val episode = state.show?.episodes?.find { it.id == selectedEpisode }!!
+            EpisodeDialog(
+                onDismissRequest = { selectedEpisode = null },
+                episode = episode,
+                onDownload = { onDownloadEpisode(episode.episode, it) },
+                onDelete = { onDeleteEpisode(episode.episode) }
+            )
         }
     }
 }
@@ -139,6 +146,7 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
                 )
             },
             onDownloadEpisode = viewModel::downloadEpisode,
+            onDeleteEpisode = viewModel::deleteEpisode,
             onStatusClick = {
                 navController.navigateToStatusEditorScreen(showState.show?.id!!)
             }

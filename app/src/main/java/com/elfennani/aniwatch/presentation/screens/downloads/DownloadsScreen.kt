@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ClearAll
+import androidx.compose.material.icons.filled.PlayForWork
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,6 +37,7 @@ import com.elfennani.aniwatch.presentation.theme.AppTheme
 fun DownloadsScreen(
     navController: NavController,
     downloads: List<Download>,
+    onStartWork: () -> Unit = {},
     onClearAll: () -> Unit = {}
 ) {
     Scaffold(
@@ -55,6 +57,9 @@ fun DownloadsScreen(
                 actions = {
                     IconButton(onClick = { onClearAll() }) {
                         Icon(imageVector = Icons.Default.ClearAll, contentDescription = null)
+                    }
+                    IconButton(onClick = { onStartWork() }) {
+                        Icon(imageVector = Icons.Default.PlayForWork, contentDescription = null)
                     }
                 }
             )
@@ -82,6 +87,7 @@ fun NavGraphBuilder.downloadsScreen(navController: NavController, padding: Paddi
         DownloadsScreen(
             navController = navController,
             downloads = downloads,
+            onStartWork = viewModel::forceStartDownload,
             onClearAll = viewModel::clearDownloads
         )
     }

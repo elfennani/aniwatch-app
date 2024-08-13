@@ -20,6 +20,8 @@ data class AppColorScheme(
     val onCard: Color,
     val primaryContainer:Color,
     val onPrimaryContainer:Color,
+    val error: Color,
+    val onError: Color,
 )
 
 data class AppTypography(
@@ -60,6 +62,8 @@ val LocalAppColorScheme = staticCompositionLocalOf {
         primaryAlt = Color.Unspecified,
         primaryContainer = Color.Unspecified,
         onPrimaryContainer = Color.Unspecified,
+        error = Color.Unspecified,
+        onError = Color.Unspecified
     )
 }
 

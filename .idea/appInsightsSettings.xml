@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.elfennani.aniwatch" />
+                  <option name="mobileSdkAppId" value="1:135635831684:android:520f8b1b35d89470c72bd1" />
+                  <option name="projectId" value="aniwatch-1417e" />
+                  <option name="projectNumber" value="135635831684" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

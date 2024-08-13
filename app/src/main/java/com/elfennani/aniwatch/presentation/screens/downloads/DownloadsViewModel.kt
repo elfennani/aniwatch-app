@@ -35,6 +35,10 @@ class DownloadsViewModel @Inject constructor(
         }
     }
 
+    fun forceStartDownload(){
+        downloadRepository.startWorking()
+    }
+
     fun clearDownloads(){
         viewModelScope.launch(Dispatchers.IO) {
             downloadRepository.clearDownloads()

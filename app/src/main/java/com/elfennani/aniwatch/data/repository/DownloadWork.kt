@@ -2,6 +2,7 @@ package com.elfennani.aniwatch.data.repository
 
 import android.content.Context
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
@@ -53,14 +54,18 @@ class DownloadWork @AssistedInject constructor(
         if (pendingDownload != null) {
             when (val show = showRepository.getShowById(pendingDownload.showId)) {
                 is Resource.Success -> {
-                    downloadEpisode(
+                    val isSuccess = downloadEpisode(
                         showId = show.data!!.id,
                         allanimeId = show.data.allanimeId,
                         episode = pendingDownload.episode,
                         audio = EpisodeAudio.valueOf(pendingDownload.audio)
                     )
 
-                    downloadDao.updateDownload(pendingDownload.copy(status = DownloadStatus.COMPLETED.name))
+                    if(isSuccess)
+                        downloadDao.updateDownload(pendingDownload.copy(status = DownloadStatus.COMPLETED.name))
+                    else
+                        downloadDao.deleteDownload(pendingDownload)
+
                     performWork()
                 }
 
@@ -69,7 +74,7 @@ class DownloadWork @AssistedInject constructor(
         }
     }
 
-    private suspend fun downloadEpisode(showId: Int, allanimeId: String, episode: Int, audio: EpisodeAudio) {
+    private suspend fun downloadEpisode(showId: Int, allanimeId: String, episode: Int, audio: EpisodeAudio): Boolean {
         return when (val data = showRepository.getEpisodeById(allanimeId, episode, audio)) {
             is Resource.Success -> {
                 val directory = File(applicationContext.filesDir, "shows/$showId")
@@ -77,10 +82,15 @@ class DownloadWork @AssistedInject constructor(
                 val file = File(directory, "$episode-${audio.name}.mp4")
                 val outputStream = file.outputStream()
 
-                apiService.downloadFile(data.data?.mp4!!).body()?.byteStream().use {
+                if(data.data?.mp4 == null) return false
+
+                apiService.downloadFile(data.data.mp4).body()?.byteStream().use {
+                    Log.d("DownloadWork", "downloadEpisode: ${it?.available()}")
                     it?.copyTo(outputStream)
                 }
                 withContext(Dispatchers.IO) { outputStream.close() }
+
+                true
             }
 
             is Resource.Error -> throw Exception(applicationContext.resources.getString(data.message!!))

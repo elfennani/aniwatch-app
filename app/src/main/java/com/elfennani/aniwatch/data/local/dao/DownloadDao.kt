@@ -1,6 +1,7 @@
 package com.elfennani.aniwatch.data.local.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -27,6 +28,9 @@ interface DownloadDao {
 
     @Update
     suspend fun updateDownload(download: DownloadDto)
+
+    @Delete
+    suspend fun deleteDownload(download: DownloadDto)
 
     @Query("DELETE FROM downloads")
     suspend fun deleteAll()

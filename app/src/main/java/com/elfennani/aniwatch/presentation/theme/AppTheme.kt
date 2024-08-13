@@ -27,7 +27,9 @@ private val darkColorScheme = AppColorScheme(
     card = Zinc90,
     onCard = Zinc05,
     primaryContainer = Zinc90,
-    onPrimaryContainer = Zinc20
+    onPrimaryContainer = Zinc20,
+    error = Red50,
+    onError = Red05
 )
 
 private val lightColorScheme = AppColorScheme(
@@ -41,7 +43,9 @@ private val lightColorScheme = AppColorScheme(
     card = Color.White,
     onCard = Slate95,
     primaryContainer = Blue05,
-    onPrimaryContainer = Blue95
+    onPrimaryContainer = Blue95,
+    error = Red50,
+    onError = Red05
 )
 
 private val typography = AppTypography(
