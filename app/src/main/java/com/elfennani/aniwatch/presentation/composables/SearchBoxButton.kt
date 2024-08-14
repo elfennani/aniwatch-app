@@ -36,7 +36,6 @@ fun SearchBoxButton(modifier: Modifier = Modifier) {
 
     Row(
         modifier = modifier
-            .shadow(AppTheme.sizes.smaller,shape)
             .clip(shape)
             .background(AppTheme.colorScheme.card, shape)
             .clickable {  }
