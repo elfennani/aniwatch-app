@@ -3,6 +3,8 @@ package com.elfennani.aniwatch.presentation.composables
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.union
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.List
@@ -19,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -48,6 +51,7 @@ val items = listOf(
 @Composable
 fun MainNavigation(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val density = LocalDensity.current
     val currentDestination = navBackStackEntry?.destination
     val destinationInList = items.any { screen ->
         currentDestination?.hierarchy?.any { it.route == screen.route } == true
@@ -56,7 +60,9 @@ fun MainNavigation(navController: NavController) {
         NavigationBar(
             containerColor = AppTheme.colorScheme.primaryContainer,
             contentColor = AppTheme.colorScheme.onPrimaryContainer,
-            modifier = Modifier.height(80.dp)
+            modifier = Modifier
+                .height(64.dp)
+                .padding(WindowInsets.navigationBars.getBottom(density).dp)
         ) {
             items.forEach { screen ->
                 val selected =
