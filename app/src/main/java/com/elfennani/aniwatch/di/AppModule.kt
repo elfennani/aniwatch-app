@@ -3,6 +3,7 @@ package com.elfennani.aniwatch.di
 import android.content.Context
 import com.elfennani.aniwatch.data.local.dao.CachedEpisodesDao
 import com.elfennani.aniwatch.data.local.dao.CachedShowDao
+import com.elfennani.aniwatch.data.local.dao.CachedUserDao
 import com.elfennani.aniwatch.data.local.dao.DownloadDao
 import com.elfennani.aniwatch.data.local.dao.SessionDao
 import com.elfennani.aniwatch.data.local.dao.WatchingShowsDao
@@ -11,6 +12,7 @@ import com.elfennani.aniwatch.data.repository.ActivityRepository
 import com.elfennani.aniwatch.data.repository.DownloadRepository
 import com.elfennani.aniwatch.data.repository.SessionRepository
 import com.elfennani.aniwatch.data.repository.ShowRepository
+import com.elfennani.aniwatch.data.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 
@@ -58,6 +60,19 @@ class AppModule {
     ) = DownloadRepository(
         cachedShowDao = cachedShowDao,
         downloadDao = downloadDao,
+        context = context
+    )
+
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(
+        apiService: APIService,
+        cachedUserDao: CachedUserDao,
+        @ApplicationContext context: Context
+    ) = UserRepository(
+        apiService = apiService,
+        cachedUserDao = cachedUserDao,
         context = context
     )
 }

@@ -44,4 +44,8 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideDownloadDao(database: Database) = database.downloadDao()
+
+    @Provides
+    @Singleton
+    fun provideCachedUserDao(database: Database) = database.cachedUserDao()
 }

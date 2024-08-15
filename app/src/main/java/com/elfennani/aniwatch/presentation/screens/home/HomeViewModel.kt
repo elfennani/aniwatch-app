@@ -16,17 +16,22 @@ import com.elfennani.aniwatch.data.local.entities.asDomain
 import com.elfennani.aniwatch.data.repository.ActivityRepository
 import com.elfennani.aniwatch.data.repository.FeedRemoteMediator
 import com.elfennani.aniwatch.data.repository.ShowRepository
+import com.elfennani.aniwatch.data.repository.UserRepository
+import com.elfennani.aniwatch.dataStore
 import com.elfennani.aniwatch.models.Resource
+import com.elfennani.aniwatch.sessionId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -35,6 +40,7 @@ class HomeViewModel @Inject constructor(
     private val showRepository: ShowRepository,
     private val activityRepository: ActivityRepository,
     private val database: Database,
+    private val userRepository: UserRepository,
     private val feedDao: FeedDao,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
@@ -57,6 +63,20 @@ class HomeViewModel @Inject constructor(
 
     init {
         refetch()
+
+        viewModelScope.launch {
+            val sessionId = context.dataStore.data.first().sessionId
+            userRepository.viewerFlow().collect{
+                when(it){
+                    is Resource.Success -> _state.update { state->
+                        state.copy(user = it.data)
+                    }
+                    is Resource.Error -> _state.update { state -> state.copy(
+                        errors = state.errors + it.message!!
+                    ) }
+                }
+            }
+        }
 
         viewModelScope.launch {
             shows.collect { shows ->

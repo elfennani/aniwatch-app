@@ -5,6 +5,7 @@ import com.elfennani.aniwatch.data.remote.models.NetworkActivity
 import com.elfennani.aniwatch.data.remote.models.NetworkEpisodeLink
 import com.elfennani.aniwatch.data.remote.models.NetworkShowBasic
 import com.elfennani.aniwatch.data.remote.models.NetworkStatusDetails
+import com.elfennani.aniwatch.data.remote.models.NetworkUser
 import com.elfennani.aniwatch.data.remote.models.SerializableShowDetails
 import com.elfennani.aniwatch.data.remote.models.SerializableShowStatus
 import com.elfennani.aniwatch.data.remote.models.TranslationNetwork
@@ -56,4 +57,10 @@ interface APIService {
     @Streaming
     @GET
     suspend fun downloadFile(@Url fileUrl: String): Response<ResponseBody>
+
+    @GET("/user/{id}")
+    suspend fun getUserById(@Path("id") id: Int): NetworkUser
+
+    @GET("/user")
+    suspend fun getViewerUser(): NetworkUser
 }

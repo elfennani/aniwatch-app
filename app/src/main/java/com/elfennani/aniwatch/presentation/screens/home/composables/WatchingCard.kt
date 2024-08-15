@@ -47,12 +47,12 @@ fun WatchingCard(show: ShowBasic, onPress: () -> Unit = {}) {
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
-                model = show.image.original,
+                model = show.banner ?: show.image.original,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize(),
                 imageLoader = context.imageLoader(),
-                contentScale = ContentScale.FillWidth,
+                contentScale = ContentScale.Crop,
             )
             Box(
                 modifier = Modifier
@@ -94,7 +94,8 @@ fun WatchingCardPreview() {
             medium = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx100077-B4bfXz0wVOPO.jpg",
             original = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx100077-B4bfXz0wVOPO.jpg",
             color = Color(0xFFe47850)
-        )
+        ),
+        banner = null
     )
 
     AppTheme {

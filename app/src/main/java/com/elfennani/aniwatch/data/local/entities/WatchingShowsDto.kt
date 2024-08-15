@@ -1,5 +1,6 @@
 package com.elfennani.aniwatch.data.local.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -19,7 +20,8 @@ data class WatchingShowsDto(
     val description: String,
     val episodes: Int,
     val progress: Int?,
-    @Embedded val image: WatchingShowImage
+    @Embedded val image: WatchingShowImage,
+    val banner: String? = null
 )
 
 data class WatchingShowImage(
@@ -41,7 +43,8 @@ fun WatchingShowsDto.toDomain() = ShowBasic(
         medium = image.medium,
         original = image.original,
         color = image.color?.toColor()
-    )
+    ),
+    banner = banner
 )
 
 fun NetworkShowBasic.toDto() = WatchingShowsDto(
@@ -56,5 +59,6 @@ fun NetworkShowBasic.toDto() = WatchingShowsDto(
         medium = image.medium,
         original = image.original,
         color = image.color?.toColor()?.toHexString()
-    )
+    ),
+    banner = banner
 )

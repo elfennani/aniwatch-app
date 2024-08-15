@@ -1,6 +1,5 @@
 package com.elfennani.aniwatch.presentation.screens.home
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,13 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -51,7 +48,7 @@ import com.elfennani.aniwatch.presentation.screens.home.composables.WatchingShow
 import com.elfennani.aniwatch.presentation.screens.show.navigateToShowScreen
 import com.elfennani.aniwatch.presentation.theme.AppTheme
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -105,7 +102,10 @@ fun HomeScreen(
         Column(
             modifier = Modifier.padding(top = containerPadding.calculateTopPadding())
         ) {
-            HomeHeader(border = lazyListState.canScrollBackward)
+            HomeHeader(
+                border = lazyListState.canScrollBackward,
+                user = state.user
+            )
             Box(Modifier.nestedScroll(pullState.nestedScrollConnection)) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
@@ -142,7 +142,7 @@ fun HomeScreen(
                                     navController.navigateToShowScreen(item.show.id)
                                 }
                             })
-                            Divider(color = AppTheme.colorScheme.onBackground.copy(alpha = 0.07f))
+                            HorizontalDivider(color = AppTheme.colorScheme.onBackground.copy(alpha = 0.07f))
                         }
                     }
                 }
