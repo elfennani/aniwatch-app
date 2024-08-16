@@ -19,6 +19,7 @@ import com.elfennani.aniwatch.data.repository.ShowRepository
 import com.elfennani.aniwatch.data.repository.UserRepository
 import com.elfennani.aniwatch.dataStore
 import com.elfennani.aniwatch.models.Resource
+import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.sessionId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -43,7 +44,7 @@ class HomeViewModel @Inject constructor(
     private val feedDao: FeedDao,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
-    private val shows = showRepository.getWatchingShows()
+    private val shows = showRepository.getListingByStatus(ShowStatus.WATCHING)
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     @OptIn(ExperimentalPagingApi::class)
@@ -94,7 +95,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 _state.update { it.copy(isFetching = true) }
-                val result = showRepository.syncWatchingShows()
+                val result = showRepository.syncListingByStatus(ShowStatus.WATCHING)
                 _state.update { it.copy(isFetching = false) }
 
                 if (result is Resource.Error) {

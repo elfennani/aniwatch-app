@@ -30,12 +30,7 @@ data class CachedShowDto(
     val status: ShowStatus?,
     )
 
-data class CachedShowImage(
-    val large: String,
-    val medium: String,
-    val original: String,
-    val color: String?
-)
+
 
 fun CachedShowDto.toDomain() = ShowDetails(
     id = id,

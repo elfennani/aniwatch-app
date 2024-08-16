@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -41,8 +42,9 @@ import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 const val ANIM_DURATION_MILLIS = 100
 
 @Composable
-fun Navigation() {
-    val navController = rememberNavController()
+fun Navigation(
+    navController: NavHostController
+) {
     val context = LocalContext.current
     val session = runBlocking { context.dataStore.data.first().sessionId }
     val startingDestination = if (session != null) MainGraphPattern else AuthGraphPattern

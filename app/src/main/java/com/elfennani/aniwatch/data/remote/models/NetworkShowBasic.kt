@@ -11,7 +11,8 @@ data class NetworkShowBasic(
     val episodes: Int?,
     val progress: Int?,
     val image: SerializableShowImage,
-    val banner: String?
+    val banner: String?,
+    val updatedAt: Int?
 )
 
 fun NetworkShowBasic.toDomain() = ShowBasic(
@@ -22,5 +23,6 @@ fun NetworkShowBasic.toDomain() = ShowBasic(
     image = this.image.toDomain(),
     progress = this.progress,
     episodes = this.episodes,
-    banner = banner
+    banner = banner,
+    updatedAt = updatedAt
 )

@@ -8,4 +8,5 @@
     <string name="invalid_token">Invalid Access Token Or Expiration date!</string>
     <string name="status_required">Show status is required</string>
     <string name="notif_channel">DEFAULT</string>
+    <string name="show_not_found">Show not found</string>
 </resources>

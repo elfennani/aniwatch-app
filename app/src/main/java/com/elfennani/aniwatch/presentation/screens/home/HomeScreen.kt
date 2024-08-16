@@ -1,5 +1,7 @@
 package com.elfennani.aniwatch.presentation.screens.home
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,7 +58,6 @@ fun HomeScreen(
     state: HomeUiState,
     onRefetch: () -> Unit,
     onErrorDismiss: (Int) -> Unit,
-    rootPadding: PaddingValues,
     feed: LazyPagingItems<Activity>,
 ) {
     val lazyListState = rememberLazyListState()
@@ -87,14 +88,6 @@ fun HomeScreen(
         snackbarHost = { ErrorSnackbarHost(errors = state.errors, onErrorDismiss) },
         containerColor = AppTheme.colorScheme.background,
         contentColor = AppTheme.colorScheme.onBackground,
-        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.add(
-            WindowInsets(
-                left = rootPadding.calculateLeftPadding(dir),
-                right = rootPadding.calculateRightPadding(dir),
-                top = 0.dp,
-                bottom = rootPadding.calculateBottomPadding()
-            )
-        )
     ) { containerPadding ->
         val horizontal = PaddingValues(bottom = containerPadding.calculateBottomPadding())
         val vertical = PaddingValues(vertical = AppTheme.sizes.medium)
@@ -165,8 +158,12 @@ fun HomeScreen(
 }
 
 const val HomeScreenPattern = "auth/home"
-fun NavGraphBuilder.homeScreen(navController: NavController, padding: PaddingValues) {
-    composable(route = HomeScreenPattern) {
+fun NavGraphBuilder.homeScreen(navController: NavController) {
+    composable(
+        route = HomeScreenPattern,
+        enterTransition = { EnterTransition.None },
+        exitTransition = {ExitTransition.None}
+    ) {
         val viewModel: HomeViewModel = hiltViewModel()
         val homeState by viewModel.state.collectAsState()
         val feed = viewModel.feedPagingFlow.collectAsLazyPagingItems()
@@ -177,7 +174,6 @@ fun NavGraphBuilder.homeScreen(navController: NavController, padding: PaddingVal
             feed = feed,
             onRefetch = viewModel::refetch,
             onErrorDismiss = viewModel::dismissError,
-            rootPadding = padding
         )
     }
 }

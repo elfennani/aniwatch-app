@@ -27,7 +27,7 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideWatchingShowsDao(database: Database) = database.watchingShowsDao()
+    fun provideCachedListingDao(database: Database) = database.cachedListingDao()
 
     @Provides
     @Singleton

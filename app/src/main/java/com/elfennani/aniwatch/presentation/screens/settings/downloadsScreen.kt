@@ -1,6 +1,5 @@
 package com.elfennani.aniwatch.presentation.screens.settings
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.sp
@@ -19,7 +18,7 @@ fun SettingsScreen(
 }
 
 const val SETTINGS_SCREEN_PATTERN = "settings"
-fun NavGraphBuilder.settingsScreen(navController: NavController, padding: PaddingValues) {
+fun NavGraphBuilder.settingsScreen(navController: NavController) {
     composable(SETTINGS_SCREEN_PATTERN) {
         SettingsScreen(
             navController=navController,

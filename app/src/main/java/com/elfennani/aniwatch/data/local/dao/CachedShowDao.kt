@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.elfennani.aniwatch.data.local.entities.CachedShowDto
 import com.elfennani.aniwatch.data.local.entities.CachedShowWithEpisodes
+import com.elfennani.aniwatch.models.ShowStatus
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -12,26 +12,20 @@ import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.toColor
 import com.elfennani.aniwatch.toHexString
 
-@Entity(tableName = "watching_shows")
-data class WatchingShowsDto(
+@Entity(tableName = "cached_listing")
+data class CachedListingDto(
     @PrimaryKey val id: Int,
     val name: String,
     val status: ShowStatus?,
-    @ColumnInfo(defaultValue = "") val description: String?,
+    val description: String?,
     val episodes: Int?,
     val progress: Int?,
-    @Embedded val image: WatchingShowImage,
-    val banner: String? = null
+    @Embedded val image: CachedShowImage,
+    val banner: String? = null,
+    val updatedAt: Int?
 )
 
-data class WatchingShowImage(
-    val large: String,
-    val medium: String,
-    val original: String,
-    val color: String?
-)
-
-fun WatchingShowsDto.toDomain() = ShowBasic(
+fun CachedListingDto.toDomain() = ShowBasic(
     id = id,
     name = name,
     status = status,
@@ -44,21 +38,23 @@ fun WatchingShowsDto.toDomain() = ShowBasic(
         original = image.original,
         color = image.color?.toColor()
     ),
-    banner = banner
+    banner = banner,
+    updatedAt = updatedAt
 )
 
-fun NetworkShowBasic.toDto() = WatchingShowsDto(
+fun NetworkShowBasic.toDto() = CachedListingDto(
     id = id,
     name = name,
     status = status?.toDomain(),
     description = description,
     episodes = episodes,
     progress = progress,
-    image = WatchingShowImage(
+    image = CachedShowImage(
         large = image.large,
         medium = image.medium,
         original = image.original,
         color = image.color?.toColor()?.toHexString()
     ),
-    banner = banner
+    banner = banner,
+    updatedAt = updatedAt
 )

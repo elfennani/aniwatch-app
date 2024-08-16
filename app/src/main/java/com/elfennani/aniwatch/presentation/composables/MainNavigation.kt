@@ -1,8 +1,13 @@
 package com.elfennani.aniwatch.presentation.composables
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.exclude
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
@@ -24,7 +29,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastRoundToInt
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -34,6 +41,7 @@ import com.elfennani.aniwatch.presentation.screens.listings.LISTING_SCREEN_PATTE
 import com.elfennani.aniwatch.presentation.screens.downloads.DOWNLOADS_SCREEN_PATTERN
 import com.elfennani.aniwatch.presentation.screens.settings.SETTINGS_SCREEN_PATTERN
 import com.elfennani.aniwatch.presentation.theme.AppTheme
+import kotlin.math.roundToInt
 
 sealed class BottomNavScreen(val route: String, val label: String, val icon: ImageVector) {
     data object Home : BottomNavScreen(HomeScreenPattern, "Home", icon = Icons.Rounded.Home)
@@ -58,22 +66,31 @@ fun MainNavigation(navController: NavController) {
     val destinationInList = items.any { screen ->
         currentDestination?.hierarchy?.any { it.route == screen.route } == true
     }
-    if (destinationInList)
+    val height = 64.dp + WindowInsets.navigationBars.asPaddingValues()
+        .calculateBottomPadding()
+
+    AnimatedVisibility(
+        visible = destinationInList,
+        modifier = Modifier.fillMaxWidth(),
+        enter = slideIn(initialOffset = { IntOffset(x = 0, y = it.height) }),
+        exit = slideOut(targetOffset = { IntOffset(x = 0, y = it.height) })
+    ) {
         NavigationBar(
             containerColor = AppTheme.colorScheme.primaryContainer,
             contentColor = AppTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier
-                .height(64.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
+                .height(height),
         ) {
             items.forEach { screen ->
                 val selected =
                     currentDestination?.hierarchy?.any { it.route == screen.route } == true;
-                val color = AppTheme.colorScheme.onPrimaryContainer.copy(alpha = if(selected) 1f else 0.75f)
+                val color =
+                    AppTheme.colorScheme.onPrimaryContainer.copy(alpha = if (selected) 1f else 0.75f)
 
                 NavigationBarItem(
                     colors = NavigationBarItemDefaults.colors(indicatorColor = AppTheme.colorScheme.primaryAlt),
                     icon = { Icon(screen.icon, contentDescription = null, tint = color) },
-//                    label = { Text(screen.label, style = AppTheme.typography.labelSmallBold, color = color) },
+                    //                    label = { Text(screen.label, style = AppTheme.typography.labelSmallBold, color = color) },
                     selected = selected,
                     onClick = {
                         navController.navigate(screen.route) {
@@ -87,4 +104,5 @@ fun MainNavigation(navController: NavController) {
                 )
             }
         }
+    }
 }

@@ -5,9 +5,9 @@ import android.util.Log
 import androidx.compose.ui.util.fastAny
 import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.data.local.dao.CachedEpisodesDao
+import com.elfennani.aniwatch.data.local.dao.CachedListingDao
 import com.elfennani.aniwatch.data.local.dao.CachedShowDao
-import com.elfennani.aniwatch.data.local.dao.WatchingShowsDao
-import com.elfennani.aniwatch.data.local.entities.WatchingShowsDto
+import com.elfennani.aniwatch.data.local.entities.CachedListingDto
 import com.elfennani.aniwatch.data.local.entities.asEntity
 import com.elfennani.aniwatch.data.local.entities.toCached
 import com.elfennani.aniwatch.data.local.entities.toDomain
@@ -40,14 +40,27 @@ import retrofit2.HttpException
 
 class ShowRepository(
     private val apiService: APIService,
-    private val watchingShowsDao: WatchingShowsDao,
+    private val cachedListingDao: CachedListingDao,
     private val cachedShowDao: CachedShowDao,
     private val cachedEpisodesDao: CachedEpisodesDao,
     private val downloadRepository: DownloadRepository,
 ) {
-    suspend fun getShowsByStatus(status: ShowStatus, page: Int): List<ShowBasic> {
-        return apiService.getShowsByStatus(status.toSerializable(), page = page)
-            .map { it.toDomain() }
+    suspend fun getShowsByStatus(status: ShowStatus): Resource<List<ShowBasic>> {
+        return try {
+            Resource.Success(apiService.getShowsByStatus(status.toSerializable())
+                .map { it.toDomain() })
+        } catch (e: IOException) {
+            Resource.Error(R.string.no_internet)
+        } catch (e: HttpException) {
+            if (e.code() == 404) {
+                Resource.Error(R.string.show_not_found)
+            } else {
+                Resource.Error()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error()
+        }
     }
 
     suspend fun getEpisodeById(
@@ -136,7 +149,7 @@ class ShowRepository(
         return try {
             apiService.setStatusDetailsById(showId, statusDetails.asNetwork())
             val sync = withContext(Dispatchers.IO) { syncShowById(showId) }
-            val syncWatching = withContext(Dispatchers.IO) { syncWatchingShows() }
+            val syncWatching = withContext(Dispatchers.IO) { syncListingByStatus(ShowStatus.WATCHING) }
 
             if (sync is Resource.Error) {
                 return sync
@@ -156,13 +169,13 @@ class ShowRepository(
         }
     }
 
-    suspend fun syncWatchingShows(): Resource<Unit> {
+    suspend fun syncListingByStatus(status: ShowStatus): Resource<Unit> {
         try {
             val shows = apiService
-                .getShowsByStatus(ShowStatus.WATCHING.toSerializable(), all = true)
+                .getShowsByStatus(status.toSerializable())
             Log.d("ShowRepository", shows.size.toString())
-            watchingShowsDao.deleteAll()
-            watchingShowsDao.insertAll(shows.map(NetworkShowBasic::toDto))
+            cachedListingDao.deleteUnused(status, shows.map { it.id })
+            cachedListingDao.upsertAll(shows.map(NetworkShowBasic::toDto))
             return Resource.Success(Unit)
         } catch (e: IOException) {
             return Resource.Error(R.string.no_internet)
@@ -174,15 +187,15 @@ class ShowRepository(
         }
     }
 
-    fun getWatchingShows(): Flow<List<ShowBasic>> {
+    fun getListingByStatus(status: ShowStatus): Flow<List<ShowBasic>> {
         return flow {
             val show = withContext(Dispatchers.IO) {
-                watchingShowsDao.getShows().map(WatchingShowsDto::toDomain)
+                cachedListingDao.getShowsByStatus(status).map(CachedListingDto::toDomain)
             }
             emit(show)
 
             val shows = withContext(Dispatchers.IO) {
-                watchingShowsDao.getShowsFlow().map { it.map(WatchingShowsDto::toDomain) }
+                cachedListingDao.getShowsByStatusFlow(status).map { it.map(CachedListingDto::toDomain) }
             }
             emitAll(shows)
         }

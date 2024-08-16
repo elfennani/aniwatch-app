@@ -8,5 +8,6 @@ data class ShowBasic(
     val episodes: Int?,
     val progress: Int?,
     val image: ShowImage,
-    val banner: String?
+    val banner: String?,
+    val updatedAt: Int?
 )

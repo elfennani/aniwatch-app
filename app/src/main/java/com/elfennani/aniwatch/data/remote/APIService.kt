@@ -25,8 +25,6 @@ interface APIService {
     @GET("/shows/{status}")
     suspend fun getShowsByStatus(
         @Path("status") status: SerializableShowStatus,
-        @Query("all") all: Boolean = false,
-        @Query("page") page: Int = 1,
         @Query("userId") userId: Int? = null,
     ): List<NetworkShowBasic>
 

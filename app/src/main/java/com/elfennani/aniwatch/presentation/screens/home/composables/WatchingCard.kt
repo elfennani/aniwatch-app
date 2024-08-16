@@ -95,7 +95,8 @@ fun WatchingCardPreview() {
             original = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx100077-B4bfXz0wVOPO.jpg",
             color = Color(0xFFe47850)
         ),
-        banner = null
+        banner = null,
+        updatedAt = null
     )
 
     AppTheme {

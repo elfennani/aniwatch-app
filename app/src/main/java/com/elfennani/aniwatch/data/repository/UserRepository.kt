@@ -16,7 +16,6 @@ import com.elfennani.aniwatch.dataStore
 import com.elfennani.aniwatch.models.Resource
 import com.elfennani.aniwatch.models.User
 import com.squareup.moshi.JsonDataException
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -31,7 +30,7 @@ class UserRepository(
     private val context: Context
 ) {
 
-    private val VIEWER_KEY = intPreferencesKey("VIEWER_KEY")
+    private val viewerKey = intPreferencesKey("VIEWER_KEY")
 
     private fun cacheExpireKey(id:Int) = longPreferencesKey("USER_EXPIRE_$id")
     private fun Preferences.getUserExpiration(id:Int) = this[cacheExpireKey(id)]
@@ -53,7 +52,7 @@ class UserRepository(
     }
 
     suspend fun viewerFlow() = flow {
-        var viewerId = context.dataStore.data.first()[VIEWER_KEY]
+        var viewerId = context.dataStore.data.first()[viewerKey]
 
         if(viewerId == null){
             val res = fetchViewer()
@@ -72,7 +71,7 @@ class UserRepository(
         return try {
             val result = apiService.getViewerUser().toDomain()
             context.dataStore.edit {
-                it[VIEWER_KEY] = result.id
+                it[viewerKey] = result.id
             }
 
             return Resource.Success(result)

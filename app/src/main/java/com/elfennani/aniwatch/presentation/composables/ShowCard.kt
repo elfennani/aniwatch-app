@@ -1,4 +1,4 @@
-package com.elfennani.aniwatch.presentation.screens.search.composables
+package com.elfennani.aniwatch.presentation.composables
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
@@ -55,8 +55,8 @@ fun ShowCard(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .width(80.dp)
-                .background(AppTheme.colorScheme.secondary.copy(alpha = 0.1f))
                 .clip(AppTheme.shapes.thumbnail)
+                .background(AppTheme.colorScheme.secondary.copy(alpha = 0.1f))
                 .aspectRatio(0.69f)
         )
         Column(
@@ -106,7 +106,8 @@ private fun ShowCardPrev() {
             original = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx100077-B4bfXz0wVOPO.jpg",
             color = Color(0xFFe47850)
         ),
-        banner = null
+        banner = null,
+        updatedAt = null
     )
 
     AppTheme {
@@ -137,7 +138,8 @@ private fun ShowCardPrevDark() {
             original = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx100077-B4bfXz0wVOPO.jpg",
             color = Color(0xFFe47850)
         ),
-        banner = null
+        banner = null,
+        updatedAt = null
     )
 
     AppTheme {
