@@ -1,10 +1,12 @@
 package com.elfennani.aniwatch.presentation.composables
 
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.List
@@ -61,8 +63,7 @@ fun MainNavigation(navController: NavController) {
             containerColor = AppTheme.colorScheme.primaryContainer,
             contentColor = AppTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier
-                .height(64.dp)
-                .padding(WindowInsets.navigationBars.getBottom(density).dp)
+                .height(64.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
         ) {
             items.forEach { screen ->
                 val selected =
