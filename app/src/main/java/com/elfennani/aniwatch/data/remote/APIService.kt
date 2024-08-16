@@ -6,6 +6,7 @@ import com.elfennani.aniwatch.data.remote.models.NetworkEpisodeLink
 import com.elfennani.aniwatch.data.remote.models.NetworkShowBasic
 import com.elfennani.aniwatch.data.remote.models.NetworkStatusDetails
 import com.elfennani.aniwatch.data.remote.models.NetworkUser
+import com.elfennani.aniwatch.data.remote.models.PagingResource
 import com.elfennani.aniwatch.data.remote.models.SerializableShowDetails
 import com.elfennani.aniwatch.data.remote.models.SerializableShowStatus
 import com.elfennani.aniwatch.data.remote.models.TranslationNetwork
@@ -63,4 +64,10 @@ interface APIService {
 
     @GET("/user")
     suspend fun getViewerUser(): NetworkUser
+
+    @GET("/search")
+    suspend fun searchShowsByQuery(
+        @Query("query") query: String,
+        @Query("page") page: Int,
+    ): PagingResource<NetworkShowBasic>
 }

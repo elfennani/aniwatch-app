@@ -29,7 +29,7 @@ import com.elfennani.aniwatch.data.local.entities.WatchingShowsDto
         DownloadDto::class,
         CachedUser::class
     ],
-    version = 9,
+    version = 11,
     autoMigrations = [
         AutoMigration(1, 2),
         AutoMigration(2, 3),
@@ -39,6 +39,8 @@ import com.elfennani.aniwatch.data.local.entities.WatchingShowsDto
         AutoMigration(6, 7),
         AutoMigration(7, 8),
         AutoMigration(8, 9),
+        AutoMigration(9, 10),
+        AutoMigration(10, 11),
     ],
 )
 @TypeConverters(Converters::class)

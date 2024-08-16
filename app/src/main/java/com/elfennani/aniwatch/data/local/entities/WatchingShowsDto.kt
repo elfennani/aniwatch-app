@@ -17,8 +17,8 @@ data class WatchingShowsDto(
     @PrimaryKey val id: Int,
     val name: String,
     val status: ShowStatus?,
-    val description: String,
-    val episodes: Int,
+    @ColumnInfo(defaultValue = "") val description: String?,
+    val episodes: Int?,
     val progress: Int?,
     @Embedded val image: WatchingShowImage,
     val banner: String? = null

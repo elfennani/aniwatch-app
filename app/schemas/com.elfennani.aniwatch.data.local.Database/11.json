@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 9,
-    "identityHash": "ad61419c6dbae8470f7384cbf7933906",
+    "version": 11,
+    "identityHash": "5fb5a6bb5b1f14a0e829b0ecda68507d",
     "entities": [
       {
         "tableName": "session",
@@ -38,7 +38,7 @@
       },
       {
         "tableName": "watching_shows",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `status` TEXT, `description` TEXT, `episodes` INTEGER NOT NULL, `progress` INTEGER, `banner` TEXT, `large` TEXT NOT NULL, `medium` TEXT NOT NULL, `original` TEXT NOT NULL, `color` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `status` TEXT, `description` TEXT DEFAULT '', `episodes` INTEGER, `progress` INTEGER, `banner` TEXT, `large` TEXT NOT NULL, `medium` TEXT NOT NULL, `original` TEXT NOT NULL, `color` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -62,13 +62,14 @@
             "fieldPath": "description",
             "columnName": "description",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": false,
+            "defaultValue": "''"
           },
           {
             "fieldPath": "episodes",
             "columnName": "episodes",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "progress",
@@ -540,7 +541,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ad61419c6dbae8470f7384cbf7933906')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5fb5a6bb5b1f14a0e829b0ecda68507d')"
     ]
   }
 }

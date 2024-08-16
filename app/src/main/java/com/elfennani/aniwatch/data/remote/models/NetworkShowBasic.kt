@@ -7,8 +7,8 @@ data class NetworkShowBasic(
     val id: Int,
     val name: String,
     val status: SerializableShowStatus?,
-    val description: String,
-    val episodes: Int,
+    val description: String?,
+    val episodes: Int?,
     val progress: Int?,
     val image: SerializableShowImage,
     val banner: String?

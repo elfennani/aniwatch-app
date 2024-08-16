@@ -44,7 +44,8 @@ private const val DIVIDER_FADE_DURATION = 150
 fun HomeHeader(
     modifier: Modifier = Modifier,
     border: Boolean = false,
-    user: User?
+    user: User?,
+    onSearch: () -> Unit,
 ) {
     val imageLoader = LocalContext.current.imageLoader()
 
@@ -77,7 +78,7 @@ fun HomeHeader(
                 Box(
                     modifier = Modifier
                         .clip(CircleShape)
-                        .clickable { }
+                        .clickable { onSearch() }
                         .background(AppTheme.colorScheme.card)
                         .size(AppTheme.sizes.large * 2),
                     contentAlignment = Alignment.Center
@@ -122,7 +123,10 @@ private fun HomeHeaderPrev() {
             contentColor = AppTheme.colorScheme.onBackground,
             modifier =  Modifier.height(256.dp)
         ) {
-            HomeHeader(user = null)
+            HomeHeader(
+                user = null,
+                onSearch = {}
+            )
         }
     }
 }

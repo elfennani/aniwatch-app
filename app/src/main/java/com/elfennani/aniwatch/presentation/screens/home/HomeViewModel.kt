@@ -14,7 +14,7 @@ import com.elfennani.aniwatch.data.local.dao.FeedDao
 import com.elfennani.aniwatch.data.local.entities.ActivityDto
 import com.elfennani.aniwatch.data.local.entities.asDomain
 import com.elfennani.aniwatch.data.repository.ActivityRepository
-import com.elfennani.aniwatch.data.repository.FeedRemoteMediator
+import com.elfennani.aniwatch.data.paging.FeedRemoteMediator
 import com.elfennani.aniwatch.data.repository.ShowRepository
 import com.elfennani.aniwatch.data.repository.UserRepository
 import com.elfennani.aniwatch.dataStore
@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 

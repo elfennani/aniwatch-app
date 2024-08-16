@@ -1,7 +1,6 @@
-package com.elfennani.aniwatch.data.repository
+package com.elfennani.aniwatch.data.paging
 
 import android.content.Context
-import android.system.Os.remove
 import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -15,15 +14,14 @@ import com.elfennani.aniwatch.data.local.Database
 import com.elfennani.aniwatch.data.local.dao.FeedDao
 import com.elfennani.aniwatch.data.local.entities.ActivityDto
 import com.elfennani.aniwatch.data.local.entities.asEntity
+import com.elfennani.aniwatch.data.repository.ActivityRepository
 import com.elfennani.aniwatch.dataStore
 import com.elfennani.aniwatch.models.Activity
 import com.elfennani.aniwatch.models.Resource
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
-import kotlin.math.floor
 
 private const val FEED_REMOTE_KEY = "feed_remote_key"
 private const val FEED_REMOTE_LAST_UPDATE = "feed_remote_last_update"

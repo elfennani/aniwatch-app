@@ -45,6 +45,7 @@ import com.elfennani.aniwatch.presentation.composables.Section
 import com.elfennani.aniwatch.presentation.screens.home.composables.ActivityCard
 import com.elfennani.aniwatch.presentation.screens.home.composables.HomeHeader
 import com.elfennani.aniwatch.presentation.screens.home.composables.WatchingShowsSection
+import com.elfennani.aniwatch.presentation.screens.search.navigateToSearchScreen
 import com.elfennani.aniwatch.presentation.screens.show.navigateToShowScreen
 import com.elfennani.aniwatch.presentation.theme.AppTheme
 
@@ -104,7 +105,8 @@ fun HomeScreen(
         ) {
             HomeHeader(
                 border = lazyListState.canScrollBackward,
-                user = state.user
+                user = state.user,
+                onSearch = navController::navigateToSearchScreen
             )
             Box(Modifier.nestedScroll(pullState.nestedScrollConnection)) {
                 LazyColumn(
