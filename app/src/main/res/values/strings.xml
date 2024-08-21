@@ -9,4 +9,5 @@
     <string name="status_required">Show status is required</string>
     <string name="notif_channel">DEFAULT</string>
     <string name="show_not_found">Show not found</string>
+    <string name="not_found">Resource not found</string>
 </resources>

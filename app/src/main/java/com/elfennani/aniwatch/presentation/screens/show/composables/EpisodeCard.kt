@@ -33,8 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.elfennani.aniwatch.formatSeconds
-import com.elfennani.aniwatch.imageLoader
+import com.elfennani.aniwatch.utils.formatSeconds
+import com.elfennani.aniwatch.utils.imageLoader
 import com.elfennani.aniwatch.models.Episode
 import com.elfennani.aniwatch.models.EpisodeState
 import com.elfennani.aniwatch.presentation.theme.AppTheme

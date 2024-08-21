@@ -3,7 +3,9 @@ package com.elfennani.aniwatch.presentation.graphs
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
+import com.elfennani.aniwatch.presentation.screens.characters.charactersScreen
 import com.elfennani.aniwatch.presentation.screens.episode.episodeScreen
+import com.elfennani.aniwatch.presentation.screens.relations.relationScreen
 import com.elfennani.aniwatch.presentation.screens.search.searchScreen
 import com.elfennani.aniwatch.presentation.screens.show.SHOW_SCREEN_PATTERN
 import com.elfennani.aniwatch.presentation.screens.show.showScreen
@@ -19,5 +21,7 @@ fun NavGraphBuilder.showGraph(navController: NavHostController){
         statusEditorScreen(navController)
         episodeScreen(navController)
         searchScreen(navController)
+        charactersScreen(navController)
+        relationScreen(navController)
     }
 }

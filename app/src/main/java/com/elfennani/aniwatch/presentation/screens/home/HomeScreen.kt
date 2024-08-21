@@ -41,7 +41,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.elfennani.aniwatch.models.Activity
 import com.elfennani.aniwatch.models.MediaType
-import com.elfennani.aniwatch.plus
+import com.elfennani.aniwatch.utils.plus
 import com.elfennani.aniwatch.presentation.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.presentation.composables.Section
 import com.elfennani.aniwatch.presentation.screens.home.composables.ActivityCard

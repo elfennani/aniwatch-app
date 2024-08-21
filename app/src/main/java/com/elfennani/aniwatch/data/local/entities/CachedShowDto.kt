@@ -10,8 +10,8 @@ import com.elfennani.aniwatch.models.ShowImage
 import com.elfennani.aniwatch.models.ShowSeason
 import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.models.Tag
-import com.elfennani.aniwatch.toColor
-import com.elfennani.aniwatch.toHexString
+import com.elfennani.aniwatch.utils.toColor
+import com.elfennani.aniwatch.utils.toHexString
 
 @Entity(tableName = "cached_shows")
 data class CachedShowDto(

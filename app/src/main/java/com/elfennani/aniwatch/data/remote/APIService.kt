@@ -2,7 +2,9 @@ package com.elfennani.aniwatch.data.remote
 
 
 import com.elfennani.aniwatch.data.remote.models.NetworkActivity
+import com.elfennani.aniwatch.data.remote.models.NetworkCharacter
 import com.elfennani.aniwatch.data.remote.models.NetworkEpisodeLink
+import com.elfennani.aniwatch.data.remote.models.NetworkRelation
 import com.elfennani.aniwatch.data.remote.models.NetworkShowBasic
 import com.elfennani.aniwatch.data.remote.models.NetworkStatusDetails
 import com.elfennani.aniwatch.data.remote.models.NetworkUser
@@ -68,4 +70,13 @@ interface APIService {
         @Query("query") query: String,
         @Query("page") page: Int,
     ): PagingResource<NetworkShowBasic>
+
+    @GET("/characters/{showId}")
+    suspend fun getCharactersByShowId(
+        @Path("showId") showId: Int,
+        @Query("page") page: Int,
+    ): PagingResource<NetworkCharacter>
+
+    @GET("/relations/{showId}")
+    suspend fun getRelationsByShowId(@Path("showId") showId: Int): List<NetworkRelation>
 }

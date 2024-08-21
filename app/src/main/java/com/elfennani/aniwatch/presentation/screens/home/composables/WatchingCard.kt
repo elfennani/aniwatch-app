@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.ImageLoader
 import coil.compose.AsyncImage
-import com.elfennani.aniwatch.imageLoader
+import com.elfennani.aniwatch.utils.imageLoader
 import com.elfennani.aniwatch.models.ShowBasic
 import com.elfennani.aniwatch.models.ShowImage
 import com.elfennani.aniwatch.models.ShowStatus

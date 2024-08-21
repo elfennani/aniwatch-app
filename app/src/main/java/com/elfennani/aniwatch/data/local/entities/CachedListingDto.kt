@@ -9,8 +9,8 @@ import com.elfennani.aniwatch.data.remote.models.toDomain
 import com.elfennani.aniwatch.models.ShowBasic
 import com.elfennani.aniwatch.models.ShowImage
 import com.elfennani.aniwatch.models.ShowStatus
-import com.elfennani.aniwatch.toColor
-import com.elfennani.aniwatch.toHexString
+import com.elfennani.aniwatch.utils.toColor
+import com.elfennani.aniwatch.utils.toHexString
 
 @Entity(tableName = "cached_listing")
 data class CachedListingDto(

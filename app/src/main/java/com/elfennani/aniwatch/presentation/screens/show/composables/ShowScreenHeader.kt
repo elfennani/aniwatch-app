@@ -3,6 +3,7 @@ package com.elfennani.aniwatch.presentation.screens.show.composables
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +40,7 @@ fun ShowScreenHeader(
     padding: PaddingValues,
     onStatusClick: () -> Unit,
     onBack: () -> Unit,
+    content: @Composable ColumnScope.() -> Unit
 ) {
     var descriptionExpanded by remember { mutableStateOf(false) }
     val richTextState = rememberRichTextState()
@@ -106,7 +108,7 @@ fun ShowScreenHeader(
                     )
                 }
             }
-
+            content()
             Divider()
         }
     }

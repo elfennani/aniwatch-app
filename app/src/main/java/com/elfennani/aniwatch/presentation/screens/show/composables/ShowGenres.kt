@@ -16,7 +16,8 @@ import com.elfennani.aniwatch.presentation.theme.AppTheme
 @OptIn(ExperimentalLayoutApi::class)
 fun ShowGenres(genres: List<String>) {
     FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.small)
+        horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.small),
+        verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.small)
     ) {
         genres.map {
             Text(

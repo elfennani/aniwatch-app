@@ -39,7 +39,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.elfennani.aniwatch.presentation.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.presentation.theme.AppTheme
-import com.elfennani.aniwatch.requireActivity
+import com.elfennani.aniwatch.utils.requireActivity
 
 const val TAG = "EpisodeScreen"
 

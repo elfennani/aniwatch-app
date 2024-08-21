@@ -32,7 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.elfennani.aniwatch.imageLoader
+import com.elfennani.aniwatch.utils.imageLoader
 import com.elfennani.aniwatch.presentation.theme.AppTheme
 
 @Composable

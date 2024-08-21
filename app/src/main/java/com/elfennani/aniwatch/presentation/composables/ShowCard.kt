@@ -5,6 +5,8 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,18 +29,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.elfennani.aniwatch.imageLoader
 import com.elfennani.aniwatch.models.ShowBasic
 import com.elfennani.aniwatch.models.ShowImage
 import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.models.formatText
 import com.elfennani.aniwatch.models.toIcon
 import com.elfennani.aniwatch.presentation.theme.AppTheme
+import com.elfennani.aniwatch.utils.imageLoader
 
 @Composable
 fun ShowCard(
     show: ShowBasic,
-    onClick: () -> Unit = {}
+    subtitle: String? = null,
+    overlay: @Composable BoxScope.() -> Unit = {},
+    onClick: () -> Unit = {},
 ) {
     val imageLoader = LocalContext.current.imageLoader()
     Row(
@@ -48,26 +52,34 @@ fun ShowCard(
             .padding(horizontal = AppTheme.sizes.large, vertical = AppTheme.sizes.normal),
         horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
     ) {
-        AsyncImage(
-            model = show.image.large,
-            contentDescription = null,
-            imageLoader = imageLoader,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .width(80.dp)
-                .clip(AppTheme.shapes.thumbnail)
-                .background(AppTheme.colorScheme.secondary.copy(alpha = 0.1f))
-                .aspectRatio(0.69f)
-        )
+        Box {
+            AsyncImage(
+                model = show.image.large,
+                contentDescription = null,
+                imageLoader = imageLoader,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .width(80.dp)
+                    .clip(AppTheme.shapes.thumbnail)
+                    .background(AppTheme.colorScheme.secondary.copy(alpha = 0.2f))
+                    .aspectRatio(0.69f)
+            )
+
+            overlay()
+        }
         Column(
             modifier = Modifier
                 .padding(vertical = AppTheme.sizes.normal),
             verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller)
         ) {
             Text(text = show.name, style = AppTheme.typography.labelLarge, maxLines = 2)
-            Text(text = "${show.episodes} Episodes", style = AppTheme.typography.labelSmall, color = AppTheme.colorScheme.onSecondary)
+            Text(
+                text = subtitle ?: "${show.episodes} Episodes",
+                style = AppTheme.typography.labelSmall,
+                color = AppTheme.colorScheme.onSecondary
+            )
             Spacer(modifier = Modifier.height(AppTheme.sizes.small))
-            if(show.status != null){
+            if (show.status != null) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.small)
