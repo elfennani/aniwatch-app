@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -31,6 +32,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.elfennani.aniwatch.models.EpisodeAudio
+import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.presentation.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.presentation.composables.PillButton
 import com.elfennani.aniwatch.presentation.composables.dummyShow
@@ -52,10 +54,10 @@ fun ShowScreen(
     onErrorDismiss: (Int) -> Unit = {},
     onOpenEpisode: (episode: Int) -> Unit = {},
     onDownloadEpisode: (episode: Int, audio: EpisodeAudio) -> Unit = { _, _ -> },
-    onDeleteEpisode:(episode: Int) -> Unit = {},
+    onDeleteEpisode: (episode: Int) -> Unit = {},
     onStatusClick: () -> Unit = {},
     onClickCharacters: (Int) -> Unit = {},
-    onClickRelations: (Int) -> Unit = {}
+    onClickRelations: (Int) -> Unit = {},
 ) {
     val lazyListState = rememberLazyListState()
     var selectedEpisode by remember {
@@ -81,11 +83,11 @@ fun ShowScreen(
                         padding = padding,
                         onBack = onBack,
                         onStatusClick = onStatusClick
-                    ){
+                    ) {
                         FlowRow(
                             verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.small),
                             horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.small)
-                        ){
+                        ) {
                             PillButton(
                                 onClick = { onClickCharacters(state.show.id) },
                                 text = "Characters",
@@ -115,6 +117,15 @@ fun ShowScreen(
                     key = { ep -> ep.id }
                 ) { episode ->
                     EpisodeCard(
+                        modifier = Modifier.apply {
+                            if (
+                                state.show.progress != null &&
+                                episode.episode <= state.show.progress &&
+                                state.show.status.isWatching()
+                            ) {
+                                alpha(0.75f)
+                            }
+                        },
                         episode = episode,
                         onClick = { onOpenEpisode(episode.episode) },
                         onOptions = { selectedEpisode = episode.id }
@@ -136,6 +147,8 @@ fun ShowScreen(
         }
     }
 }
+
+private fun ShowStatus?.isWatching() = this == ShowStatus.WATCHING || this == ShowStatus.REPEATING
 
 @Preview
 @Composable
