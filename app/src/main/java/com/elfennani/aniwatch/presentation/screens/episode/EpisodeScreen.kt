@@ -38,6 +38,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.elfennani.aniwatch.presentation.composables.ErrorSnackbarHost
+import com.elfennani.aniwatch.presentation.composables.KeepScreenON
 import com.elfennani.aniwatch.presentation.theme.AppTheme
 import com.elfennani.aniwatch.utils.requireActivity
 
@@ -63,7 +64,9 @@ fun EpisodeScreen(
         }
     }
 
+    KeepScreenON()
     HideSystemBars()
+
     Scaffold(
         containerColor = Color.Black,
         contentColor = Color.White,
