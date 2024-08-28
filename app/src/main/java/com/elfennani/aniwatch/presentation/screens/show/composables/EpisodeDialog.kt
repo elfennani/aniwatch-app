@@ -1,6 +1,5 @@
 package com.elfennani.aniwatch.presentation.screens.show.composables
 
-import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Audiotrack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DownloadForOffline
 import androidx.compose.material3.Icon
@@ -32,7 +32,8 @@ fun EpisodeDialog(
     onDismissRequest: () -> Unit,
     episode: Episode,
     onDownload: (EpisodeAudio) -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onOpenEpisode: (episode: Int, audio: EpisodeAudio) -> Unit
 ) {
     Dialog(
         onDismissRequest = onDismissRequest,
@@ -70,6 +71,17 @@ fun EpisodeDialog(
                     color = AppTheme.colorScheme.onSecondary
                 )
                 Spacer(modifier = Modifier.size(AppTheme.sizes.small))
+
+                DialogOption(label = "Watch in SUB", icon = Icons.Default.Audiotrack){
+                    onOpenEpisode(episode.episode, EpisodeAudio.SUB)
+                }
+
+                if(episode.dubbed){
+                    DialogOption(label = "Watch in DUB", icon = Icons.Default.Audiotrack){
+                        onOpenEpisode(episode.episode, EpisodeAudio.DUB)
+                    }
+                }
+
                 if (episode.state == EpisodeState.NOT_SAVED) {
                     DialogOption(label = "Download SUB", icon = Icons.Default.DownloadForOffline) {
                         onDownload(EpisodeAudio.SUB)

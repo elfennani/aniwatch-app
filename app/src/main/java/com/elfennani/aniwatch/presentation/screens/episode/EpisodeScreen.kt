@@ -37,10 +37,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.elfennani.aniwatch.models.EpisodeAudio
 import com.elfennani.aniwatch.presentation.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.presentation.composables.KeepScreenON
 import com.elfennani.aniwatch.presentation.theme.AppTheme
 import com.elfennani.aniwatch.utils.requireActivity
+import kotlinx.serialization.Serializable
 
 const val TAG = "EpisodeScreen"
 
@@ -150,18 +152,17 @@ fun HideSystemBars() {
     }
 }
 
-const val EPISODE_SCREEN_PATTERN = "episode/{id}/{allanimeId}/{episode}"
+@Serializable
+data class EpisodeRoute(
+    val id: Int,
+    val allanimeId: String,
+    val episode: Int,
+    val audio: EpisodeAudio
+)
 
 @androidx.annotation.OptIn(UnstableApi::class)
 fun NavGraphBuilder.episodeScreen(navController: NavController) {
-    composable(
-        route = EPISODE_SCREEN_PATTERN,
-        arguments = listOf(
-            navArgument("id") { type = NavType.IntType },
-            navArgument("allanimeId") { type = NavType.StringType },
-            navArgument("episode") { type = NavType.IntType }
-        ),
-    ) {
+    composable<EpisodeRoute>{
         val viewModel: EpisodeViewModel = hiltViewModel()
         val state by viewModel.state.collectAsState()
 
@@ -172,25 +173,5 @@ fun NavGraphBuilder.episodeScreen(navController: NavController) {
             onSetResolution = viewModel::changeResolution,
             onErrorDismiss = viewModel::dismissError
         )
-    }
-}
-
-fun NavController.navigateToEpisodeScreen(
-    id: Int,
-    allanimeId: String,
-    episode: Int,
-    popUpToTop: Boolean = false
-) {
-    this.navigate(
-        EPISODE_SCREEN_PATTERN
-            .replace("{id}", id.toString())
-            .replace("{allanimeId}", allanimeId)
-            .replace("{episode}", episode.toString())
-    ) {
-        if (popUpToTop) {
-            popUpTo(0) {
-                inclusive = true
-            }
-        }
     }
 }

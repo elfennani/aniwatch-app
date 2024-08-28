@@ -5,12 +5,12 @@ firebaseBom = "33.1.2"
 gson = "2.11.0"
 hiltAndroidCompiler = "2.44"
 hiltNavigationCompose = "1.2.0"
-kotlin = "1.9.0"
+kotlin = "2.0.20"
 coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.6.1"
+lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.8.0"
 composeBom = "2024.04.01"
 loggingInterceptor = "4.11.0"
@@ -18,9 +18,9 @@ retrofit = "2.11.0"
 moshiKotlin = "1.15.1"
 converterMoshi = "2.11.0"
 moshiAdapters = "1.15.1"
-navigationCompose = "2.7.7"
-navigationUiKtx = "2.7.7"
-navigationFragmentKtx = "2.8.0-beta05"
+navigationCompose = "2.8.0-rc01"
+navigationUiKtx = "2.8.0-rc01"
+navigationFragmentKtx = "2.8.0-rc01"
 roomRuntime = "2.6.1"
 roomCompiler = "2.6.1"
 roomKtx = "2.6.1"
@@ -39,6 +39,7 @@ materialIconsExtended = "1.6.8"
 richeditorCompose = "1.0.0-dev01"
 hiltWork = "1.2.0"
 workRuntimeKtx = "2.9.1"
+kotlinxSerializationJson = "1.7.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,8 +50,8 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-hilt-android = { module = "com.google.dagger:hilt-android", version = "2.51.1" }
-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version = "2.51.1" }
+hilt-android = { module = "com.google.dagger:hilt-android", version = "2.52" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version = "2.52" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -90,8 +91,10 @@ androidx-material-icons-extended = { group = "androidx.compose.material", name =
 richeditor-compose = { group = "com.mohamedrejeb.richeditor", name = "richeditor-compose", version.ref = "richeditorCompose" }
 androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWork" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 

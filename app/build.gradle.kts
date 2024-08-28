@@ -5,6 +5,8 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+    kotlin("plugin.serialization") version "2.0.20"
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -94,6 +96,7 @@ dependencies {
     implementation(libs.richeditor.compose)
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

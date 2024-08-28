@@ -13,11 +13,13 @@ import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.navigation.toRoute
 import com.elfennani.aniwatch.data.repository.DownloadRepository
 import com.elfennani.aniwatch.data.repository.ShowRepository
 import com.elfennani.aniwatch.models.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,9 +36,10 @@ class EpisodeViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
-    val id = savedStateHandle.get<Int>("id")!!
-    val allanimeId = savedStateHandle.get<String>("allanimeId")!!
-    val episode = savedStateHandle.get<Int>("episode")!!
+    val route = savedStateHandle.toRoute<EpisodeRoute>()
+    val id = route.id
+    val allanimeId = route.allanimeId
+    val episode = route.episode
 
     private val exoPlayer = ExoPlayer
         .Builder(context)
@@ -76,7 +79,8 @@ class EpisodeViewModel @Inject constructor(
     private fun updateState() {
         viewModelScope.launch {
             while (true) {
-                _state.update { it.copy(currentPosition = it.exoPlayer?.currentPosition) }
+                val position = exoPlayer.currentPosition
+                _state.update { it.copy(currentPosition = position) }
                 delay(1000)
             }
         }
@@ -99,7 +103,7 @@ class EpisodeViewModel @Inject constructor(
                 return@launch;
             }
 
-            when (val result = showRepository.getEpisodeById(allanimeId, episode)) {
+            when (val result = showRepository.getEpisodeById(allanimeId, episode, route.audio)) {
                 is Resource.Success -> {
                     _state.update { state ->
                         Log.d("EpisodeViewModel", "fetchEpisode: ${result.data}")

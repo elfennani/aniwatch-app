@@ -3,7 +3,6 @@ package com.elfennani.aniwatch.presentation.screens.show
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,7 +16,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +35,7 @@ import com.elfennani.aniwatch.presentation.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.presentation.composables.PillButton
 import com.elfennani.aniwatch.presentation.composables.dummyShow
 import com.elfennani.aniwatch.presentation.screens.characters.navigateToCharactersScreen
-import com.elfennani.aniwatch.presentation.screens.episode.navigateToEpisodeScreen
+import com.elfennani.aniwatch.presentation.screens.episode.EpisodeRoute
 import com.elfennani.aniwatch.presentation.screens.relations.navigateToRelationScreen
 import com.elfennani.aniwatch.presentation.screens.show.composables.EpisodeCard
 import com.elfennani.aniwatch.presentation.screens.show.composables.EpisodeDialog
@@ -52,7 +50,7 @@ fun ShowScreen(
     state: ShowUiState,
     onBack: () -> Unit = {},
     onErrorDismiss: (Int) -> Unit = {},
-    onOpenEpisode: (episode: Int) -> Unit = {},
+    onOpenEpisode: (episode: Int, audio: EpisodeAudio) -> Unit = {_,_ -> },
     onDownloadEpisode: (episode: Int, audio: EpisodeAudio) -> Unit = { _, _ -> },
     onDeleteEpisode: (episode: Int) -> Unit = {},
     onStatusClick: () -> Unit = {},
@@ -127,7 +125,7 @@ fun ShowScreen(
                             }
                         },
                         episode = episode,
-                        onClick = { onOpenEpisode(episode.episode) },
+                        onClick = { onOpenEpisode(episode.episode, EpisodeAudio.SUB) },
                         onOptions = { selectedEpisode = episode.id }
                     )
                 }
@@ -141,6 +139,7 @@ fun ShowScreen(
             EpisodeDialog(
                 onDismissRequest = { selectedEpisode = null },
                 episode = episode,
+                onOpenEpisode = onOpenEpisode,
                 onDownload = { onDownloadEpisode(episode.episode, it) },
                 onDelete = { onDeleteEpisode(episode.episode) }
             )
@@ -177,11 +176,14 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
             state = showState,
             onBack = navController::popBackStack,
             onErrorDismiss = viewModel::dismissError,
-            onOpenEpisode = {
-                navController.navigateToEpisodeScreen(
-                    id = showState.show?.id!!,
-                    allanimeId = showState.show?.allanimeId!!,
-                    episode = it,
+            onOpenEpisode = {episode, audio ->
+                navController.navigate(
+                    EpisodeRoute(
+                        id = showState.show?.id!!,
+                        allanimeId = showState.show?.allanimeId!!,
+                        episode = episode,
+                        audio = audio
+                    )
                 )
             },
             onDownloadEpisode = viewModel::downloadEpisode,
