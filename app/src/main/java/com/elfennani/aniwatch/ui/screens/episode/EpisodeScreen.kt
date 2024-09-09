@@ -48,19 +48,19 @@ const val TAG = "EpisodeScreen"
 @androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 fun EpisodeScreen(
-    navController: NavController,
     state: EpisodeUiState,
     onRefresh: () -> Unit = {},
-    onSetResolution: (index: Int) -> Unit = {},
-    onErrorDismiss: (errorId:Int) -> Unit
+    onErrorDismiss: (errorId: Int) -> Unit,
 ) {
     val context = LocalContext.current
 
 
     DisposableEffect(context) {
-        context.requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
+        context.requireActivity().requestedOrientation =
+            ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
         onDispose {
-            context.requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            context.requireActivity().requestedOrientation =
+                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }
 
@@ -70,12 +70,14 @@ fun EpisodeScreen(
     Scaffold(
         containerColor = Color.Black,
         contentColor = Color.White,
-        snackbarHost = { ErrorSnackbarHost(errors = state.errors, onErrorDismiss)}
+        snackbarHost = { ErrorSnackbarHost(
+            errors = state.errors,
+            onErrorDismiss = onErrorDismiss,
+            actionName = "Retry",
+            onPressAction = onRefresh
+        ) }
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
+        if (state.exoPlayer != null) {
             AndroidView(
                 factory = { ctx ->
                     PlayerView(ctx).apply {
@@ -100,7 +102,7 @@ fun EpisodeScreen(
 private fun QualitySelector(
     exoPlayer: ExoPlayer,
     trackGroup: Tracks.Group,
-    onSetResolution: (index: Int) -> Unit
+    onSetResolution: (index: Int) -> Unit,
 ) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.normal)) {
         val isNoneSelected = exoPlayer.trackSelectionParameters.overrides.size == 0
@@ -155,20 +157,18 @@ data class EpisodeRoute(
     val id: Int,
     val allanimeId: String,
     val episode: Int,
-    val audio: EpisodeAudio
+    val audio: EpisodeAudio,
 )
 
 @androidx.annotation.OptIn(UnstableApi::class)
 fun NavGraphBuilder.episodeScreen(navController: NavController) {
-    composable<EpisodeRoute>{
+    composable<EpisodeRoute> {
         val viewModel: EpisodeViewModel = hiltViewModel()
         val state by viewModel.state.collectAsState()
 
         EpisodeScreen(
-            navController = navController,
             state = state,
-            onRefresh = { viewModel.fetchEpisode() },
-            onSetResolution = viewModel::changeResolution,
+            onRefresh = viewModel::refresh,
             onErrorDismiss = viewModel::dismissError
         )
     }

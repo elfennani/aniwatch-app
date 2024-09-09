@@ -2,6 +2,7 @@ package com.elfennani.aniwatch.ui.screens.episode
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
@@ -18,14 +20,23 @@ import androidx.media3.session.SessionToken
 import androidx.navigation.toRoute
 import com.elfennani.aniwatch.data.repository.DownloadRepository
 import com.elfennani.aniwatch.data.repository.ShowRepository
+import com.elfennani.aniwatch.models.EpisodeLink
 import com.elfennani.aniwatch.models.Resource
+import com.elfennani.aniwatch.models.ShowDetails
+import com.elfennani.aniwatch.models.toNetwork
 import com.elfennani.aniwatch.services.PlaybackService
+import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
@@ -40,136 +51,111 @@ class EpisodeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
     val route = savedStateHandle.toRoute<EpisodeRoute>()
-    val id = route.id
-    val allanimeId = route.allanimeId
-    val episode = route.episode
 
-    private var exoPlayer: MediaController? = null
+    private val episode = MutableStateFlow<EpisodeLink?>(null)
+    private val show = MutableStateFlow<ShowDetails?>(null)
 
-    private val _state = MutableStateFlow(EpisodeUiState(exoPlayer = exoPlayer))
+    private val _state = MutableStateFlow(EpisodeUiState())
     val state = _state.asStateFlow()
 
+    private var controllerFuture: ListenableFuture<MediaController>? = null
+
     init {
-        val sessionToken = SessionToken(context, ComponentName(context, PlaybackService::class.java))
-        val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
+        viewModelScope.launch {
+            val episodeAsync = async { loadEpisode() }
+            val showAsync = async { loadShow() }
 
-        controllerFuture.addListener({
-            exoPlayer = controllerFuture.get()
-            exoPlayer?.addListener(
-                object : Player.Listener {
-                    override fun onTracksChanged(tracks: Tracks) {
-                        super.onTracksChanged(tracks)
-                        for (trackGroup in tracks.groups) {
-                            if (trackGroup.type == C.TRACK_TYPE_VIDEO) {
-                                updateTracks(trackGroup)
-                            }
+            awaitAll(episodeAsync, showAsync)
+        }
+
+        viewModelScope.launch {
+            combine(show, episode) { show, episode ->
+                Pair(
+                    show,
+                    episode
+                )
+            }.collect { (show, episode) ->
+                if (show == null || episode == null) return@collect
+
+                val sessionToken =
+                    SessionToken(context, ComponentName(context, PlaybackService::class.java))
+                controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
+                controllerFuture!!.addListener(
+                    {
+                        val mediaController = controllerFuture?.get()
+                        _state.update {
+                            it.copy(exoPlayer = mediaController?.apply {
+                                playWhenReady = true
+
+                                val mediaMetadata = MediaMetadata
+                                    .Builder()
+                                    .setTitle(show.name)
+                                    .setDisplayTitle("Episode ${route.episode} • ${route.audio.name}")
+                                    .setArtist(show.name)
+                                    .setArtworkUri(
+                                        show
+                                            .episodes
+                                            .find { ep -> ep.episode == route.episode }
+                                            ?.thumbnail
+                                            ?.toUri()
+                                    )
+                                    .build()
+
+                                val mediaItem = MediaItem
+                                    .fromUri(episode.hls!!.url)
+                                    .buildUpon()
+                                    .setMediaMetadata(mediaMetadata)
+                                    .build()
+                                addMediaItem(mediaItem)
+
+                                play()
+                            })
                         }
-                    }
-                }
-            )
+                    },
+                    MoreExecutors.directExecutor()
+                )
+            }
+        }
 
-        }, MoreExecutors.directExecutor())
-
-        fetchEpisode()
-        fetchShow()
-        updateState()
-
+        Log.d("EpisodeViewModel", "Down: Done")
     }
 
-    private fun updateTracks(trackGroup: Tracks.Group?) {
-        _state.update {
-            it.copy(trackGroup = trackGroup)
+    private suspend fun loadEpisode() {
+        val res = showRepository.getEpisodeById(route.allanimeId, route.episode, route.audio)
+
+        when (res) {
+            is Resource.Success -> episode.update { res.data }
+            is Resource.Error -> _state.update { it.copy(errors = it.errors + res.message!!) }
         }
     }
 
-    private fun updateState() {
-        viewModelScope.launch {
-            while (true) {
-                val position = exoPlayer?.currentPosition
-                _state.update { it.copy(currentPosition = position) }
-                delay(1000)
-            }
+    private suspend fun loadShow() {
+        when (val res = showRepository.getShowById(route.id)) {
+            is Resource.Success -> show.update { res.data }
+            is Resource.Error -> _state.update { it.copy(errors = it.errors + res.message!!) }
         }
     }
 
-    fun fetchEpisode() {
+    fun refresh() {
         viewModelScope.launch {
-            val savedEpisodes = downloadRepository.getDownloaded()
-            val saved = savedEpisodes.find { ep -> ep.episode == episode && ep.showId == id }
-
-            if (saved != null && exoPlayer?.currentMediaItem == null) {
-                val file = File(context.filesDir, "shows/$id/$episode-${saved.audio.name}.mp4")
-
-                val mediaItem = MediaItem
-                    .fromUri(file.toUri())
-                    .buildUpon()
-                    .build()
-                exoPlayer?.replaceMediaItem(0, mediaItem)
-
-                return@launch;
-            }
-
-            when (val result = showRepository.getEpisodeById(allanimeId, episode, route.audio)) {
-                is Resource.Success -> {
-                    _state.update { state ->
-                        Log.d("EpisodeViewModel", "fetchEpisode: ${result.data}")
-
-                        if (exoPlayer?.currentMediaItem == null && result.data?.hls != null) {
-                            val mediaItem = MediaItem
-                                .fromUri(result.data.hls.url)
-                                .buildUpon()
-                                .build()
-                            exoPlayer?.replaceMediaItem(0, mediaItem)
-                        }
-
-                        state.copy(episode = result.data)
-                    }
-                }
-
-                is Resource.Error -> {
-                    _state.update { state -> state.copy(errors = state.errors + result.message!!) }
-                }
-            }
+            loadShow()
+            loadEpisode()
         }
     }
 
     override fun onCleared() {
-        exoPlayer?.release()
+//        state.value.exoPlayer?.release()
+        state.value.exoPlayer?.stop()
+        val stopIntent = Intent(context, PlaybackService::class.java).setAction("STOP_SERVICE")
+        context.startService(stopIntent)
+        if (controllerFuture != null) MediaController.releaseFuture(controllerFuture!!)
         super.onCleared()
-    }
-
-    fun changeResolution(index: Int) {
-        if (state.value.trackGroup == null) return;
-
-        exoPlayer!!.trackSelectionParameters =
-            exoPlayer!!.trackSelectionParameters
-                .buildUpon()
-                .setOverrideForType(
-                    TrackSelectionOverride(state.value.trackGroup!!.mediaTrackGroup, index)
-                )
-                .setViewportSize(1920, 1080, false)
-                .build()
     }
 
     fun dismissError(errorRes: Int) {
         _state.update { uiState ->
             val errors = uiState.errors.filterNot { it == errorRes }
             uiState.copy(errors = errors)
-        }
-    }
-
-    private fun fetchShow() {
-        viewModelScope.launch {
-            val result = showRepository.getShowFlowById(id)
-
-            result.collect {
-                _state.update { state ->
-                    state.copy(
-                        show = it,
-                        episodeDetails = it?.episodes?.find { ep -> ep.episode == episode }
-                    )
-                }
-            }
         }
     }
 }

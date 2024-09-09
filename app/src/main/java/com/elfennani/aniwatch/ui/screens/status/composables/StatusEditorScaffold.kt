@@ -55,9 +55,9 @@ fun StatusEditorScaffold(
             )
         },
         snackbarHost = {
-            ErrorSnackbarHost(errors = errors) {
+            ErrorSnackbarHost(errors = errors, onErrorDismiss = {
                 onErrorDismiss(it)
-            }
+            })
         },
         containerColor = AppTheme.colorScheme.background,
         contentColor = AppTheme.colorScheme.onBackground,
