@@ -7,9 +7,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Scaffold
 import androidx.navigation.compose.rememberNavController
-import com.elfennani.aniwatch.presentation.Navigation
-import com.elfennani.aniwatch.presentation.composables.MainNavigation
-import com.elfennani.aniwatch.presentation.theme.AppTheme
+import com.elfennani.aniwatch.ui.Navigation
+import com.elfennani.aniwatch.ui.composables.MainNavigation
+import com.elfennani.aniwatch.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -1,0 +1,42 @@
+package com.elfennani.aniwatch.ui.theme
+
+import androidx.compose.ui.graphics.Color
+
+val Zinc05 = Color(0xFFfafafa)
+val Zinc10 = Color(0xFFf4f4f5)
+val Zinc20 = Color(0xFFe4e4e7)
+val Zinc30 = Color(0xFFd4d4d8)
+val Zinc40 = Color(0xFFa1a1aa)
+val Zinc50 = Color(0xFF71717a)
+val Zinc60 = Color(0xFF52525b)
+val Zinc70 = Color(0xFF3f3f46)
+val Zinc80 = Color(0xFF27272a)
+val Zinc90 = Color(0xFF18181b)
+val Zinc95 = Color(0xFF09090b)
+
+val Slate05 = Color(0xFFf8fafc)
+val Slate10 = Color(0xFFf1f5f9)
+val Slate20 = Color(0xFFe2e8f0)
+val Slate30 = Color(0xFFcbd5e1)
+val Slate40 = Color(0xFF94a3b8)
+val Slate50 = Color(0xFF64748b)
+val Slate60 = Color(0xFF475569)
+val Slate70 = Color(0xFF334155)
+val Slate80 = Color(0xFF1e293b)
+val Slate90 = Color(0xFF0f172a)
+val Slate95 = Color(0xFF020617)
+
+val Blue05 = Color(0xFFeff6ff)
+val Blue10 = Color(0xFFdbeafe)
+val Blue20 = Color(0xFFbfdbfe)
+val Blue30 = Color(0xFF93c5fd)
+val Blue40 = Color(0xFF60a5fa)
+val Blue50 = Color(0xFF3b82f6)
+val Blue60 = Color(0xFF2563eb)
+val Blue70 = Color(0xFF1d4ed8)
+val Blue80 = Color(0xFF1e40af)
+val Blue90 = Color(0xFF1e3a8a)
+val Blue95 = Color(0xFF172554)
+
+val Red05 = Color(0xFFfef2f2)
+val Red50 = Color(0xFFef4444)
