@@ -1,6 +1,8 @@
 package com.elfennani.aniwatch.data.local
 
 import androidx.room.TypeConverter
+import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
+import com.elfennani.aniwatch.models.EpisodeAudio
 import com.elfennani.aniwatch.models.ShowBasic
 import com.elfennani.aniwatch.models.ShowSeason
 import com.elfennani.aniwatch.models.ShowStatus
@@ -54,4 +56,17 @@ class Converters {
     fun toShowSeason(name: String?): ShowSeason? {
         return name?.let { ShowSeason.valueOf(it) }
     }
+
+    @TypeConverter
+    fun fromEpisodeAudio(episodeAudio: EpisodeAudio) = episodeAudio.name
+
+    @TypeConverter
+    fun toEpisodeAudio(value: String) = EpisodeAudio.valueOf(value)
+
+
+    @TypeConverter
+    fun fromLocalDownloadState(downloadState: LocalDownloadState) = downloadState.name
+
+    @TypeConverter
+    fun toLocalDownloadState(value: String) = LocalDownloadState.valueOf(value)
 }

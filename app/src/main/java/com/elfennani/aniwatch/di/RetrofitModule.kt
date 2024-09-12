@@ -35,12 +35,12 @@ class RetrofitModule {
     @Provides
     @Singleton
     fun provideRetrofit(baseUrl: String, authInterceptor: AuthInterceptor): Retrofit {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client = OkHttpClient
             .Builder()
             .addInterceptor(authInterceptor)
-            .addInterceptor(interceptor)
+//            .addInterceptor(loggingInterceptor)
             .build()
 
         val moshi = Moshi.Builder()

@@ -11,10 +11,14 @@ import com.elfennani.aniwatch.models.ShowStatus
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface CachedShowDao{
+interface CachedShowDao {
     @Transaction
     @Query("SELECT * FROM cached_shows WHERE id=:id")
     fun getCachedShow(id: Int): Flow<CachedShowWithEpisodes?>
+
+    @Transaction
+    @Query("SELECT * FROM cached_shows")
+    fun getCachedShows(): Flow<List<CachedShowWithEpisodes>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCachedShow(cachedShowDto: CachedShowDto)

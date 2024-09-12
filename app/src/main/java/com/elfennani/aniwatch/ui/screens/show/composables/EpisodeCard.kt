@@ -15,8 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DownloadDone
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.FileDownloadDone
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -27,11 +30,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastRoundToInt
 import coil.compose.AsyncImage
+import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.utils.formatSeconds
 import com.elfennani.aniwatch.utils.imageLoader
 import com.elfennani.aniwatch.models.Episode
@@ -67,19 +73,21 @@ fun EpisodeCard(
                     horizontal = if (minimal) AppTheme.sizes.normal else AppTheme.sizes.large,
                     vertical = AppTheme.sizes.normal
                 ),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
+
             AsyncImage(
                 model = episode.thumbnail,
                 contentDescription = null,
                 imageLoader = imageLoader,
                 modifier = Modifier
                     .clip(AppTheme.shapes.thumbnail)
-                    .align(Alignment.Top)
                     .background(AppTheme.colorScheme.secondary.copy(0.25f))
                     .width(128.dp)
+                    .align(Alignment.Top)
                     .aspectRatio(16 / 9f)
             )
+
             Column(
                 modifier = Modifier
                     .padding(
@@ -109,26 +117,58 @@ fun EpisodeCard(
                             color = AppTheme.colorScheme.onSecondary
                         )
                     }
-                    if (!subtitle.isNullOrEmpty() && (episode.state == EpisodeState.SAVED || episode.dubbed)) {
-                        BulletSeparator()
-                    }
-                    if (episode.state == EpisodeState.SAVED) {
-                        Icon(
-                            imageVector = Icons.Default.FileDownloadDone,
-                            contentDescription = null,
-                            modifier = Modifier.size(AppTheme.sizes.medium),
-                            tint = AppTheme.colorScheme.primary
-                        )
-                    }
-                    if(episode.dubbed && episode.state == EpisodeState.SAVED){
-                        BulletSeparator()
-                    }
+
+
                     if (episode.dubbed) {
+                        BulletSeparator()
                         Text(
                             text = "DUB",
                             style = AppTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                             color = AppTheme.colorScheme.primary
                         )
+                    }
+
+                    if (episode.state !is DownloadState.NotSaved) {
+                        BulletSeparator()
+                    }
+                    when (episode.state) {
+                        is DownloadState.Downloaded ->
+                            Icon(
+                                imageVector = Icons.Default.FileDownloadDone,
+                                contentDescription = null,
+                                modifier = Modifier.size(AppTheme.sizes.medium),
+                                tint = AppTheme.colorScheme.primary
+                            )
+
+                        is DownloadState.Pending ->
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(AppTheme.sizes.medium),
+                                color = AppTheme.colorScheme.primary
+                            )
+
+                        is DownloadState.Downloading -> {
+                            val progressRounded = (episode.state.progress * 100).fastRoundToInt()
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(AppTheme.sizes.medium),
+                                progress = { episode.state.progress },
+                                color = AppTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = "$progressRounded%",
+                                style = AppTheme.typography.labelSmallBold,
+                                color = AppTheme.colorScheme.primary
+                            )
+                        }
+
+                        is DownloadState.Failure ->
+                            Icon(
+                                imageVector = Icons.Default.Error,
+                                contentDescription = null,
+                                modifier = Modifier.size(AppTheme.sizes.medium),
+                                tint = AppTheme.colorScheme.error
+                            )
+
+                        else -> {}
                     }
                 }
             }

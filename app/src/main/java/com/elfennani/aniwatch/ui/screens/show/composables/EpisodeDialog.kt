@@ -33,7 +33,7 @@ fun EpisodeDialog(
     episode: Episode,
     onDownload: (EpisodeAudio) -> Unit,
     onDelete: () -> Unit,
-    onOpenEpisode: (episode: Int, audio: EpisodeAudio) -> Unit
+    onOpenEpisode: (episode: Int, audio: EpisodeAudio) -> Unit,
 ) {
     Dialog(
         onDismissRequest = onDismissRequest,
@@ -72,17 +72,19 @@ fun EpisodeDialog(
                 )
                 Spacer(modifier = Modifier.size(AppTheme.sizes.small))
 
-                DialogOption(label = "Watch in SUB", icon = Icons.Default.Audiotrack){
+                DialogOption(label = "Watch in SUB", icon = Icons.Default.Audiotrack) {
                     onOpenEpisode(episode.episode, EpisodeAudio.SUB)
                 }
 
-                if(episode.dubbed){
-                    DialogOption(label = "Watch in DUB", icon = Icons.Default.Audiotrack){
+                if (episode.dubbed) {
+                    DialogOption(label = "Watch in DUB", icon = Icons.Default.Audiotrack) {
                         onOpenEpisode(episode.episode, EpisodeAudio.DUB)
                     }
                 }
 
-                if (episode.state == EpisodeState.NOT_SAVED) {
+
+                // TODO: episode.state == EpisodeState.NOT_SAVED
+                if (true) {
                     DialogOption(label = "Download SUB", icon = Icons.Default.DownloadForOffline) {
                         onDownload(EpisodeAudio.SUB)
                         onDismissRequest
@@ -97,12 +99,13 @@ fun EpisodeDialog(
                         }
                     }
                 }
-                if (episode.state == EpisodeState.SAVED) {
+                // TODO: episode.state == EpisodeState.SAVED
+                if (false) {
                     DialogOption(
                         label = "Delete Download",
                         icon = Icons.Default.Delete,
                         destructive = true
-                    ){
+                    ) {
                         onDelete()
                         onDismissRequest()
                     }

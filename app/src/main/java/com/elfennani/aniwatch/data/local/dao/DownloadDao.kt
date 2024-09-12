@@ -2,42 +2,43 @@ package com.elfennani.aniwatch.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
-import com.elfennani.aniwatch.data.local.entities.DownloadDto
+import androidx.room.Upsert
+import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
+import com.elfennani.aniwatch.data.local.entities.LocalDownloadedEpisode
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DownloadDao {
-    @Query("SELECT * FROM downloads WHERE status='PENDING' ORDER BY createdAt ASC LIMIT 1")
-    suspend fun getLatestDownload(): DownloadDto?
+    @Query("SELECT * FROM downloaded_episodes ORDER BY createdAt DESC")
+    fun getDownloads(): Flow<List<LocalDownloadedEpisode>>
 
-    @Query("SELECT * FROM downloads ORDER BY createdAt")
-    fun getDownloadsFlow(): Flow<List<DownloadDto>>
+    @Upsert
+    suspend fun upsertDownload(downloadedEpisode: LocalDownloadedEpisode)
 
-    @Query("DELETE FROM downloads WHERE showId=:showId AND episode=:episode")
-    suspend fun deleteDownload(showId: Int, episode: Int)
+    @Query("UPDATE downloaded_episodes SET progress=:progress, state=:state WHERE showId=:showId AND episode=:episode")
+    suspend fun updateProgress(
+        showId: Int,
+        episode: Int,
+        progress: Float,
+        state: LocalDownloadState = LocalDownloadState.DOWNLOADING
+    )
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertDownload(download: DownloadDto)
+    @Query("UPDATE downloaded_episodes SET state=:state WHERE showId=:showId AND episode=:episode")
+    suspend fun updateState(
+        showId: Int,
+        episode: Int,
+        state: LocalDownloadState,
+    )
 
-    @Query("UPDATE downloads SET status=:status")
-    suspend fun updateDownloadStatus(status: String)
-
-    @Update
-    suspend fun updateDownload(download: DownloadDto)
+    @Query("UPDATE downloaded_episodes SET errorRes=:errorRes, state=:state WHERE showId=:showId AND episode=:episode")
+    suspend fun updateError(
+        showId: Int,
+        episode: Int,
+        errorRes: Int?,
+        state: LocalDownloadState = LocalDownloadState.FAILURE
+    )
 
     @Delete
-    suspend fun deleteDownload(download: DownloadDto)
-
-    @Query("DELETE FROM downloads")
-    suspend fun deleteAll()
-
-    @Query("SELECT * FROM downloads WHERE status='COMPLETED'")
-    fun getDownloadedFlow(): Flow<List<DownloadDto>>
-
-    @Query("SELECT * FROM downloads WHERE status='COMPLETED'")
-    suspend fun getDownloaded(): List<DownloadDto>
+    suspend fun deleteDownload(downloadedEpisode: LocalDownloadedEpisode)
 }

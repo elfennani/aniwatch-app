@@ -18,6 +18,7 @@ import com.elfennani.aniwatch.data.remote.models.asDomain
 import com.elfennani.aniwatch.data.remote.models.asNetwork
 import com.elfennani.aniwatch.data.remote.models.toDomain
 import com.elfennani.aniwatch.data.remote.models.toSerializable
+import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.Episode
 import com.elfennani.aniwatch.models.EpisodeAudio
 import com.elfennani.aniwatch.models.EpisodeLink
@@ -44,7 +45,6 @@ class ShowRepository(
     private val cachedListingDao: CachedListingDao,
     private val cachedShowDao: CachedShowDao,
     private val cachedEpisodesDao: CachedEpisodesDao,
-    private val downloadRepository: DownloadRepository,
 ) {
     suspend fun getShowsByStatus(status: ShowStatus) = resourceOf {
         apiService.getShowsByStatus(status.toSerializable()).map { it.toDomain() }
@@ -53,6 +53,16 @@ class ShowRepository(
     suspend fun getRelationsByShowId(showId: Int) = resourceOf {
         apiService.getRelationsByShowId(showId).map { it.asDomain() }
     }
+
+    fun getDownloads(): Flow<List<ShowDetails>> = cachedShowDao
+        .getCachedShows()
+        .map {
+            it.map { show -> show.toDomain() }
+                .filter { show ->
+                    show.episodes
+                        .fastAny { episode -> episode.state !is DownloadState.NotSaved }
+                }
+        }
 
     suspend fun getEpisodeById(
         allAnimeId: String,
@@ -73,24 +83,8 @@ class ShowRepository(
         cachedEpisodesDao.insertAll(show.episodes.map(Episode::toCached))
     }
 
-    fun getShowFlowById(showId: Int): Flow<ShowDetails?> {
-        return flow {
-            val savedEpisodes = downloadRepository.getDownloaded()
-            emitAll(cachedShowDao.getCachedShow(showId).map {
-                it?.toDomain()?.copy(
-                    episodes = it.episodes
-                        .map { ep ->
-                            val isDownloaded = savedEpisodes.fastAny { savedEp ->
-                                savedEp.episode == ep.episode && savedEp.showId == showId
-                            }
-                            ep.toDomain().copy(
-                                state = if (isDownloaded) EpisodeState.SAVED else EpisodeState.NOT_SAVED
-                            )
-                        }
-                )
-            })
-        }
-    }
+    fun getShowFlowById(showId: Int): Flow<ShowDetails?> =
+        cachedShowDao.getCachedShow(showId).map { it?.toDomain() }
 
     suspend fun getShowById(showId: Int) = resourceOf {
         apiService.getShowById(showId).toDomain()

@@ -32,7 +32,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.ShowCard
-import com.elfennani.aniwatch.ui.screens.show.navigateToShowScreen
+import com.elfennani.aniwatch.ui.screens.show.ShowRoute
 import com.elfennani.aniwatch.ui.theme.AppTheme
 import java.util.Locale
 
@@ -125,7 +125,7 @@ fun NavGraphBuilder.relationScreen(navController: NavController) {
 
         RelationScreen(
             state = state,
-            onOpenShow = { navController.navigateToShowScreen(it) },
+            onOpenShow = { navController.navigate(ShowRoute(it)) },
             onErrorDismiss = viewModel::dismissError,
             onBack = navController::popBackStack
         )

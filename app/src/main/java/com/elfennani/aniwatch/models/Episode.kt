@@ -9,5 +9,5 @@ data class Episode(
     val dubbed: Boolean,
     val thumbnail: String?,
     val duration: Int?,
-    val state: EpisodeState = EpisodeState.UNKNOWN
+    val state: DownloadState
 )

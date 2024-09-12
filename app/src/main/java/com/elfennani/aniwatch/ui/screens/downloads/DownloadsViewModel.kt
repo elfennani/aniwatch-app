@@ -1,46 +1,60 @@
 package com.elfennani.aniwatch.ui.screens.downloads
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.Paint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elfennani.aniwatch.data.repository.DownloadRepository
-import com.elfennani.aniwatch.models.Download
+import com.elfennani.aniwatch.data.repository.ShowRepository
+import com.elfennani.aniwatch.models.DownloadState
+import com.elfennani.aniwatch.models.Episode
+import com.elfennani.aniwatch.models.ShowDetails
+import com.elfennani.aniwatch.models.toLabel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import okhttp3.internal.toImmutableMap
 import javax.inject.Inject
 
 @HiltViewModel
 class DownloadsViewModel @Inject constructor(
-    private val downloadRepository: DownloadRepository,
+    val showRepository: ShowRepository,
 ) : ViewModel() {
 
-    private val _downloads = MutableStateFlow(emptyList<Download>())
-    val downloads = _downloads.asStateFlow()
+    private val shows = showRepository
+        .getDownloads()
+        .map { shows ->
+            val map = mutableMapOf<String, List<Pair<ShowDetails, Episode>>>()
+            shows.forEach { show ->
+                show.episodes.forEach { episode ->
+                    if (episode.state !is DownloadState.NotSaved) {
+                        val list = map[episode.state.toLabel()] ?: emptyList()
+                        map[episode.state.toLabel()] = list + Pair(show, episode)
+                    }
+                }
+            }
 
-    init {
-        getDownloads()
-    }
+            map.toImmutableMap()
+        }
+
+    val downloads = shows.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyMap()
+    )
 
     private fun getDownloads() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val downloads = downloadRepository.getDownloads()
-
-            downloads.collect { current ->
-                _downloads.update { current }
-            }
-        }
+        TODO()
     }
 
-    fun forceStartDownload(){
-        downloadRepository.startWorking()
+    fun forceStartDownload() {
+        TODO()
     }
 
-    fun clearDownloads(){
-        viewModelScope.launch(Dispatchers.IO) {
-            downloadRepository.clearDownloads()
-        }
+    fun clearDownloads() {
+        TODO()
     }
 }

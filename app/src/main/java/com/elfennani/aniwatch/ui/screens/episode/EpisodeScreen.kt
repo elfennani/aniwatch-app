@@ -158,6 +158,7 @@ data class EpisodeRoute(
     val allanimeId: String,
     val episode: Int,
     val audio: EpisodeAudio,
+    val useSaved: Boolean = false
 )
 
 @androidx.annotation.OptIn(UnstableApi::class)

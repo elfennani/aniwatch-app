@@ -30,11 +30,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastAny
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.EpisodeAudio
 import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
@@ -49,6 +51,7 @@ import com.elfennani.aniwatch.ui.screens.show.composables.ShowScreenHeader
 import com.elfennani.aniwatch.ui.screens.show.composables.ShowScreenSkeleton
 import com.elfennani.aniwatch.ui.screens.status.navigateToStatusEditorScreen
 import com.elfennani.aniwatch.ui.theme.AppTheme
+import kotlinx.serialization.Serializable
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -195,26 +198,30 @@ private fun ShowScreenPreview() {
     }
 }
 
-const val SHOW_SCREEN_PATTERN = "show/{id}"
+@Serializable
+data class ShowRoute(val id: Int)
+
 fun NavGraphBuilder.showScreen(navController: NavController) {
-    composable(
-        route = SHOW_SCREEN_PATTERN,
-        arguments = listOf(navArgument("id") { type = NavType.IntType }),
-    ) {
+    composable<ShowRoute> {
         val viewModel: ShowViewModel = hiltViewModel()
-        val showState by viewModel.state.collectAsState()
+        val showState by viewModel.state.collectAsStateWithLifecycle()
 
         ShowScreen(
             state = showState,
             onBack = navController::popBackStack,
             onErrorDismiss = viewModel::dismissError,
             onOpenEpisode = { episode, audio ->
+                val state = showState
+                    .show?.episodes?.find { it.episode == episode }
+                    ?.state
+
                 navController.navigate(
                     EpisodeRoute(
                         id = showState.show?.id!!,
                         allanimeId = showState.show?.allanimeId!!,
                         episode = episode,
-                        audio = audio
+                        audio = if (state is DownloadState.Downloaded) state.audio else audio,
+                        useSaved = state is DownloadState.Downloaded
                     )
                 )
             },
@@ -227,15 +234,5 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
             onClickRelations = navController::navigateToRelationScreen,
             onToggleAudio = viewModel::toggleAudio
         )
-    }
-}
-
-fun NavController.navigateToShowScreen(id: Int, popUpToTop: Boolean = false) {
-    this.navigate(SHOW_SCREEN_PATTERN.replace("{id}", id.toString())) {
-        if (popUpToTop) {
-            popUpTo(0) {
-                inclusive = true
-            }
-        }
     }
 }

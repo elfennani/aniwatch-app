@@ -1,6 +1,7 @@
 package com.elfennani.aniwatch.ui.composables
 
 import androidx.compose.ui.graphics.Color
+import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.Episode
 import com.elfennani.aniwatch.models.ShowDetails
 import com.elfennani.aniwatch.models.ShowImage
@@ -24,7 +25,8 @@ val dummyShow
                 name = "Ep 3",
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/3_sub.jpg",
-                duration = 1497
+                duration = 1497,
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "Ld577KNfZTXY8XT5u",
@@ -34,7 +36,8 @@ val dummyShow
                 name = "Ep 2",
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/2_sub.jpg",
-                duration = 1495
+                duration = 1495,
+                state = DownloadState.Pending
             ),
             Episode(
                 id = "iCwfjXZJzDHr74Xw8",
@@ -44,7 +47,8 @@ val dummyShow
                 name = "Ep 1",
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/1_sub.jpg",
-                duration = 1497
+                duration = 1497,
+                state = DownloadState.Downloading(0.32f)
             ),
             Episode(
                 id = "G4J7aZMjrh2eZmSvi",
@@ -54,7 +58,8 @@ val dummyShow
                 name = "Ep 5",
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/5_sub.jpg",
-                duration = 1497
+                duration = 1497,
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "ARBy6J4cn8qezHGF3",
@@ -64,7 +69,8 @@ val dummyShow
                 name = "Ep 4",
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/4_sub.jpg",
-                duration = 1497
+                duration = 1497,
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "SJRLPXTEGM6e8gCsq",
@@ -74,7 +80,8 @@ val dummyShow
                 name = "Ep 6",
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/6_sub.jpg",
-                duration = 1497
+                duration = 1497,
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "hZ7m9P5nBgTuTgeXw",
@@ -84,7 +91,8 @@ val dummyShow
                 name = "Ep 9",
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/9_sub.jpg",
-                duration = 1497
+                duration = 1497,
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "mMpFXSniTN876SdaL",
@@ -94,7 +102,8 @@ val dummyShow
                 name = "Ep 8",
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/8_sub.jpg",
-                duration = 1497
+                duration = 1497,
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "mARMTfbc8JWDpBqrK",
@@ -104,7 +113,8 @@ val dummyShow
                 name = "Ep 7",
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/7_sub.jpg",
-                duration = 1497
+                duration = 1497,
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "4WtFCFWjpJLs9tGbm",
@@ -114,7 +124,8 @@ val dummyShow
                 name = "Ep 12",
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/12_sub.jpg",
-                duration = 1497
+                duration = 1497,
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "33MQMKfj29uni4mmA",
@@ -124,7 +135,8 @@ val dummyShow
                 name = "Ep 13",
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/13_sub.jpg",
-                duration = 1497
+                duration = 1497,
+                state = DownloadState.NotSaved
             )
         ),
         genres = listOf("Drama", "Music", "Slice of Life"),

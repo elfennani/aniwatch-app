@@ -18,7 +18,7 @@ import com.elfennani.aniwatch.data.local.entities.CachedEpisodeDto
 import com.elfennani.aniwatch.data.local.entities.CachedListingDto
 import com.elfennani.aniwatch.data.local.entities.CachedShowDto
 import com.elfennani.aniwatch.data.local.entities.CachedUser
-import com.elfennani.aniwatch.data.local.entities.DownloadDto
+import com.elfennani.aniwatch.data.local.entities.LocalDownloadedEpisode
 import com.elfennani.aniwatch.data.local.entities.SessionEntity
 
 @Database(
@@ -28,10 +28,10 @@ import com.elfennani.aniwatch.data.local.entities.SessionEntity
         CachedShowDto::class,
         CachedEpisodeDto::class,
         ActivityDto::class,
-        DownloadDto::class,
-        CachedUser::class
+        CachedUser::class,
+        LocalDownloadedEpisode::class
     ],
-    version = 13,
+    version = 15,
     autoMigrations = [
         AutoMigration(1, 2),
         AutoMigration(2, 3),
@@ -49,6 +49,12 @@ import com.elfennani.aniwatch.data.local.entities.SessionEntity
             spec = com.elfennani.aniwatch.data.local.Database.WatchingToListingAutoMigration::class
         ),
         AutoMigration(12, 13),
+        AutoMigration(
+            13,
+            14,
+            spec = com.elfennani.aniwatch.data.local.Database.DownloadMigration::class
+        ),
+        AutoMigration(14, 15)
     ],
 )
 @TypeConverters(Converters::class)
@@ -58,9 +64,12 @@ abstract class Database : RoomDatabase() {
     abstract fun cachedShowDao(): CachedShowDao
     abstract fun cachedEpisodesDao(): CachedEpisodesDao
     abstract fun feedDao(): FeedDao
-    abstract fun downloadDao(): DownloadDao
     abstract fun cachedUserDao(): CachedUserDao
+    abstract fun downloadDao(): DownloadDao
 
     @DeleteTable(tableName = "watching_shows")
-    class WatchingToListingAutoMigration : AutoMigrationSpec {}
+    class WatchingToListingAutoMigration : AutoMigrationSpec
+
+    @DeleteTable(tableName = "downloads")
+    class DownloadMigration : AutoMigrationSpec
 }

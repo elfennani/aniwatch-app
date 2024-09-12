@@ -33,7 +33,7 @@ import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.models.formatText
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.ShowCard
-import com.elfennani.aniwatch.ui.screens.show.navigateToShowScreen
+import com.elfennani.aniwatch.ui.screens.show.ShowRoute
 import com.elfennani.aniwatch.ui.screens.status.composables.StatusBottomSheet
 import com.elfennani.aniwatch.ui.theme.AppTheme
 
@@ -112,7 +112,7 @@ fun NavGraphBuilder.listingScreen(navController: NavController) {
 
         ListingScreen(
             state = state,
-            onClickShow = { navController.navigateToShowScreen(it) },
+            onClickShow = { navController.navigate(ShowRoute(it)) },
             onSelectStatus = viewModel::setStatus,
             onErrorDismiss = viewModel::dismissError
         )

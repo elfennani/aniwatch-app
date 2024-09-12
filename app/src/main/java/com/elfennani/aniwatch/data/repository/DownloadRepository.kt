@@ -1,86 +1,55 @@
 package com.elfennani.aniwatch.data.repository
 
-import android.content.Context
-import androidx.work.Constraints
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import com.elfennani.aniwatch.data.local.dao.CachedShowDao
 import com.elfennani.aniwatch.data.local.dao.DownloadDao
-import com.elfennani.aniwatch.data.local.entities.asDomain
-import com.elfennani.aniwatch.data.local.entities.asEntity
-import com.elfennani.aniwatch.models.Download
-import com.elfennani.aniwatch.models.DownloadStatus
+import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
+import com.elfennani.aniwatch.data.local.entities.LocalDownloadedEpisode
+import com.elfennani.aniwatch.data.local.entities.toAppModel
+import com.elfennani.aniwatch.data.local.entities.toEntity
+import com.elfennani.aniwatch.data.local.entities.toLocalDownloadState
+import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.EpisodeAudio
-import com.elfennani.aniwatch.models.ShowDetails
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import java.io.File
 import java.time.Instant
 import java.util.Date
 
 class DownloadRepository(
-    private val cachedShowDao: CachedShowDao,
     private val downloadDao: DownloadDao,
-    private val context: Context,
 ) {
-    private val workManager = WorkManager.getInstance(context)
+    suspend fun addDownload(showId: Int, episode: Int, audio: EpisodeAudio): DownloadState {
+        val download = LocalDownloadedEpisode(
+            showId = showId,
+            episode = episode,
+            state = LocalDownloadState.PENDING,
+            audio = audio,
+            progress = 0.0f,
+            createdAt = Date.from(Instant.now()),
+            errorRes = null
+        )
+        downloadDao.upsertDownload(download)
 
-    fun getDownloads(): Flow<List<Download>> {
-        return downloadDao.getDownloadsFlow().map {
-            it.map { download -> download.asDomain() }
+        return download.toAppModel()
+    }
+
+    suspend fun markDownloadState(showId: Int, episode: Int, state: DownloadState) {
+        if (state is DownloadState.Downloading) {
+            progressDownload(showId, episode, state.progress)
+            return;
         }
-    }
-
-    suspend fun clearDownloads() {
-        downloadDao.deleteAll()
-        workManager.cancelUniqueWork("downloadWork")
-    }
-
-    fun getDownloadedFlow() =
-        downloadDao.getDownloadedFlow().map { list -> list.map { it.asDomain() } }
-
-    suspend fun getDownloaded() = downloadDao.getDownloaded().map { it.asDomain() }
-
-    fun startWorking() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-        val downloadRequest = OneTimeWorkRequest
-            .Builder(DownloadWork::class.java)
-            .setConstraints(constraints)
-            .build()
-
-        workManager.enqueueUniqueWork(
-            "downloadWork",
-            ExistingWorkPolicy.KEEP,
-            downloadRequest
+        if (state is DownloadState.Failure) {
+            setError(showId, episode, state.message)
+            return
+        }
+        downloadDao.updateState(
+            showId,
+            episode,
+            state.toLocalDownloadState()
         )
     }
 
-    suspend fun deleteEpisode(episode: Int, showId: Int) {
-        downloadDao.deleteDownload(showId, episode)
-
-        val directory = File(context.filesDir, "shows/$showId")
-        directory.listFiles()
-            ?.find { it.name.startsWith(episode.toString()) }
-            ?.delete()
+    suspend fun progressDownload(showId: Int, episode: Int, progress: Float) {
+        downloadDao.updateProgress(showId, episode, progress)
     }
 
-    suspend fun downloadEpisode(show: ShowDetails, episode: Int, audio: EpisodeAudio) {
-        downloadDao.insertDownload(
-            Download(
-                title = show.name,
-                createdAt = Date(Instant.now().toEpochMilli()),
-                showId = show.id,
-                allanimeId = show.allanimeId,
-                episode = episode,
-                status = DownloadStatus.PENDING,
-                audio = audio
-            ).asEntity()
-        )
-
-        startWorking()
+    suspend fun setError(showId: Int, episode: Int, errorRes: Int) {
+        downloadDao.updateError(showId, episode, errorRes)
     }
 }

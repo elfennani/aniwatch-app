@@ -30,14 +30,12 @@ class AppModule {
         cachedListingDao: CachedListingDao,
         cachedShowDao: CachedShowDao,
         cachedEpisodesDao: CachedEpisodesDao,
-        downloadRepository: DownloadRepository
     ): ShowRepository =
         ShowRepository(
             apiService,
             cachedListingDao,
             cachedShowDao,
             cachedEpisodesDao,
-            downloadRepository
         )
 
     @Provides
@@ -51,19 +49,6 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideDownloadRepository(
-        cachedShowDao: CachedShowDao,
-        downloadDao: DownloadDao,
-        @ApplicationContext context: Context,
-    ) = DownloadRepository(
-        cachedShowDao = cachedShowDao,
-        downloadDao = downloadDao,
-        context = context
-    )
-
-
-    @Provides
-    @Singleton
     fun provideUserRepository(
         apiService: APIService,
         cachedUserDao: CachedUserDao,
@@ -73,4 +58,8 @@ class AppModule {
         cachedUserDao = cachedUserDao,
         context = context
     )
+
+    @Provides
+    @Singleton
+    fun provideDownloadRepository(downloadDao: DownloadDao) = DownloadRepository(downloadDao)
 }

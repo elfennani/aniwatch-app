@@ -45,7 +45,7 @@ import com.elfennani.aniwatch.ui.screens.home.composables.ActivityCard
 import com.elfennani.aniwatch.ui.screens.home.composables.HomeHeader
 import com.elfennani.aniwatch.ui.screens.home.composables.WatchingShowsSection
 import com.elfennani.aniwatch.ui.screens.search.navigateToSearchScreen
-import com.elfennani.aniwatch.ui.screens.show.navigateToShowScreen
+import com.elfennani.aniwatch.ui.screens.show.ShowRoute
 import com.elfennani.aniwatch.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -110,7 +110,7 @@ fun HomeScreen(
                         ) {
                             WatchingShowsSection(
                                 shows = state.shows,
-                                onPressShow = { navController.navigateToShowScreen(it) },
+                                onPressShow = { navController.navigate(ShowRoute(id = it)) },
                                 isLoading = state.isLoading
                             )
 
@@ -131,7 +131,7 @@ fun HomeScreen(
                         if (item != null) {
                             ActivityCard(activity = item, onClick = {
                                 if (item.show != null && item.show.type == MediaType.ANIME) {
-                                    navController.navigateToShowScreen(item.show.id)
+                                    navController.navigate(ShowRoute(item.show.id))
                                 }
                             })
                             HorizontalDivider(color = AppTheme.colorScheme.onBackground.copy(alpha = 0.07f))
@@ -159,7 +159,7 @@ fun NavGraphBuilder.homeScreen(navController: NavController) {
     composable(
         route = HomeScreenPattern,
         enterTransition = { EnterTransition.None },
-        exitTransition = {ExitTransition.None}
+        exitTransition = { ExitTransition.None }
     ) {
         val viewModel: HomeViewModel = hiltViewModel()
         val homeState by viewModel.state.collectAsState()

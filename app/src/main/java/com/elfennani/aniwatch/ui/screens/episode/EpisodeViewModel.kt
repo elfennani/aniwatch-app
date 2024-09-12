@@ -8,22 +8,16 @@ import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
-import androidx.media3.common.Player
-import androidx.media3.common.TrackSelectionOverride
-import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.navigation.toRoute
-import com.elfennani.aniwatch.data.repository.DownloadRepository
 import com.elfennani.aniwatch.data.repository.ShowRepository
 import com.elfennani.aniwatch.models.EpisodeLink
 import com.elfennani.aniwatch.models.Resource
 import com.elfennani.aniwatch.models.ShowDetails
-import com.elfennani.aniwatch.models.toNetwork
 import com.elfennani.aniwatch.services.PlaybackService
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
@@ -31,12 +25,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
@@ -46,13 +38,12 @@ import javax.inject.Inject
 @HiltViewModel
 class EpisodeViewModel @Inject constructor(
     private val showRepository: ShowRepository,
-    private val downloadRepository: DownloadRepository,
     savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
     val route = savedStateHandle.toRoute<EpisodeRoute>()
 
-    private val episode = MutableStateFlow<EpisodeLink?>(null)
+    private val episode = MutableStateFlow<String?>(null)
     private val show = MutableStateFlow<ShowDetails?>(null)
 
     private val _state = MutableStateFlow(EpisodeUiState())
@@ -102,7 +93,7 @@ class EpisodeViewModel @Inject constructor(
                                     .build()
 
                                 val mediaItem = MediaItem
-                                    .fromUri(episode.hls!!.url)
+                                    .fromUri(episode)
                                     .buildUpon()
                                     .setMediaMetadata(mediaMetadata)
                                     .build()
@@ -121,15 +112,29 @@ class EpisodeViewModel @Inject constructor(
     }
 
     private suspend fun loadEpisode() {
+        if (route.useSaved) {
+            val directory = File(context.filesDir, "shows/${route.id}")
+            val file = File(directory, "${route.episode}.mp4")
+
+            episode.update { file.toUri().toString() }
+            return;
+        }
+
         val res = showRepository.getEpisodeById(route.allanimeId, route.episode, route.audio)
 
         when (res) {
-            is Resource.Success -> episode.update { res.data }
+            is Resource.Success -> episode.update { res.data?.hls?.url }
             is Resource.Error -> _state.update { it.copy(errors = it.errors + res.message!!) }
         }
     }
 
     private suspend fun loadShow() {
+        val localShow = showRepository.getShowFlowById(route.id).first()
+        if (localShow != null) {
+            show.update { localShow }
+            return
+        }
+
         when (val res = showRepository.getShowById(route.id)) {
             is Resource.Success -> show.update { res.data }
             is Resource.Error -> _state.update { it.copy(errors = it.errors + res.message!!) }

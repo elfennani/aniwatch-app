@@ -34,7 +34,7 @@ import androidx.paging.compose.itemKey
 import com.elfennani.aniwatch.models.ShowBasic
 import com.elfennani.aniwatch.ui.screens.search.composables.SearchBox
 import com.elfennani.aniwatch.ui.composables.ShowCard
-import com.elfennani.aniwatch.ui.screens.show.navigateToShowScreen
+import com.elfennani.aniwatch.ui.screens.show.ShowRoute
 import com.elfennani.aniwatch.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,7 +63,7 @@ fun SearchScreen(
                     if (item != null) {
                         ShowCard(
                             show = item,
-                            onClick = { navController.navigateToShowScreen(item.id) }
+                            onClick = { navController.navigate(ShowRoute(item.id)) }
                         )
                     }
                 }
