@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Date
 import javax.inject.Inject
 
@@ -85,7 +86,13 @@ class ShowViewModel @Inject constructor(
     }
 
     fun deleteEpisode(episode: Int) {
-        TODO()
+        viewModelScope.launch { downloadRepository.deleteDownload(showId, episode) }
+            .invokeOnCompletion {
+                val directory = File(context.filesDir, "shows/$showId")
+                val file = File(directory, "$episode.mp4")
+
+                file.delete()
+            }
     }
 
     fun downloadEpisode(episode: Int, audio: EpisodeAudio) {

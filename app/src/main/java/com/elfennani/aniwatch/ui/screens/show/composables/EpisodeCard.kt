@@ -6,6 +6,8 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -46,7 +48,7 @@ import com.elfennani.aniwatch.ui.theme.AppTheme
 
 private const val MAX_LINES_MINIMAL = 2
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun EpisodeCard(
     modifier: Modifier = Modifier,
@@ -106,9 +108,9 @@ fun EpisodeCard(
                     maxLines = if (minimal) MAX_LINES_MINIMAL else Int.MAX_VALUE,
                     overflow = TextOverflow.Ellipsis
                 )
-                Row(
+                FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller, Alignment.CenterVertically)
                 ) {
                     if (!subtitle.isNullOrEmpty()) {
                         Text(

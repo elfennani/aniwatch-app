@@ -8,6 +8,7 @@ import com.elfennani.aniwatch.data.local.entities.toEntity
 import com.elfennani.aniwatch.data.local.entities.toLocalDownloadState
 import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.EpisodeAudio
+import kotlinx.coroutines.flow.first
 import java.time.Instant
 import java.util.Date
 
@@ -27,6 +28,10 @@ class DownloadRepository(
         downloadDao.upsertDownload(download)
 
         return download.toAppModel()
+    }
+
+    suspend fun getToBeDownloaded(): List<LocalDownloadedEpisode> {
+        return downloadDao.getDownloads().first()
     }
 
     suspend fun markDownloadState(showId: Int, episode: Int, state: DownloadState) {
@@ -51,5 +56,9 @@ class DownloadRepository(
 
     suspend fun setError(showId: Int, episode: Int, errorRes: Int) {
         downloadDao.updateError(showId, episode, errorRes)
+    }
+
+    suspend fun deleteDownload(showId: Int, episode: Int) {
+        downloadDao.deleteDownloadByShowId(showId, episode)
     }
 }

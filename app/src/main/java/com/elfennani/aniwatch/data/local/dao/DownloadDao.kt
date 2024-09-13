@@ -41,4 +41,7 @@ interface DownloadDao {
 
     @Delete
     suspend fun deleteDownload(downloadedEpisode: LocalDownloadedEpisode)
+
+    @Query("DELETE FROM downloaded_episodes WHERE showId=:showId AND episode=:episode")
+    suspend fun deleteDownloadByShowId(showId: Int, episode: Int)
 }

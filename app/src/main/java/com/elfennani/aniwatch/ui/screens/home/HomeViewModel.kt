@@ -1,6 +1,9 @@
 package com.elfennani.aniwatch.ui.screens.home
 
+import android.app.ActivityManager
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,14 +15,18 @@ import androidx.paging.map
 import com.elfennani.aniwatch.data.local.Database
 import com.elfennani.aniwatch.data.local.dao.FeedDao
 import com.elfennani.aniwatch.data.local.entities.ActivityDto
+import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
 import com.elfennani.aniwatch.data.local.entities.asDomain
 import com.elfennani.aniwatch.data.repository.ActivityRepository
 import com.elfennani.aniwatch.data.paging.FeedRemoteMediator
+import com.elfennani.aniwatch.data.repository.DownloadRepository
 import com.elfennani.aniwatch.data.repository.ShowRepository
 import com.elfennani.aniwatch.data.repository.UserRepository
 import com.elfennani.aniwatch.dataStore
+import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.Resource
 import com.elfennani.aniwatch.models.ShowStatus
+import com.elfennani.aniwatch.services.DownloadService
 import com.elfennani.aniwatch.sessionId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -42,6 +49,7 @@ class HomeViewModel @Inject constructor(
     private val database: Database,
     private val userRepository: UserRepository,
     private val feedDao: FeedDao,
+    private val downloadRepository: DownloadRepository,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
     private val shows = showRepository.getListingByStatus(ShowStatus.WATCHING)
@@ -49,7 +57,7 @@ class HomeViewModel @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     val pager = Pager(
-        config = PagingConfig(pageSize = 25, prefetchDistance = 0, initialLoadSize = 25,),
+        config = PagingConfig(pageSize = 25, prefetchDistance = 0, initialLoadSize = 25),
         remoteMediator = FeedRemoteMediator(activityRepository, database, feedDao, context)
     ) { feedDao.pagingSource() }
 
@@ -65,15 +73,17 @@ class HomeViewModel @Inject constructor(
         refetch()
 
         viewModelScope.launch {
-            val sessionId = context.dataStore.data.first().sessionId
-            userRepository.viewerFlow().collect{
-                when(it){
-                    is Resource.Success -> _state.update { state->
+            userRepository.viewerFlow().collect {
+                when (it) {
+                    is Resource.Success -> _state.update { state ->
                         state.copy(user = it.data)
                     }
-                    is Resource.Error -> _state.update { state -> state.copy(
-                        errors = state.errors + it.message!!
-                    ) }
+
+                    is Resource.Error -> _state.update { state ->
+                        state.copy(
+                            errors = state.errors + it.message!!
+                        )
+                    }
                 }
             }
         }
@@ -88,6 +98,10 @@ class HomeViewModel @Inject constructor(
                     )
                 }
             }
+        }
+
+        viewModelScope.launch {
+            downloadNotCompleted()
         }
     }
 
@@ -108,7 +122,38 @@ class HomeViewModel @Inject constructor(
     fun dismissError(errorRes: Int) {
         _state.update { uiState ->
             val errors = uiState.errors.filterNot { it == errorRes }
-            uiState.copy(errors=errors)
+            uiState.copy(errors = errors)
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun <T> Context.isServiceRunning(service: Class<T>): Boolean {
+        return (getSystemService(ACTIVITY_SERVICE) as ActivityManager)
+            .getRunningServices(Integer.MAX_VALUE)
+            .any { it -> it.service.className == service.name }
+    }
+
+    private suspend fun downloadNotCompleted() {
+        val incomplete = downloadRepository
+            .getToBeDownloaded()
+            .filter {
+                it.state in listOf(
+                    LocalDownloadState.DOWNLOADING,
+                    LocalDownloadState.PENDING
+                )
+            }
+
+        if (incomplete.isNotEmpty() && !context.isServiceRunning(DownloadService::class.java)) {
+            incomplete.forEach {
+                downloadRepository.addDownload(it.showId, it.episode, it.audio)
+
+                val intent = Intent(context, DownloadService::class.java)
+                    .putExtra("showId", it.showId)
+                    .putExtra("episode", it.episode)
+                    .putExtra("audio", it.audio.name)
+
+                context.startForegroundService(intent)
+            }
         }
     }
 }
