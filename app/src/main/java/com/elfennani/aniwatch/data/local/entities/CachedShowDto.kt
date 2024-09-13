@@ -1,5 +1,6 @@
 package com.elfennani.aniwatch.data.local.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -28,7 +29,8 @@ data class CachedShowDto(
     val banner: String?,
     val progress: Int?,
     val status: ShowStatus?,
-    )
+    @ColumnInfo(defaultValue = "[]") val tags: List<Tag>
+)
 
 
 
@@ -51,7 +53,7 @@ fun CachedShowDto.toDomain() = ShowDetails(
     banner = banner,
     progress = progress,
     status = status,
-    tags = emptyList(),
+    tags = tags,
     episodes = emptyList()
 )
 
@@ -74,4 +76,5 @@ fun ShowDetails.asEntity() = CachedShowDto(
     banner = banner,
     progress = progress,
     status = status,
+    tags = tags
 )

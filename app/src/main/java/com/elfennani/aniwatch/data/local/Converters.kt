@@ -1,13 +1,17 @@
 package com.elfennani.aniwatch.data.local
 
+import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.room.TypeConverter
+import coil.request.Tags
 import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
 import com.elfennani.aniwatch.models.EpisodeAudio
 import com.elfennani.aniwatch.models.ShowBasic
 import com.elfennani.aniwatch.models.ShowSeason
 import com.elfennani.aniwatch.models.ShowStatus
+import com.elfennani.aniwatch.models.Tag
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.util.Date
 
 class Converters {
@@ -69,4 +73,32 @@ class Converters {
 
     @TypeConverter
     fun toLocalDownloadState(value: String) = LocalDownloadState.valueOf(value)
+
+    @TypeConverter
+    fun fromTagsList(tags: List<Tag>): String {
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+
+        val adapter = moshi
+            .adapter<List<Tag>>(
+                Types.newParameterizedType(List::class.java, Tag::class.java)
+            )
+
+        return adapter.toJson(tags)
+    }
+
+    @TypeConverter
+    fun toTagsList(json: String): List<Tag> {
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+
+        val adapter = moshi
+            .adapter<List<Tag>>(
+                Types.newParameterizedType(List::class.java, Tag::class.java)
+            )
+
+        return adapter.fromJson(json)!!
+    }
 }

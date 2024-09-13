@@ -13,7 +13,6 @@ data class ShowDetails(
     val year: Int,
     val format: String,
     val image: ShowImage,
-
     val banner: String?,
     val progress: Int?,
     val status: ShowStatus?,

@@ -31,7 +31,7 @@ import com.elfennani.aniwatch.data.local.entities.SessionEntity
         CachedUser::class,
         LocalDownloadedEpisode::class
     ],
-    version = 15,
+    version = 16,
     autoMigrations = [
         AutoMigration(1, 2),
         AutoMigration(2, 3),
@@ -54,7 +54,8 @@ import com.elfennani.aniwatch.data.local.entities.SessionEntity
             14,
             spec = com.elfennani.aniwatch.data.local.Database.DownloadMigration::class
         ),
-        AutoMigration(14, 15)
+        AutoMigration(14, 15),
+        AutoMigration(15, 16)
     ],
 )
 @TypeConverters(Converters::class)
