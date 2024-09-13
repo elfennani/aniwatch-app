@@ -4,7 +4,6 @@ import com.elfennani.aniwatch.data.local.dao.DownloadDao
 import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
 import com.elfennani.aniwatch.data.local.entities.LocalDownloadedEpisode
 import com.elfennani.aniwatch.data.local.entities.toAppModel
-import com.elfennani.aniwatch.data.local.entities.toEntity
 import com.elfennani.aniwatch.data.local.entities.toLocalDownloadState
 import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.EpisodeAudio
@@ -15,7 +14,7 @@ import java.util.Date
 class DownloadRepository(
     private val downloadDao: DownloadDao,
 ) {
-    suspend fun addDownload(showId: Int, episode: Int, audio: EpisodeAudio): DownloadState {
+    suspend fun addDownload(showId: Int, episode: Double, audio: EpisodeAudio): DownloadState {
         val download = LocalDownloadedEpisode(
             showId = showId,
             episode = episode,
@@ -34,7 +33,7 @@ class DownloadRepository(
         return downloadDao.getDownloads().first()
     }
 
-    suspend fun markDownloadState(showId: Int, episode: Int, state: DownloadState) {
+    suspend fun markDownloadState(showId: Int, episode: Double, state: DownloadState) {
         if (state is DownloadState.Downloading) {
             progressDownload(showId, episode, state.progress)
             return;
@@ -50,15 +49,15 @@ class DownloadRepository(
         )
     }
 
-    suspend fun progressDownload(showId: Int, episode: Int, progress: Float) {
+    suspend fun progressDownload(showId: Int, episode: Double, progress: Float) {
         downloadDao.updateProgress(showId, episode, progress)
     }
 
-    suspend fun setError(showId: Int, episode: Int, errorRes: Int) {
+    suspend fun setError(showId: Int, episode: Double, errorRes: Int) {
         downloadDao.updateError(showId, episode, errorRes)
     }
 
-    suspend fun deleteDownload(showId: Int, episode: Int) {
+    suspend fun deleteDownload(showId: Int, episode: Double) {
         downloadDao.deleteDownloadByShowId(showId, episode)
     }
 }

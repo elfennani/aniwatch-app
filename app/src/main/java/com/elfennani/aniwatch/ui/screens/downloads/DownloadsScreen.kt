@@ -118,7 +118,7 @@ fun DownloadsScreen(
                                             EpisodeRoute(
                                                 id = show.id,
                                                 allanimeId = show.allanimeId,
-                                                episode = episode.episode,
+                                                episode = episode.episode.toFloat(),
                                                 audio = episode.state.audio,
                                                 useSaved = true
                                             )

@@ -31,32 +31,8 @@ import com.elfennani.aniwatch.data.local.entities.SessionEntity
         CachedUser::class,
         LocalDownloadedEpisode::class
     ],
-    version = 16,
-    autoMigrations = [
-        AutoMigration(1, 2),
-        AutoMigration(2, 3),
-        AutoMigration(3, 4),
-        AutoMigration(4, 5),
-        AutoMigration(5, 6),
-        AutoMigration(6, 7),
-        AutoMigration(7, 8),
-        AutoMigration(8, 9),
-        AutoMigration(9, 10),
-        AutoMigration(10, 11),
-        AutoMigration(
-            11,
-            12,
-            spec = com.elfennani.aniwatch.data.local.Database.WatchingToListingAutoMigration::class
-        ),
-        AutoMigration(12, 13),
-        AutoMigration(
-            13,
-            14,
-            spec = com.elfennani.aniwatch.data.local.Database.DownloadMigration::class
-        ),
-        AutoMigration(14, 15),
-        AutoMigration(15, 16)
-    ],
+    version = 1,
+    autoMigrations = [],
 )
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
@@ -67,10 +43,4 @@ abstract class Database : RoomDatabase() {
     abstract fun feedDao(): FeedDao
     abstract fun cachedUserDao(): CachedUserDao
     abstract fun downloadDao(): DownloadDao
-
-    @DeleteTable(tableName = "watching_shows")
-    class WatchingToListingAutoMigration : AutoMigrationSpec
-
-    @DeleteTable(tableName = "downloads")
-    class DownloadMigration : AutoMigrationSpec
 }

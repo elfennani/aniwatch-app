@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastAny
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -63,9 +61,9 @@ fun ShowScreen(
     state: ShowUiState,
     onBack: () -> Unit = {},
     onErrorDismiss: (Int) -> Unit = {},
-    onOpenEpisode: (episode: Int, audio: EpisodeAudio) -> Unit = { _, _ -> },
-    onDownloadEpisode: (episode: Int, audio: EpisodeAudio) -> Unit = { _, _ -> },
-    onDeleteEpisode: (episode: Int) -> Unit = {},
+    onOpenEpisode: (episode: Double, audio: EpisodeAudio) -> Unit = { _, _ -> },
+    onDownloadEpisode: (episode: Double, audio: EpisodeAudio) -> Unit = { _, _ -> },
+    onDeleteEpisode: (episode: Double) -> Unit = {},
     onStatusClick: () -> Unit = {},
     onClickCharacters: (Int) -> Unit = {},
     onClickRelations: (Int) -> Unit = {},
@@ -245,7 +243,7 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
                     EpisodeRoute(
                         id = showState.show?.id!!,
                         allanimeId = showState.show?.allanimeId!!,
-                        episode = episode,
+                        episode = episode.toFloat(),
                         audio = if (state is DownloadState.Downloaded) state.audio else audio,
                         useSaved = state is DownloadState.Downloaded
                     )

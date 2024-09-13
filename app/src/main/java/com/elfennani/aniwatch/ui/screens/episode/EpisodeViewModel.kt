@@ -15,7 +15,6 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.navigation.toRoute
 import com.elfennani.aniwatch.data.repository.ShowRepository
-import com.elfennani.aniwatch.models.EpisodeLink
 import com.elfennani.aniwatch.models.Resource
 import com.elfennani.aniwatch.models.ShowDetails
 import com.elfennani.aniwatch.services.PlaybackService
@@ -41,7 +40,7 @@ class EpisodeViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
-    val route = savedStateHandle.toRoute<EpisodeRoute>()
+    private val route = savedStateHandle.toRoute<EpisodeRoute>()
 
     private val episode = MutableStateFlow<String?>(null)
     private val show = MutableStateFlow<ShowDetails?>(null)
@@ -86,7 +85,7 @@ class EpisodeViewModel @Inject constructor(
                                     .setArtworkUri(
                                         show
                                             .episodes
-                                            .find { ep -> ep.episode == route.episode }
+                                            .find { ep -> ep.episode == route.episode.toDouble() }
                                             ?.thumbnail
                                             ?.toUri()
                                     )
@@ -120,7 +119,7 @@ class EpisodeViewModel @Inject constructor(
             return;
         }
 
-        val res = showRepository.getEpisodeById(route.allanimeId, route.episode, route.audio)
+        val res = showRepository.getEpisodeById(route.allanimeId, route.episode.toDouble(), route.audio)
 
         when (res) {
             is Resource.Success -> episode.update { res.data?.hls?.url }

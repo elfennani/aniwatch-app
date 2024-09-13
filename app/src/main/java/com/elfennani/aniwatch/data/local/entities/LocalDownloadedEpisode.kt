@@ -16,7 +16,7 @@ import java.util.Date
 )
 data class LocalDownloadedEpisode(
     val showId: Int,
-    val episode: Int,
+    val episode: Double,
     val state: LocalDownloadState,
     @ColumnInfo(defaultValue = "SUB") val audio: EpisodeAudio,
     val progress: Float,
@@ -41,7 +41,7 @@ fun DownloadState.toLocalDownloadState() = when(this){
 
 fun DownloadState.toEntity(
     showId: Int,
-    episode: Int,
+    episode: Double,
     audio: EpisodeAudio,
     createdAt: Date = Date.from(Instant.now()),
 ): LocalDownloadedEpisode {

@@ -156,7 +156,7 @@ fun HideSystemBars() {
 data class EpisodeRoute(
     val id: Int,
     val allanimeId: String,
-    val episode: Int,
+    val episode: Float,
     val audio: EpisodeAudio,
     val useSaved: Boolean = false
 )

@@ -26,14 +26,12 @@ import com.elfennani.aniwatch.models.ResourceException
 import com.elfennani.aniwatch.models.ShowDetails
 import com.elfennani.aniwatch.models.dataOrThrow
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.net.URL
 import java.time.Duration
 import java.time.Instant
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 
 @AndroidEntryPoint
@@ -59,7 +57,7 @@ class DownloadService : Service() {
 
         override fun handleMessage(msg: Message) {
             val showId = msg.data.getInt("showId")
-            val episodeNumber = msg.data.getInt("episode")
+            val episodeNumber = msg.data.getDouble("episode")
             val audio = EpisodeAudio.valueOf(msg.data.getString("audio")!!)
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             val notification = NotificationCompat
@@ -193,7 +191,7 @@ class DownloadService : Service() {
 
     private fun updateNotification(
         show: ShowDetails,
-        episode: Int,
+        episode: Double,
         audio: EpisodeAudio,
         progress: Float,
     ) {
@@ -232,7 +230,7 @@ class DownloadService : Service() {
         serviceHandler?.obtainMessage()?.also { msg ->
             msg.arg1 = startId
             val showId = intent.getIntExtra("showId", 0)
-            val episode = intent.getIntExtra("episode", 0)
+            val episode = intent.getDoubleExtra("episode", 0.0)
             val audio = intent.getStringExtra("audio")!!
 
             msg.data = bundleOf(

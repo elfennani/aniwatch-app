@@ -38,7 +38,6 @@ import androidx.compose.ui.window.DialogProperties
 import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.Episode
 import com.elfennani.aniwatch.models.EpisodeAudio
-import com.elfennani.aniwatch.models.EpisodeState
 import com.elfennani.aniwatch.ui.theme.AppTheme
 import kotlin.math.roundToInt
 
@@ -48,7 +47,7 @@ fun EpisodeDialog(
     episode: Episode,
     onDownload: (EpisodeAudio) -> Unit,
     onDelete: () -> Unit,
-    onOpenEpisode: (episode: Int, audio: EpisodeAudio) -> Unit,
+    onOpenEpisode: (episode: Double, audio: EpisodeAudio) -> Unit,
 ) {
     Dialog(
         onDismissRequest = onDismissRequest,

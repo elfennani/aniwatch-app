@@ -1,9 +1,7 @@
 package com.elfennani.aniwatch.data.repository
 
-import android.database.sqlite.SQLiteException
 import android.util.Log
 import androidx.compose.ui.util.fastAny
-import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.data.local.dao.CachedEpisodesDao
 import com.elfennani.aniwatch.data.local.dao.CachedListingDao
 import com.elfennani.aniwatch.data.local.dao.CachedShowDao
@@ -21,8 +19,6 @@ import com.elfennani.aniwatch.data.remote.models.toSerializable
 import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.Episode
 import com.elfennani.aniwatch.models.EpisodeAudio
-import com.elfennani.aniwatch.models.EpisodeLink
-import com.elfennani.aniwatch.models.EpisodeState
 import com.elfennani.aniwatch.models.Resource
 import com.elfennani.aniwatch.models.ShowBasic
 import com.elfennani.aniwatch.models.ShowDetails
@@ -30,15 +26,12 @@ import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.models.StatusDetails
 import com.elfennani.aniwatch.models.toNetwork
 import com.elfennani.aniwatch.utils.resourceOf
-import com.squareup.moshi.JsonDataException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import okio.IOException
-import retrofit2.HttpException
 
 class ShowRepository(
     private val apiService: APIService,
@@ -66,7 +59,7 @@ class ShowRepository(
 
     suspend fun getEpisodeById(
         allAnimeId: String,
-        episode: Int,
+        episode: Double,
         audio: EpisodeAudio = EpisodeAudio.SUB,
     ) = resourceOf {
         apiService.getEpisodeById(

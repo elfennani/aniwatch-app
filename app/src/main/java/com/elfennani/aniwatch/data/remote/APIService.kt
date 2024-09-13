@@ -36,7 +36,7 @@ interface APIService {
     @GET("/episode/{allAnimeId}/{episode}")
     suspend fun getEpisodeById(
         @Path("allAnimeId") allAnimeId: String,
-        @Path("episode") episode: Int,
+        @Path("episode") episode: Double,
         @Query("type") type: TranslationNetwork = TranslationNetwork.SUB,
     ): NetworkEpisodeLink
 
