@@ -104,8 +104,10 @@ fun ShowScreen(
         floatingActionButton = {
             if (state.show != null) {
                 ExtendedFloatingActionButton(
-                    text = { Text("Watch") },
+                    text = { Text("Watch", style = AppTheme.typography.labelLarge) },
                     icon = { Icon(Icons.Default.PlayArrow, contentDescription = null) },
+                    containerColor = AppTheme.colorScheme.primary,
+                    contentColor = AppTheme.colorScheme.onPrimary,
                     onClick = {
                         val nextEpisode = state.show.episodes.find {
                             it.episode == ((state.show.progress ?: 0) + 1).toDouble()
