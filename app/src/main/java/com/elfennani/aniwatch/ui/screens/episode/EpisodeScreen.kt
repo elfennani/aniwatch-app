@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
@@ -57,7 +57,7 @@ fun EpisodeScreen(
 
     DisposableEffect(context) {
         context.requireActivity().requestedOrientation =
-            ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
         onDispose {
             context.requireActivity().requestedOrientation =
                 ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -70,29 +70,33 @@ fun EpisodeScreen(
     Scaffold(
         containerColor = Color.Black,
         contentColor = Color.White,
-        snackbarHost = { ErrorSnackbarHost(
-            errors = state.errors,
-            onErrorDismiss = onErrorDismiss,
-            actionName = "Retry",
-            onPressAction = onRefresh
-        ) }
+        snackbarHost = {
+            ErrorSnackbarHost(
+                errors = state.errors,
+                onErrorDismiss = onErrorDismiss,
+                actionName = "Retry",
+                onPressAction = onRefresh
+            )
+        }
     ) {
         if (state.exoPlayer != null) {
-            AndroidView(
-                factory = { ctx ->
-                    PlayerView(ctx).apply {
-                        player = state.exoPlayer
-                        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-                        layoutParams = FrameLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .background(Color.Black)
-                    .fillMaxSize()
-            )
+            Box {
+                AndroidView(
+                    factory = { ctx ->
+                        PlayerView(ctx).apply {
+                            player = state.exoPlayer
+                            resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                            layoutParams = FrameLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .background(Color.Black)
+                        .fillMaxSize()
+                )
+            }
         }
     }
 }
@@ -158,7 +162,7 @@ data class EpisodeRoute(
     val allanimeId: String,
     val episode: Float,
     val audio: EpisodeAudio,
-    val useSaved: Boolean = false
+    val useSaved: Boolean = false,
 )
 
 @androidx.annotation.OptIn(UnstableApi::class)

@@ -3,7 +3,6 @@ package com.elfennani.aniwatch.ui.screens.episode
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -22,16 +21,20 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @UnstableApi
 @HiltViewModel
@@ -42,6 +45,7 @@ class EpisodeViewModel @Inject constructor(
 ) : ViewModel() {
     private val route = savedStateHandle.toRoute<EpisodeRoute>()
 
+    private val progress = MutableStateFlow(0L)
     private val episode = MutableStateFlow<String?>(null)
     private val show = MutableStateFlow<ShowDetails?>(null)
 
@@ -59,55 +63,82 @@ class EpisodeViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            combine(show, episode) { show, episode ->
-                Pair(
-                    show,
-                    episode
-                )
-            }.collect { (show, episode) ->
-                if (show == null || episode == null) return@collect
+            val playerAsync = async { preparePlayer() }
+            val progressAsync = async { updateProgress() }
 
-                val sessionToken =
-                    SessionToken(context, ComponentName(context, PlaybackService::class.java))
-                controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
-                controllerFuture!!.addListener(
-                    {
-                        val mediaController = controllerFuture?.get()
-                        _state.update {
-                            it.copy(exoPlayer = mediaController?.apply {
-                                playWhenReady = true
-
-                                val mediaMetadata = MediaMetadata
-                                    .Builder()
-                                    .setTitle(show.name)
-                                    .setDisplayTitle("Episode ${route.episode} • ${route.audio.name}")
-                                    .setArtist(show.name)
-                                    .setArtworkUri(
-                                        show
-                                            .episodes
-                                            .find { ep -> ep.episode == route.episode.toDouble() }
-                                            ?.thumbnail
-                                            ?.toUri()
-                                    )
-                                    .build()
-
-                                val mediaItem = MediaItem
-                                    .fromUri(episode)
-                                    .buildUpon()
-                                    .setMediaMetadata(mediaMetadata)
-                                    .build()
-                                addMediaItem(mediaItem)
-
-                                play()
-                            })
-                        }
-                    },
-                    MoreExecutors.directExecutor()
-                )
-            }
+            awaitAll(playerAsync, progressAsync)
         }
 
-        Log.d("EpisodeViewModel", "Down: Done")
+    }
+
+    private suspend fun preparePlayer() {
+        combine(show, episode) { show, episode ->
+            Pair(
+                show,
+                episode
+            )
+        }.collect { (show, episode) ->
+            if (show == null || episode == null) return@collect
+
+            val sessionToken =
+                SessionToken(context, ComponentName(context, PlaybackService::class.java))
+            controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
+            controllerFuture!!.addListener(
+                {
+                    val mediaController = controllerFuture?.get()
+                    _state.update {
+                        it.copy(exoPlayer = mediaController?.apply {
+                            playWhenReady = true
+
+                            val mediaMetadata = MediaMetadata
+                                .Builder()
+                                .setTitle(show.name)
+                                .setDisplayTitle("Episode ${route.episode} • ${route.audio.name}")
+                                .setArtist(show.name)
+                                .setArtworkUri(
+                                    show
+                                        .episodes
+                                        .find { ep -> ep.episode == route.episode.toDouble() }
+                                        ?.thumbnail
+                                        ?.toUri()
+                                )
+                                .build()
+
+                            val mediaItem = MediaItem
+                                .fromUri(episode)
+                                .buildUpon()
+                                .setMediaMetadata(mediaMetadata)
+                                .build()
+                            addMediaItem(mediaItem)
+
+                            play()
+                        })
+                    }
+                },
+                MoreExecutors.directExecutor()
+            )
+        }
+    }
+
+    private suspend fun updateProgress() {
+        var progressJob: Job? = null
+        _state
+            .map { it.exoPlayer }
+            .collect { player ->
+                progressJob?.cancel()
+
+                if (player != null) {
+                    progressJob = viewModelScope.launch {
+                        while (true) {
+                            progress.update { player.currentPosition }
+                            if(player.currentPosition / player.duration > 0.8){
+                                // TODO: mark episode as watched
+                            }
+                            delay(1.seconds / 2)
+                        }
+                    }
+                }
+            }
     }
 
     private suspend fun loadEpisode() {
@@ -119,7 +150,8 @@ class EpisodeViewModel @Inject constructor(
             return;
         }
 
-        val res = showRepository.getEpisodeById(route.allanimeId, route.episode.toDouble(), route.audio)
+        val res =
+            showRepository.getEpisodeById(route.allanimeId, route.episode.toDouble(), route.audio)
 
         when (res) {
             is Resource.Success -> episode.update { res.data?.hls?.url }

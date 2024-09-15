@@ -17,6 +17,7 @@ import com.elfennani.aniwatch.ui.theme.AppTheme
 @Composable
 fun ProgressBottomSheet(
     initialValue: Int = 0,
+    total: Int,
     onDismiss: () -> Unit,
     onConfirm: (Int) -> Unit,
 ) {
@@ -32,7 +33,7 @@ fun ProgressBottomSheet(
         RangeTextField(
             value = value,
             onValueChange = { value = it },
-            max = 13
+            max = total
         )
     }
 }
@@ -50,8 +51,9 @@ private fun ScoreBottomSheetPreview() {
             ) {
                 ProgressBottomSheet(
                     initialValue = 0,
+                    total = 13,
                     onDismiss = {},
-                    onConfirm = {}
+                    onConfirm = {},
                 )
             }
         }

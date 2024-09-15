@@ -4,12 +4,17 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -23,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.elfennani.aniwatch.models.ShowDetails
+import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.ui.composables.Divider
 import com.elfennani.aniwatch.ui.theme.AppTheme
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
@@ -32,7 +38,9 @@ fun ShowScreenHeader(
     show: ShowDetails,
     lazyListState: LazyListState,
     padding: PaddingValues,
+    isAppendingEpisode: Boolean,
     onStatusClick: () -> Unit,
+    onAppendEpisode: () -> Unit,
     onBack: () -> Unit,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -71,12 +79,36 @@ fun ShowScreenHeader(
                 )
             }
 
-            StatusButton(
-                status = show.status,
-                progress = show.progress,
-                total = show.episodesCount,
-                onClick = { onStatusClick() }
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min),
+                horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.normal)
+            ) {
+                StatusButton(
+                    modifier = Modifier.weight(1f),
+                    status = show.status,
+                    progress = show.progress,
+                    total = show.episodesCount,
+                    onClick = { onStatusClick() }
+                )
+                if(show.status in listOf(ShowStatus.WATCHING, ShowStatus.REPEATING)){
+                    OutlinedButton(
+                        onClick = { onAppendEpisode() },
+                        colors = ButtonDefaults.outlinedButtonColors()
+                            .copy(
+                                contentColor = AppTheme.colorScheme.primary,
+                            ),
+                        shape = AppTheme.shapes.button,
+                        border = null,
+                        contentPadding = PaddingValues(horizontal = AppTheme.sizes.medium),
+                        modifier = Modifier.fillMaxHeight(),
+                        enabled = !isAppendingEpisode
+                    ) {
+                        Text("+ 1 EP")
+                    }
+                }
+            }
 
             Column {
                 Text(

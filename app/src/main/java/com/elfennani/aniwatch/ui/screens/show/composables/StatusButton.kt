@@ -3,7 +3,6 @@ package com.elfennani.aniwatch.ui.screens.show.composables
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
@@ -23,6 +22,7 @@ import com.elfennani.aniwatch.ui.theme.AppTheme
 
 @Composable
 private fun StatusButtonContainer(
+    modifier: Modifier = Modifier,
     outline: Boolean = false,
     onClick: () -> Unit,
     content: @Composable () -> Unit,
@@ -36,7 +36,7 @@ private fun StatusButtonContainer(
                 ),
             shape = AppTheme.shapes.button,
             border = null,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier,
             contentPadding = PaddingValues(vertical = 12.dp)
         ) {
             content()
@@ -50,7 +50,7 @@ private fun StatusButtonContainer(
                     contentColor = AppTheme.colorScheme.onPrimary
                 ),
             shape = AppTheme.shapes.button,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier,
             contentPadding = PaddingValues(vertical = 12.dp)
         ) {
             content()
@@ -59,6 +59,7 @@ private fun StatusButtonContainer(
 
 @Composable
 fun StatusButton(
+    modifier: Modifier = Modifier,
     status: ShowStatus?,
     progress: Int? = null,
     total: Int? = null,
@@ -68,6 +69,7 @@ fun StatusButton(
     val icon = status.toIcon()
 
     StatusButtonContainer(
+        modifier = modifier,
         onClick = { onClick() },
         outline = status == null
     ) {

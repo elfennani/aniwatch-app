@@ -92,8 +92,10 @@ fun StatusEditorScreen(
 
             EditorSheetModal.PROGRESS -> ProgressBottomSheet(
                 initialValue = state.status?.progress ?: 0,
+                total = state.show?.episodesCount ?: 0,
                 onDismiss = { onUiEvent(StatusEditorUiEvent.CloseBottomSheet) },
-                onConfirm = { onUiEvent(StatusEditorUiEvent.SetProgress(it)) })
+                onConfirm = { onUiEvent(StatusEditorUiEvent.SetProgress(it)) }
+            )
 
             EditorSheetModal.STATUS -> StatusBottomSheet(
                 selected = state.status?.status,
@@ -124,8 +126,8 @@ fun StatusEditorScreen(
 
                     Column(
                         verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
-                    ){
-                        (0..3).forEach{ _ ->
+                    ) {
+                        (0..3).forEach { _ ->
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.normal)
                             ) {

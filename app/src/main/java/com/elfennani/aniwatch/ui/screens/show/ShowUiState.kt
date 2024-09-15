@@ -7,5 +7,6 @@ data class ShowUiState(
     val show: ShowDetails? = null,
     val isLoading: Boolean = true,
     val errors: List<Int> = emptyList(),
-    val defaultAudio: EpisodeAudio? = null
+    val defaultAudio: EpisodeAudio? = null,
+    val isAppendingEpisode: Boolean = false
 )

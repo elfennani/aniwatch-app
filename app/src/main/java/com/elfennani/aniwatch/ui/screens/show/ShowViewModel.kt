@@ -14,6 +14,7 @@ import com.elfennani.aniwatch.data.repository.ShowRepository
 import com.elfennani.aniwatch.dataStore
 import com.elfennani.aniwatch.models.EpisodeAudio
 import com.elfennani.aniwatch.models.Resource
+import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.services.DownloadService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -112,6 +113,57 @@ class ShowViewModel @Inject constructor(
             if (sync is Resource.Error) {
                 _state.update {
                     it.copy(errors = it.errors + sync.message!!)
+                }
+            }
+        }
+    }
+
+    fun appendEpisode() {
+        viewModelScope.launch {
+            _state.update { it.copy(isAppendingEpisode = true) }
+            when (val status = showRepository.getShowStatusById(showId)) {
+                is Resource.Error -> _state.update {
+                    it.copy(
+                        errors = it.errors + status.message!!,
+                        isAppendingEpisode = false
+                    )
+                }
+
+                is Resource.Success -> {
+                    val statusInfo = status.data!!
+
+                    if (statusInfo.status !in listOf(ShowStatus.REPEATING, ShowStatus.WATCHING))
+                        return@launch
+
+                    if (statusInfo.progress == _show.value?.episodesCount)
+                        return@launch
+
+
+                    val newStatus = statusInfo
+                        .copy(progress = statusInfo.progress + 1)
+                        .let {
+                            if (statusInfo.progress + 1 == _show.value?.episodesCount) {
+                                return@let it.copy(status = ShowStatus.COMPLETED)
+                            }
+
+                            it
+                        }
+
+                    val result = showRepository.setShowStatus(showId, statusDetails = newStatus)
+                    when (result) {
+                        is Resource.Success -> {
+                            _state.update {
+                                it.copy(isAppendingEpisode = false)
+                            }
+                        }
+
+                        is Resource.Error -> _state.update {
+                            it.copy(
+                                isAppendingEpisode = false,
+                                errors = it.errors + result.message!!
+                            )
+                        }
+                    }
                 }
             }
         }

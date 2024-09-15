@@ -15,8 +15,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountTree
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -68,6 +72,7 @@ fun ShowScreen(
     onClickCharacters: (Int) -> Unit = {},
     onClickRelations: (Int) -> Unit = {},
     onToggleAudio: () -> Unit = {},
+    onAppendEpisode: () -> Unit = {},
 ) {
     val lazyListState = rememberLazyListState()
     var selectedEpisode by remember {
@@ -96,6 +101,23 @@ fun ShowScreen(
                 onErrorDismiss = onErrorDismiss
             )
         },
+        floatingActionButton = {
+            if (state.show != null) {
+                ExtendedFloatingActionButton(
+                    text = { Text("Watch") },
+                    icon = { Icon(Icons.Default.PlayArrow, contentDescription = null) },
+                    onClick = {
+                        val nextEpisode = state.show.episodes.find {
+                            it.episode == ((state.show.progress ?: 0) + 1).toDouble()
+                        }?.episode
+
+                        if (nextEpisode != null) {
+                            onOpenEpisode(nextEpisode, state.defaultAudio ?: EpisodeAudio.SUB)
+                        }
+                    }
+                )
+            }
+        }
     ) { padding ->
 
 
@@ -107,7 +129,9 @@ fun ShowScreen(
                         lazyListState = lazyListState,
                         padding = padding,
                         onBack = onBack,
-                        onStatusClick = onStatusClick
+                        onStatusClick = onStatusClick,
+                        onAppendEpisode = onAppendEpisode,
+                        isAppendingEpisode = state.isAppendingEpisode
                     ) {
                         FlowRow(
                             verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.small),
@@ -256,7 +280,8 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
             },
             onClickCharacters = navController::navigateToCharactersScreen,
             onClickRelations = navController::navigateToRelationScreen,
-            onToggleAudio = viewModel::toggleAudio
+            onToggleAudio = viewModel::toggleAudio,
+            onAppendEpisode = viewModel::appendEpisode
         )
     }
 }

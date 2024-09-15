@@ -9,7 +9,7 @@ import androidx.compose.material.icons.filled.PlaylistRemove
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.SmartDisplay
 
-enum class ShowStatus{
+enum class ShowStatus {
     WATCHING,
     ON_HOLD,
     COMPLETED,
@@ -24,9 +24,9 @@ fun ShowStatus?.formatText(progress: Int? = null, total: Int? = null) = when (th
     ShowStatus.REPEATING -> "Rewatching"
     ShowStatus.WATCHING -> {
         if (progress != null && total != null)
-            "Currently Watching $progress/$total"
+            "Watching $progress/$total"
         else
-            "Currently Watching"
+            "Watching"
     }
 
     ShowStatus.COMPLETED -> "Finished"
