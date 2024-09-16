@@ -3,6 +3,7 @@ package com.elfennani.aniwatch.ui.screens.show.composables
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -90,6 +91,16 @@ fun TagsList(
 private fun TagCard(tag: Tag) {
     Row(
         modifier = Modifier
+            .let {
+                if (tag.spoiler)
+                    return@let it.border(
+                        1.dp,
+                        AppTheme.colorScheme.primary,
+                        RoundedCornerShape(4.dp)
+                    )
+
+                it
+            }
             .clip(RoundedCornerShape(4.dp))
             .background(
                 if (tag.spoiler) AppTheme.colorScheme.primaryContainer

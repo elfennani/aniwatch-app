@@ -16,6 +16,7 @@ import androidx.navigation.toRoute
 import com.elfennani.aniwatch.data.repository.ShowRepository
 import com.elfennani.aniwatch.models.Resource
 import com.elfennani.aniwatch.models.ShowDetails
+import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.services.PlaybackService
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
@@ -24,9 +25,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.cancel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -34,6 +38,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
+import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 
 @UnstableApi
@@ -45,6 +50,7 @@ class EpisodeViewModel @Inject constructor(
 ) : ViewModel() {
     private val route = savedStateHandle.toRoute<EpisodeRoute>()
 
+    private var didUpdateProgress = false
     private val progress = MutableStateFlow(0L)
     private val episode = MutableStateFlow<String?>(null)
     private val show = MutableStateFlow<ShowDetails?>(null)
@@ -120,6 +126,42 @@ class EpisodeViewModel @Inject constructor(
         }
     }
 
+    private suspend fun appendEpisode(): Boolean {
+        when (val status = showRepository.getShowStatusById(route.id)) {
+            is Resource.Error -> return false
+
+            is Resource.Success -> {
+                val statusInfo = status.data!!
+                val newProgress = route.episode.toInt()
+
+                if (statusInfo.status !in listOf(ShowStatus.REPEATING, ShowStatus.WATCHING))
+                    return false
+
+                if (
+                    statusInfo.progress == show.value?.episodesCount ||
+                    newProgress < (show.value?.progress ?: 0)
+                )
+                    return false
+
+                val newStatus = statusInfo
+                    .copy(progress = newProgress)
+                    .let {
+                        if (newProgress == show.value?.episodesCount) {
+                            return@let it.copy(status = ShowStatus.COMPLETED)
+                        }
+
+                        it
+                    }
+
+                val result = showRepository.setShowStatus(route.id, statusDetails = newStatus)
+                return when (result) {
+                    is Resource.Success -> true
+                    is Resource.Error -> false
+                }
+            }
+        }
+    }
+
     private suspend fun updateProgress() {
         var progressJob: Job? = null
         _state
@@ -127,12 +169,18 @@ class EpisodeViewModel @Inject constructor(
             .collect { player ->
                 progressJob?.cancel()
 
-                if (player != null) {
+                if (player != null && !didUpdateProgress) {
                     progressJob = viewModelScope.launch {
                         while (true) {
                             progress.update { player.currentPosition }
-                            if(player.currentPosition / player.duration > 0.8){
-                                // TODO: mark episode as watched
+                            if (player.currentPosition / player.duration > 0.8) {
+                                if (appendEpisode()) {
+                                    didUpdateProgress = true
+                                    currentCoroutineContext().cancel(null)
+                                    break
+                                } else {
+                                    delay(20.seconds)
+                                }
                             }
                             delay(1.seconds / 2)
                         }

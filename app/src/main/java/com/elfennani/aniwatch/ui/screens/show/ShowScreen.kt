@@ -1,10 +1,12 @@
 package com.elfennani.aniwatch.ui.screens.show
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -124,7 +126,11 @@ fun ShowScreen(
 
 
         if (state.show != null && !state.isLoading) {
-            LazyColumn(state = lazyListState, modifier = Modifier.fillMaxWidth()) {
+            LazyColumn(
+                state = lazyListState,
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(bottom = AppTheme.sizes.large * 4f)
+            ) {
                 item(key = "header") {
                     ShowScreenHeader(
                         show = state.show,
@@ -155,8 +161,6 @@ fun ShowScreen(
                                 icon = Icons.Default.Tag
                             )
                         }
-
-//                        TagsList(state.show.tags, tagsOpen)
                     }
                 }
 
@@ -193,15 +197,24 @@ fun ShowScreen(
                     state.show.episodes.sortedBy { it.episode },
                     key = { ep -> ep.id }
                 ) { episode ->
+                    Log.d(
+                        "ShowScreen", "ShowScreen: ${
+                            state.show.progress != null &&
+                                    episode.episode <= state.show.progress &&
+                                    state.show.status.isWatching()
+                        }"
+                    )
                     EpisodeCard(
-                        modifier = Modifier.apply {
+                        modifier = Modifier.let {
                             if (
                                 state.show.progress != null &&
                                 episode.episode <= state.show.progress &&
                                 state.show.status.isWatching()
                             ) {
-                                alpha(0.75f)
+                                return@let it.alpha(0.5f)
                             }
+
+                            it
                         },
                         episode = episode,
                         onClick = {

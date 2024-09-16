@@ -1,5 +1,6 @@
 package com.elfennani.aniwatch.data.local
 
+import android.util.Log
 import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.room.TypeConverter
 import coil.request.Tags
@@ -90,15 +91,20 @@ class Converters {
 
     @TypeConverter
     fun toTagsList(json: String): List<Tag> {
-        val moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
-            .build()
+        try{
+            val moshi = Moshi.Builder()
+                .addLast(KotlinJsonAdapterFactory())
+                .build()
 
-        val adapter = moshi
-            .adapter<List<Tag>>(
-                Types.newParameterizedType(List::class.java, Tag::class.java)
-            )
+            val adapter = moshi
+                .adapter<List<Tag>>(
+                    Types.newParameterizedType(List::class.java, Tag::class.java)
+                )
 
-        return adapter.fromJson(json)!!
+            return adapter.fromJson(json)!!
+        }catch (e:Exception){
+            e.printStackTrace()
+            return emptyList()
+        }
     }
 }

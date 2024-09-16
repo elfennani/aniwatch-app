@@ -110,7 +110,10 @@ fun EpisodeCard(
                 )
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
-                    verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller, Alignment.CenterVertically)
+                    verticalArrangement = Arrangement.spacedBy(
+                        AppTheme.sizes.smaller,
+                        Alignment.CenterVertically
+                    )
                 ) {
                     if (!subtitle.isNullOrEmpty()) {
                         Text(
@@ -150,16 +153,21 @@ fun EpisodeCard(
 
                         is DownloadState.Downloading -> {
                             val progressRounded = (episode.state.progress * 100).fastRoundToInt()
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(AppTheme.sizes.medium),
-                                progress = { episode.state.progress },
-                                color = AppTheme.colorScheme.primary
-                            )
-                            Text(
-                                text = "$progressRounded%",
-                                style = AppTheme.typography.labelSmallBold,
-                                color = AppTheme.colorScheme.primary
-                            )
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(AppTheme.sizes.medium),
+                                    progress = { episode.state.progress },
+                                    color = AppTheme.colorScheme.primary
+                                )
+                                Text(
+                                    text = "$progressRounded%",
+                                    style = AppTheme.typography.labelSmallBold,
+                                    color = AppTheme.colorScheme.primary
+                                )
+                            }
                         }
 
                         is DownloadState.Failure ->
