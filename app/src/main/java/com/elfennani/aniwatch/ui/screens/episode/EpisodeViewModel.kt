@@ -3,6 +3,7 @@ package com.elfennani.aniwatch.ui.screens.episode
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -173,7 +174,8 @@ class EpisodeViewModel @Inject constructor(
                     progressJob = viewModelScope.launch {
                         while (true) {
                             progress.update { player.currentPosition }
-                            if (player.currentPosition / player.duration > 0.8) {
+                            val progressPercent = player.currentPosition.toFloat() / player.duration
+                            if (progressPercent > 0.8f) {
                                 if (appendEpisode()) {
                                     didUpdateProgress = true
                                     currentCoroutineContext().cancel(null)
