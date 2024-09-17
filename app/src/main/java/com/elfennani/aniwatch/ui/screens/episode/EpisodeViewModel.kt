@@ -135,7 +135,13 @@ class EpisodeViewModel @Inject constructor(
                 val statusInfo = status.data!!
                 val newProgress = route.episode.toInt()
 
-                if (statusInfo.status !in listOf(ShowStatus.REPEATING, ShowStatus.WATCHING))
+                if (statusInfo.status !in listOf(
+                        ShowStatus.REPEATING,
+                        ShowStatus.WATCHING,
+                        ShowStatus.PLAN_TO_WATCH,
+                        null
+                    )
+                )
                     return false
 
                 if (
@@ -147,11 +153,15 @@ class EpisodeViewModel @Inject constructor(
                 val newStatus = statusInfo
                     .copy(progress = newProgress)
                     .let {
-                        if (newProgress == show.value?.episodesCount) {
-                            return@let it.copy(status = ShowStatus.COMPLETED)
-                        }
+                        when {
+                            newProgress == show.value?.episodesCount ->
+                                it.copy(status = ShowStatus.COMPLETED)
 
-                        it
+                            statusInfo.status in listOf(ShowStatus.PLAN_TO_WATCH, null) ->
+                                it.copy(status = ShowStatus.WATCHING)
+
+                            else -> it
+                        }
                     }
 
                 val result = showRepository.setShowStatus(route.id, statusDetails = newStatus)
