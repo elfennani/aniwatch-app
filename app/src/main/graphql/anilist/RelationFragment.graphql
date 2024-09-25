@@ -1,0 +1,9 @@
+fragment RelationFragment on MediaEdge {
+    id
+    relationType
+    node {
+        ...ShowFragment
+        status
+        format
+    }
+}

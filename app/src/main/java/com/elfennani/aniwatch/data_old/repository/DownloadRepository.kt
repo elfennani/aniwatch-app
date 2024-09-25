@@ -35,7 +35,7 @@ class DownloadRepository(
     suspend fun markDownloadState(showId: Int, episode: Double, state: com.elfennani.aniwatch.domain.models.DownloadState) {
         if (state is com.elfennani.aniwatch.domain.models.DownloadState.Downloading) {
             progressDownload(showId, episode, state.progress)
-            return;
+            return
         }
         if (state is com.elfennani.aniwatch.domain.models.DownloadState.Failure) {
             setError(showId, episode, state.message)

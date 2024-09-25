@@ -25,7 +25,7 @@ class ValidateTokenViewModel @Inject constructor(
     private val sessionRepository: SessionRepository
 ) : ViewModel() {
     private val params = savedStateHandle.get<String>("params")
-    private val _errors = MutableStateFlow<List<Int>>(emptyList());
+    private val _errors = MutableStateFlow<List<Int>>(emptyList())
     val errors = _errors.asStateFlow()
 
     fun validate(context: Context, onSuccess: () -> Unit = {}){
@@ -37,7 +37,7 @@ class ValidateTokenViewModel @Inject constructor(
 
         if(accessToken.isNullOrEmpty() || expiration.isNullOrEmpty()){
             _errors.update { it + R.string.invalid_token }
-            return;
+            return
         }
 
         val expires = Instant.now().epochSecond + expiration.toLong()

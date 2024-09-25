@@ -204,7 +204,7 @@ class EpisodeViewModel @Inject constructor(
             val file = File(directory, "${route.episode}.mp4")
 
             episode.update { file.toUri().toString() }
-            return;
+            return
         }
 
         val res =

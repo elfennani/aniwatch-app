@@ -9,7 +9,7 @@ data class StatusDate(
     val day: Int,
 ){
     fun format(): String {
-        val calendar = this.toCalendar();
+        val calendar = this.toCalendar()
         val day = String.format(Locale.ENGLISH,"%02d",calendar.get(Calendar.DAY_OF_MONTH))
         val month = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT_FORMAT, Locale.ENGLISH)
         val year = calendar.get(Calendar.YEAR)

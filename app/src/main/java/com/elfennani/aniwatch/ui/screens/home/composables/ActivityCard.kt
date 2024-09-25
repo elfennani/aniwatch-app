@@ -43,7 +43,7 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun ActivityCard(modifier: Modifier = Modifier, activity: com.elfennani.aniwatch.domain.models.Activity, onClick: () -> Unit = {}) {
+fun ActivityCard(modifier: Modifier = Modifier, activity: Activity, onClick: () -> Unit = {}) {
     val formattedDateTime by remember {
         derivedStateOf {
             val dateFormatter = DateFormat.getDateInstance(DateFormat.DEFAULT)
@@ -152,7 +152,7 @@ fun ActivityCard(modifier: Modifier = Modifier, activity: com.elfennani.aniwatch
 }
 
 @Composable
-private fun InfoRow(activity: com.elfennani.aniwatch.domain.models.Activity) {
+private fun InfoRow(activity: Activity) {
     if (activity.likes != 0 || activity.replies != 0) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -197,17 +197,17 @@ private fun InfoRow(activity: com.elfennani.aniwatch.domain.models.Activity) {
 @Preview
 @Composable
 private fun ActivityCardPreview() {
-    val activity = com.elfennani.aniwatch.domain.models.Activity(
+    val activity = Activity(
         id = 765110203,
         content = "watched episode 1 of Mushoku Tensei: Jobless Reincarnation",
-        type = com.elfennani.aniwatch.domain.models.ActivityType.LIST,
+        type = ActivityType.LIST,
         userId = 863261,
         userName = "Elfennani",
         userAvatar = "https://s4.anilist.co/file/anilistcdn/user/avatar/medium/b863261-VHMHjX3I0lLu.png",
         createdAt = Date(1722011555 * 1000L),
         likes = 1,
         replies = 3,
-        show = com.elfennani.aniwatch.domain.models.ActivtyShow(
+        show = ActivtyShow(
             id = 108465,
             name = "Mushoku Tensei: Jobless Reincarnation",
             image = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx108465-B9S9zC68eS5j.jpg",
@@ -233,10 +233,10 @@ private fun ActivityCardPreview() {
 @Preview
 @Composable
 private fun ActivityCardPreview2() {
-    val activity = com.elfennani.aniwatch.domain.models.Activity(
+    val activity = Activity(
         id = 765110203,
         content = "watched episode 1 of Mushoku Tensei: Jobless Reincarnation",
-        type = com.elfennani.aniwatch.domain.models.ActivityType.LIST,
+        type = ActivityType.LIST,
         userId = 863261,
         userName = "Elfennani",
         userAvatar = "https://s4.anilist.co/file/anilistcdn/user/avatar/medium/b863261-VHMHjX3I0lLu.png",

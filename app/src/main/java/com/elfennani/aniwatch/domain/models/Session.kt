@@ -1,9 +1,10 @@
 package com.elfennani.aniwatch.domain.models
 
-import java.util.Date
+import kotlinx.datetime.Instant
+
 
 data class Session(
     val id: Int,
     val token: String,
-    val expiration: Date
+    val expiration: Instant
 )

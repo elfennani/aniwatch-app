@@ -113,7 +113,7 @@ fun DownloadsScreen(
                             .clip(AppTheme.shapes.card)
                             .combinedClickable(
                                 onClick = {
-                                    if (episode.state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded)
+                                    if (episode.state is DownloadState.Downloaded)
                                         onNavigate(
                                             EpisodeRoute(
                                                 id = show.id,
@@ -154,7 +154,7 @@ fun DownloadsScreen(
                                 text = "Episode ${episode.episode}",
                                 style = AppTheme.typography.labelSmall
                             )
-                            if (episode.state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloading) {
+                            if (episode.state is DownloadState.Downloading) {
                                 LinearProgressIndicator(
                                     progress = episode.state.progress,
                                     color = AppTheme.colorScheme.primary,

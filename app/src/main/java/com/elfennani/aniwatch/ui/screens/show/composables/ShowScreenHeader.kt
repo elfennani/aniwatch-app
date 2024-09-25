@@ -68,7 +68,7 @@ fun ShowScreenHeader(
                 verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller)
             ) {
                 Text(
-                    text = show.name ?: "",
+                    text = show.name,
                     style = AppTheme.typography.titleNormal,
                     color = AppTheme.colorScheme.onBackground
                 )

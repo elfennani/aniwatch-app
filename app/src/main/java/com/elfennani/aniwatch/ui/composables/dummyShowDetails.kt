@@ -26,7 +26,7 @@ val dummyShow
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/3_sub.jpg",
                 duration = 1497,
-                state = _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "Ld577KNfZTXY8XT5u",
@@ -37,7 +37,7 @@ val dummyShow
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/2_sub.jpg",
                 duration = 1495,
-                state = _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Pending
+                state = DownloadState.Pending
             ),
             Episode(
                 id = "iCwfjXZJzDHr74Xw8",
@@ -48,7 +48,7 @@ val dummyShow
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/1_sub.jpg",
                 duration = 1497,
-                state = _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloading(0.32f)
+                state = DownloadState.Downloading(0.32f)
             ),
             Episode(
                 id = "G4J7aZMjrh2eZmSvi",
@@ -59,7 +59,7 @@ val dummyShow
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/5_sub.jpg",
                 duration = 1497,
-                state = _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "ARBy6J4cn8qezHGF3",
@@ -70,7 +70,7 @@ val dummyShow
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/4_sub.jpg",
                 duration = 1497,
-                state = _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "SJRLPXTEGM6e8gCsq",
@@ -81,7 +81,7 @@ val dummyShow
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/6_sub.jpg",
                 duration = 1497,
-                state = _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "hZ7m9P5nBgTuTgeXw",
@@ -92,7 +92,7 @@ val dummyShow
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/9_sub.jpg",
                 duration = 1497,
-                state = _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "mMpFXSniTN876SdaL",
@@ -103,7 +103,7 @@ val dummyShow
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/8_sub.jpg",
                 duration = 1497,
-                state = _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "mARMTfbc8JWDpBqrK",
@@ -114,7 +114,7 @@ val dummyShow
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/7_sub.jpg",
                 duration = 1497,
-                state = _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "4WtFCFWjpJLs9tGbm",
@@ -125,7 +125,7 @@ val dummyShow
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/12_sub.jpg",
                 duration = 1497,
-                state = _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved
+                state = DownloadState.NotSaved
             ),
             Episode(
                 id = "33MQMKfj29uni4mmA",
@@ -136,7 +136,7 @@ val dummyShow
                 dubbed = false,
                 thumbnail = "https://wp.youtube-anime.com/aln.youtube-anime.com/data2/ep_tbs/oso3xi8Knpv5BKqem/13_sub.jpg",
                 duration = 1497,
-                state = _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved
+                state = DownloadState.NotSaved
             )
         ),
         genres = listOf("Drama", "Music", "Slice of Life"),

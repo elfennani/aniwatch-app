@@ -49,7 +49,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharactersScreen(
-    characters: LazyPagingItems<com.elfennani.aniwatch.domain.models.Character>,
+    characters: LazyPagingItems<Character>,
     onBack: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -176,7 +176,7 @@ fun NavController.navigateToCharactersScreen(showId: Int, popUpToTop: Boolean = 
 @Preview
 @Composable
 private fun CharactersScreenPrev() {
-    val pagingData = flowOf(PagingData.empty<com.elfennani.aniwatch.domain.models.Character>()).collectAsLazyPagingItems()
+    val pagingData = flowOf(PagingData.empty<Character>()).collectAsLazyPagingItems()
     AppTheme {
         CharactersScreen(characters = pagingData, onBack = {})
     }

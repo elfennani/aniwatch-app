@@ -72,7 +72,7 @@ fun EpisodeDialog(
             }
 
             AnimatedVisibility(
-                visible = episode.state !is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved,
+                visible = episode.state !is DownloadState.NotSaved,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CompositionLocalProvider(LocalContentColor provides AppTheme.colorScheme.onBackground) {
@@ -90,7 +90,7 @@ fun EpisodeDialog(
                             horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
                         ) {
                             when (episode.state) {
-                                is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded -> {
+                                is DownloadState.Downloaded -> {
                                     Icon(Icons.Default.DownloadDone, contentDescription = null)
                                     Text(
                                         text = "Downloaded (${episode.state.audio})",
@@ -98,7 +98,7 @@ fun EpisodeDialog(
                                     )
                                 }
 
-                                is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloading -> {
+                                is DownloadState.Downloading -> {
                                     Icon(Icons.Default.Downloading, contentDescription = null)
                                     Column(
                                         verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
@@ -134,7 +134,7 @@ fun EpisodeDialog(
                                     }
                                 }
 
-                                is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Failure -> {
+                                is DownloadState.Failure -> {
                                     Icon(
                                         Icons.Default.Error,
                                         contentDescription = null,
@@ -153,7 +153,7 @@ fun EpisodeDialog(
                                     }
                                 }
 
-                                is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Pending -> {
+                                is DownloadState.Pending -> {
                                     Icon(Icons.Default.Downloading, contentDescription = null)
                                     Column(
                                         verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
@@ -206,7 +206,7 @@ fun EpisodeDialog(
                 }
 
 
-                if (episode.state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved || episode.state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Failure) {
+                if (episode.state is DownloadState.NotSaved || episode.state is DownloadState.Failure) {
                     DialogOption(label = "Download SUB", icon = Icons.Default.DownloadForOffline) {
                         onDownload(EpisodeAudio.SUB)
                         onDismissRequest()
@@ -222,7 +222,7 @@ fun EpisodeDialog(
                     }
                 }
 
-                if (episode.state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded) {
+                if (episode.state is DownloadState.Downloaded) {
                     DialogOption(
                         label = "Delete Download",
                         icon = Icons.Default.Delete,

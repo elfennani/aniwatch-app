@@ -117,7 +117,7 @@ fun EpisodeCard(
                 ) {
                     if (!subtitle.isNullOrEmpty()) {
                         Text(
-                            text = subtitle!!,
+                            text = subtitle,
                             style = AppTheme.typography.labelSmall,
                             color = AppTheme.colorScheme.onSecondary
                         )
@@ -133,11 +133,11 @@ fun EpisodeCard(
                         )
                     }
 
-                    if (episode.state !is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved) {
+                    if (episode.state !is DownloadState.NotSaved) {
                         BulletSeparator()
                     }
                     when (episode.state) {
-                        is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded ->
+                        is DownloadState.Downloaded ->
                             Icon(
                                 imageVector = Icons.Default.FileDownloadDone,
                                 contentDescription = null,
@@ -145,13 +145,13 @@ fun EpisodeCard(
                                 tint = AppTheme.colorScheme.primary
                             )
 
-                        is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Pending ->
+                        is DownloadState.Pending ->
                             CircularProgressIndicator(
                                 modifier = Modifier.size(AppTheme.sizes.medium),
                                 color = AppTheme.colorScheme.primary
                             )
 
-                        is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloading -> {
+                        is DownloadState.Downloading -> {
                             val progressRounded = (episode.state.progress * 100).fastRoundToInt()
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
@@ -170,7 +170,7 @@ fun EpisodeCard(
                             }
                         }
 
-                        is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Failure ->
+                        is DownloadState.Failure ->
                             Icon(
                                 imageVector = Icons.Default.Error,
                                 contentDescription = null,

@@ -19,7 +19,7 @@ interface DownloadDao {
     @Query("UPDATE downloaded_episodes SET progress=:progress, state=:state WHERE showId=:showId AND episode=:episode")
     suspend fun updateProgress(
         showId: Int,
-        episode: kotlin.Double,
+        episode: Double,
         progress: Float,
         state: LocalDownloadState = LocalDownloadState.DOWNLOADING
     )
@@ -27,14 +27,14 @@ interface DownloadDao {
     @Query("UPDATE downloaded_episodes SET state=:state WHERE showId=:showId AND episode=:episode")
     suspend fun updateState(
         showId: Int,
-        episode: kotlin.Double,
+        episode: Double,
         state: LocalDownloadState,
     )
 
     @Query("UPDATE downloaded_episodes SET errorRes=:errorRes, state=:state WHERE showId=:showId AND episode=:episode")
     suspend fun updateError(
         showId: Int,
-        episode: kotlin.Double,
+        episode: Double,
         errorRes: Int?,
         state: LocalDownloadState = LocalDownloadState.FAILURE
     )
@@ -43,5 +43,5 @@ interface DownloadDao {
     suspend fun deleteDownload(downloadedEpisode: LocalDownloadedEpisode)
 
     @Query("DELETE FROM downloaded_episodes WHERE showId=:showId AND episode=:episode")
-    suspend fun deleteDownloadByShowId(showId: Int, episode: kotlin.Double)
+    suspend fun deleteDownloadByShowId(showId: Int, episode: Double)
 }

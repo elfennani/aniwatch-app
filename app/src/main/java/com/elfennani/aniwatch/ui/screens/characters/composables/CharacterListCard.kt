@@ -35,7 +35,7 @@ import com.elfennani.aniwatch.utils.imageLoader
 import com.elfennani.aniwatch.utils.plus
 
 @Composable
-fun CharacterListCard(character: com.elfennani.aniwatch.domain.models.Character, showVA: Boolean = true) {
+fun CharacterListCard(character: Character, showVA: Boolean = true) {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -130,7 +130,7 @@ fun CharacterListCard(character: com.elfennani.aniwatch.domain.models.Character,
 @Preview
 @Composable
 private fun CharacterListCardPrev() {
-    val character = com.elfennani.aniwatch.domain.models.Character(
+    val character = Character(
         id = 283788,
         name = "Kumiko Oumae",
         image = "https://s4.anilist.co/file/anilistcdn/character/large/b88708-ZiVPl8LjIjaK.jpg",

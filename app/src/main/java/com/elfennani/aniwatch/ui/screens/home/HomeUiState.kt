@@ -12,5 +12,5 @@ data class HomeUiState(
     val errors: List<Int> = emptyList(),
     val isLoading: Boolean = true,
     val isFetching: Boolean = false,
-    val feed: List<com.elfennani.aniwatch.domain.models.Activity> = emptyList()
+    val feed: List<Activity> = emptyList()
 )

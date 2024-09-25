@@ -1,0 +1,25 @@
+fragment CharacterFragment on CharacterEdge {
+    id
+    name
+    role
+    voiceActors{
+        id
+        image {
+            medium
+        }
+        name{
+            userPreferred
+        }
+        languageV2
+    }
+    node {
+        id
+        image {
+            large
+            medium
+        }
+        name {
+            userPreferred
+        }
+    }
+}

@@ -64,7 +64,7 @@ class StatusEditorViewModel @Inject constructor(
     private fun saveStatus(details: StatusDetails, onSuccess: () -> Unit) {
         if (details.status == null) {
             _state.update { it.copy(errors = it.errors + R.string.status_required) }
-            return;
+            return
         }
 
         viewModelScope.launch {

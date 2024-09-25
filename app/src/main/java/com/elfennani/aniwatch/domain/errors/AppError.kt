@@ -15,11 +15,11 @@ sealed interface AppError {
     companion object {
         fun Exception.handleAppErrors(): AppError {
             return when (this) {
-                is IOException -> AppError.NetworkError
-                is retrofit2.HttpException -> if (code() == 404) AppError.NotFoundError else AppError.ServerError
-                is JsonDataException -> AppError.ParsingError
-                is SQLiteException -> AppError.CachingError
-                else -> AppError.UnknownError
+                is IOException -> NetworkError
+                is retrofit2.HttpException -> if (code() == 404) NotFoundError else ServerError
+                is JsonDataException -> ParsingError
+                is SQLiteException -> CachingError
+                else -> UnknownError
             }
         }
     }

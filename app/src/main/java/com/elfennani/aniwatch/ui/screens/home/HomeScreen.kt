@@ -55,7 +55,7 @@ fun HomeScreen(
     state: HomeUiState,
     onRefetch: () -> Unit,
     onErrorDismiss: (Int) -> Unit,
-    feed: LazyPagingItems<com.elfennani.aniwatch.domain.models.Activity>,
+    feed: LazyPagingItems<Activity>,
 ) {
     val lazyListState = rememberLazyListState()
     val pullState = rememberPullToRefreshState(positionalThreshold = 100.dp)

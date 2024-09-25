@@ -1,0 +1,22 @@
+fragment UserFragment on User {
+    id
+    name
+    bannerImage
+    about(asHtml: true)
+    avatar{
+        large
+        medium
+    }
+    statistics{
+        anime{
+            count
+            meanScore
+            episodesWatched
+        }
+        manga{
+            count
+            meanScore
+            chaptersRead
+        }
+    }
+}

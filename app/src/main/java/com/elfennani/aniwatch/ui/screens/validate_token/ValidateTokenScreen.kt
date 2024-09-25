@@ -54,7 +54,7 @@ fun NavGraphBuilder.validateTokenScreen(navController: NavController) {
         ValidateTokenScreenPattern,
         deepLinks = listOf(navDeepLink { uriPattern = "aniwatch://redirect#{params}" })
     ) {
-        val viewModel: ValidateTokenViewModel = hiltViewModel();
+        val viewModel: ValidateTokenViewModel = hiltViewModel()
         val errors by viewModel.errors.collectAsState()
         val context = LocalContext.current
 

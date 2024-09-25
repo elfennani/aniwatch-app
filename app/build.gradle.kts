@@ -5,13 +5,20 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+    id("com.apollographql.apollo")
     kotlin("plugin.serialization") version "2.0.20"
     alias(libs.plugins.compose.compiler)
 }
-
 android {
     namespace = "com.elfennani.aniwatch"
     compileSdk = 34
+
+    sourceSets{
+        getByName("main") {
+            java.srcDir("src/main/graphql")
+            kotlin.srcDir("src/main/graphql")
+        }
+    }
 
     defaultConfig {
         applicationId = "com.elfennani.aniwatch"
@@ -98,6 +105,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.media3.session)
+    implementation(libs.kotlinx.datetime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -123,8 +131,30 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
+
+    implementation("com.apollographql.apollo:apollo-runtime:4.0.0")
 }
 
 kapt {
     correctErrorTypes = true
+}
+
+apollo {
+    service("service") {
+        packageName.set("com.elfennani")
+
+        introspection {
+            endpointUrl.set("https://graphql.anilist.co")
+            schemaFile.set(file("src/main/graphql/anilist/schema.graphqls"))
+        }
+    }
+
+    service("allanime") {
+        packageName.set("com.elfennani")
+
+        introspection {
+            endpointUrl.set("https://api.allanime.day/api")
+            schemaFile.set(file("src/main/graphql/allanime/schema.graphqls"))
+        }
+    }
 }

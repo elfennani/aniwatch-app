@@ -38,7 +38,7 @@ import com.elfennani.aniwatch.utils.imageLoader
 import com.elfennani.aniwatch.utils.plus
 
 @Composable
-fun CharacterGridCard(character: com.elfennani.aniwatch.domain.models.Character, showVA: Boolean = true) {
+fun CharacterGridCard(character: Character, showVA: Boolean = true) {
     Column(
         verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.small),
         modifier = Modifier.fillMaxWidth()
@@ -110,7 +110,7 @@ fun CharacterGridCard(character: com.elfennani.aniwatch.domain.models.Character,
 @Preview
 @Composable
 private fun CharacterGridCardPrev() {
-    val character = com.elfennani.aniwatch.domain.models.Character(
+    val character = Character(
         id = 283788,
         name = "Kumiko Oumae",
         image = "https://s4.anilist.co/file/anilistcdn/character/large/b88708-ZiVPl8LjIjaK.jpg",

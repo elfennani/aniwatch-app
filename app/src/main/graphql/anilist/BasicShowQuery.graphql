@@ -1,0 +1,16 @@
+query BasicShowQuery($userId: Int!,$status: MediaListStatus!, $sort: [MediaListSort]!) {
+    collection:MediaListCollection(
+        userId: $userId
+        type: ANIME
+        status: $status,
+        sort: $sort,
+    ) {
+        lists {
+            entries {
+                media{
+                    ...ShowFragment
+                }
+            }
+        }
+    }
+}

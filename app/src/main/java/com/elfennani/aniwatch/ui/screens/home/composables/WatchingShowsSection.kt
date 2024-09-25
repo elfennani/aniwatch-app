@@ -28,7 +28,7 @@ fun WatchingShowsSection(
     shows: List<ShowBasic>,
     isLoading: Boolean = false,
 ) {
-    val isEmpty = !isLoading && shows.isEmpty();
+    val isEmpty = !isLoading && shows.isEmpty()
 
     Section(
         title = "Continue Watching",

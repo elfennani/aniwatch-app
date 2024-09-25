@@ -283,8 +283,8 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
                         id = showState.show?.id!!,
                         allanimeId = showState.show?.allanimeId!!,
                         episode = episode.toFloat(),
-                        audio = if (state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded) state.audio else audio,
-                        useSaved = state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded
+                        audio = if (state is DownloadState.Downloaded) state.audio else audio,
+                        useSaved = state is DownloadState.Downloaded
                     )
                 )
             },

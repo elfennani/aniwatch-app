@@ -6,5 +6,5 @@ data class Character(
     val image: String?,
     val imageSD: String?,
     val role: String,
-    val voiceActor: List<com.elfennani.aniwatch.domain.models.VoiceActor>
+    val voiceActor: List<VoiceActor>
 )

@@ -35,10 +35,10 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(text = "Welcome to AniWatch!", textAlign = TextAlign.Center, fontSize = 24.sp, modifier = Modifier.fillMaxWidth());
+                Text(text = "Welcome to AniWatch!", textAlign = TextAlign.Center, fontSize = 24.sp, modifier = Modifier.fillMaxWidth())
                 Text(text = "You need to log in to Anilist to continue", textAlign = TextAlign.Center, modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(0.75f));
+                    .alpha(0.75f))
             }
 
             Button(onClick = onLogin) {

@@ -10,4 +10,6 @@
     <string name="notif_channel">DEFAULT</string>
     <string name="show_not_found">Show not found</string>
     <string name="not_found">Resource not found</string>
+    <string name="anilist_graphql">https://graphql.anilist.co</string>
+    <string name="allanime_graphql">https://api.allanime.day/api</string>
 </resources>

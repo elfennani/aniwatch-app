@@ -131,18 +131,18 @@ class DownloadService : Service() {
                         val lastDifference =Instant.now().toEpochMilli() - lastNotificationUpdate
                         val timeout = Duration.ofSeconds(1).toMillis()
                         if (lastDifference < timeout) {
-                            continue;
+                            continue
                         }
                         lastNotificationUpdate = Instant.now().toEpochMilli()
                         updateProgress(total.toFloat() / lengthOfFile)
                         Log.d("DownloadService", "handleMessage: $lengthOfFile $total")
                     }
 
-                    output.flush();
+                    output.flush()
 
                     // closing streams
-                    output.close();
-                    input.close();
+                    output.close()
+                    input.close()
                     val doneNotification = NotificationCompat
                         .Builder(this@DownloadService, "DOWNLOADS")
                         .setContentTitle(show.name)
@@ -262,7 +262,4 @@ class DownloadService : Service() {
         )
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 }

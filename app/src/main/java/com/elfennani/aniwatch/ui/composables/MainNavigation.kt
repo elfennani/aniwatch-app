@@ -72,7 +72,7 @@ fun MainNavigation(navController: NavController) {
         ) {
             items.forEach { screen ->
                 val selected =
-                    currentDestination?.hierarchy?.any { it.route == screen.route } == true;
+                    currentDestination?.hierarchy?.any { it.route == screen.route } == true
                 val color =
                     AppTheme.colorScheme.onPrimaryContainer.copy(alpha = if (selected) 1f else 0.75f)
 

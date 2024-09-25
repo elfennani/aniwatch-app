@@ -9,5 +9,5 @@ data class Episode(
     val dubbed: Boolean,
     val thumbnail: String?,
     val duration: Int?,
-    val state: _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState
+    val state: DownloadState
 )
