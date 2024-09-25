@@ -3,7 +3,6 @@ package com.elfennani.aniwatch.ui.screens.episode
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -14,7 +13,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.navigation.toRoute
-import com.elfennani.aniwatch.data.repository.ShowRepository
+import com.elfennani.aniwatch.data_old.repository.ShowRepository
 import com.elfennani.aniwatch.domain.models.Resource
 import com.elfennani.aniwatch.domain.models.ShowDetails
 import com.elfennani.aniwatch.domain.models.ShowStatus
@@ -31,7 +30,6 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.cancel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -39,7 +37,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
-import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 
 @UnstableApi

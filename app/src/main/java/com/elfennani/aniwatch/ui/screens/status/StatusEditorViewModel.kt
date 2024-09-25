@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elfennani.aniwatch.R
-import com.elfennani.aniwatch.data.repository.ShowRepository
+import com.elfennani.aniwatch.data_old.repository.ShowRepository
 import com.elfennani.aniwatch.domain.models.Resource
 import com.elfennani.aniwatch.domain.models.StatusDetails
 import com.elfennani.aniwatch.domain.models.toStatusDate

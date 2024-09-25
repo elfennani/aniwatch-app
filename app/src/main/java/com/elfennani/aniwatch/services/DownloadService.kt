@@ -17,10 +17,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.os.bundleOf
 import com.elfennani.aniwatch.R
-import com.elfennani.aniwatch.data.remote.APIService
-import com.elfennani.aniwatch.data.repository.DownloadRepository
-import com.elfennani.aniwatch.data.repository.ShowRepository
-import com.elfennani.aniwatch.domain.models.DownloadState
+import com.elfennani.aniwatch.data_old.remote.APIService
+import com.elfennani.aniwatch.data_old.repository.DownloadRepository
+import com.elfennani.aniwatch.data_old.repository.ShowRepository
 import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import com.elfennani.aniwatch.domain.models.ResourceException
 import com.elfennani.aniwatch.domain.models.ShowDetails

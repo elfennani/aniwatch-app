@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.elfennani.aniwatch.data.paging.CharacterPagingSource
-import com.elfennani.aniwatch.data.remote.APIService
+import com.elfennani.aniwatch.data_old.paging.CharacterPagingSource
+import com.elfennani.aniwatch.data_old.remote.APIService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

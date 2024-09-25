@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elfennani.aniwatch.R
-import com.elfennani.aniwatch.data.repository.SessionRepository
+import com.elfennani.aniwatch.data_old.repository.SessionRepository
 import com.elfennani.aniwatch.dataStore
 import com.elfennani.aniwatch.domain.models.Resource
 import com.elfennani.aniwatch.sessionId

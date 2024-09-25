@@ -1,10 +1,10 @@
 package com.elfennani.aniwatch.di
 
 import android.content.Context
-import com.elfennani.aniwatch.data.local.dao.SessionDao
-import com.elfennani.aniwatch.data.remote.APIService
-import com.elfennani.aniwatch.data.remote.AuthInterceptor
-import com.elfennani.aniwatch.data.remote.models.SerializableShowStatus
+import com.elfennani.aniwatch.data_old.local.dao.SessionDao
+import com.elfennani.aniwatch.data_old.remote.APIService
+import com.elfennani.aniwatch.data_old.remote.AuthInterceptor
+import com.elfennani.aniwatch.data_old.remote.models.SerializableShowStatus
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.EnumJsonAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory

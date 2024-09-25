@@ -9,8 +9,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.elfennani.aniwatch.data.repository.DownloadRepository
-import com.elfennani.aniwatch.data.repository.ShowRepository
+import com.elfennani.aniwatch.data_old.repository.DownloadRepository
+import com.elfennani.aniwatch.data_old.repository.ShowRepository
 import com.elfennani.aniwatch.dataStore
 import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import com.elfennani.aniwatch.domain.models.Resource

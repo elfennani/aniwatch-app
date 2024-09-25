@@ -2,7 +2,7 @@ package com.elfennani.aniwatch.di
 
 import android.content.Context
 import androidx.room.Room
-import com.elfennani.aniwatch.data.local.Database
+import com.elfennani.aniwatch.data_old.local.Database
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

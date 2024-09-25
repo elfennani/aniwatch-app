@@ -245,7 +245,7 @@
 # is used.
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
--keep class com.elfennani.aniwatch.data.remote.models.** {*;}
+-keep class com.elfennani.aniwatch.data_old.remote.models.** {*;}
 
 -keepclassmembers @com.squareup.moshi.JsonClass class * extends java.lang.Enum {
     <fields>;
