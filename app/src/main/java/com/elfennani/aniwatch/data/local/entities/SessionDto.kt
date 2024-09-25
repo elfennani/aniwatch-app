@@ -2,7 +2,7 @@ package com.elfennani.aniwatch.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.elfennani.aniwatch.models.Session
+import com.elfennani.aniwatch.domain.models.Session
 import java.util.Date
 
 @Entity(tableName = "session")

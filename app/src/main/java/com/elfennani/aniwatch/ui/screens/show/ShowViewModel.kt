@@ -12,9 +12,9 @@ import androidx.navigation.toRoute
 import com.elfennani.aniwatch.data.repository.DownloadRepository
 import com.elfennani.aniwatch.data.repository.ShowRepository
 import com.elfennani.aniwatch.dataStore
-import com.elfennani.aniwatch.models.EpisodeAudio
-import com.elfennani.aniwatch.models.Resource
-import com.elfennani.aniwatch.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.EpisodeAudio
+import com.elfennani.aniwatch.domain.models.Resource
+import com.elfennani.aniwatch.domain.models.ShowStatus
 import com.elfennani.aniwatch.services.DownloadService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

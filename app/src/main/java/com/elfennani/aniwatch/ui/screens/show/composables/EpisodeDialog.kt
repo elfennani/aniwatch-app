@@ -35,9 +35,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.elfennani.aniwatch.models.DownloadState
-import com.elfennani.aniwatch.models.Episode
-import com.elfennani.aniwatch.models.EpisodeAudio
+import com.elfennani.aniwatch.domain.models.DownloadState
+import com.elfennani.aniwatch.domain.models.Episode
+import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import com.elfennani.aniwatch.ui.theme.AppTheme
 import kotlin.math.roundToInt
 
@@ -72,7 +72,7 @@ fun EpisodeDialog(
             }
 
             AnimatedVisibility(
-                visible = episode.state !is DownloadState.NotSaved,
+                visible = episode.state !is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CompositionLocalProvider(LocalContentColor provides AppTheme.colorScheme.onBackground) {
@@ -90,7 +90,7 @@ fun EpisodeDialog(
                             horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
                         ) {
                             when (episode.state) {
-                                is DownloadState.Downloaded -> {
+                                is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded -> {
                                     Icon(Icons.Default.DownloadDone, contentDescription = null)
                                     Text(
                                         text = "Downloaded (${episode.state.audio})",
@@ -98,7 +98,7 @@ fun EpisodeDialog(
                                     )
                                 }
 
-                                is DownloadState.Downloading -> {
+                                is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloading -> {
                                     Icon(Icons.Default.Downloading, contentDescription = null)
                                     Column(
                                         verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
@@ -134,7 +134,7 @@ fun EpisodeDialog(
                                     }
                                 }
 
-                                is DownloadState.Failure -> {
+                                is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Failure -> {
                                     Icon(
                                         Icons.Default.Error,
                                         contentDescription = null,
@@ -153,7 +153,7 @@ fun EpisodeDialog(
                                     }
                                 }
 
-                                is DownloadState.Pending -> {
+                                is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Pending -> {
                                     Icon(Icons.Default.Downloading, contentDescription = null)
                                     Column(
                                         verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
@@ -206,7 +206,7 @@ fun EpisodeDialog(
                 }
 
 
-                if (episode.state is DownloadState.NotSaved || episode.state is DownloadState.Failure) {
+                if (episode.state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved || episode.state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Failure) {
                     DialogOption(label = "Download SUB", icon = Icons.Default.DownloadForOffline) {
                         onDownload(EpisodeAudio.SUB)
                         onDismissRequest()
@@ -222,7 +222,7 @@ fun EpisodeDialog(
                     }
                 }
 
-                if (episode.state is DownloadState.Downloaded) {
+                if (episode.state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded) {
                     DialogOption(
                         label = "Delete Download",
                         icon = Icons.Default.Delete,

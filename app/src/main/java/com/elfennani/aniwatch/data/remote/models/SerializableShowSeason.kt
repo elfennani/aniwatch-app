@@ -1,6 +1,6 @@
 package com.elfennani.aniwatch.data.remote.models
 
-import com.elfennani.aniwatch.models.ShowSeason
+import com.elfennani.aniwatch.domain.models.ShowSeason
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = false)

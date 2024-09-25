@@ -20,11 +20,11 @@ import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.data.remote.APIService
 import com.elfennani.aniwatch.data.repository.DownloadRepository
 import com.elfennani.aniwatch.data.repository.ShowRepository
-import com.elfennani.aniwatch.models.DownloadState
-import com.elfennani.aniwatch.models.EpisodeAudio
-import com.elfennani.aniwatch.models.ResourceException
-import com.elfennani.aniwatch.models.ShowDetails
-import com.elfennani.aniwatch.models.dataOrThrow
+import com.elfennani.aniwatch.domain.models.DownloadState
+import com.elfennani.aniwatch.domain.models.EpisodeAudio
+import com.elfennani.aniwatch.domain.models.ResourceException
+import com.elfennani.aniwatch.domain.models.ShowDetails
+import com.elfennani.aniwatch.domain.models.dataOrThrow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import java.io.File
@@ -78,7 +78,7 @@ class DownloadService : Service() {
                     downloadRepository.markDownloadState(
                         showId,
                         episodeNumber,
-                        DownloadState.Downloading(0f)
+                        _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloading(0f)
                     )
                     notificationManager.notify(100, notification.build())
 
@@ -155,7 +155,7 @@ class DownloadService : Service() {
                     downloadRepository.markDownloadState(
                         showId,
                         episodeNumber,
-                        DownloadState.Downloaded(audio)
+                        _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded(audio)
                     )
                 }
             } catch (e: InterruptedException) {
@@ -170,7 +170,7 @@ class DownloadService : Service() {
                     downloadRepository.markDownloadState(
                         showId,
                         episodeNumber,
-                        DownloadState.Failure(e.errorResource)
+                        _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Failure(e.errorResource)
                     )
                 }
             } catch (e: Exception) {
@@ -180,7 +180,7 @@ class DownloadService : Service() {
                     downloadRepository.markDownloadState(
                         showId,
                         episodeNumber,
-                        DownloadState.Failure(R.string.something_wrong)
+                        _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Failure(R.string.something_wrong)
                     )
                 }
             }

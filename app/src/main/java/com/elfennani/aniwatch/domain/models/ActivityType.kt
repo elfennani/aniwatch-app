@@ -1,4 +1,4 @@
-package com.elfennani.aniwatch.models
+package com.elfennani.aniwatch.domain.models
 
 import com.squareup.moshi.JsonClass
 

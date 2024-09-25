@@ -3,8 +3,8 @@ package com.elfennani.aniwatch.data.local.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.elfennani.aniwatch.R
-import com.elfennani.aniwatch.models.DownloadState
-import com.elfennani.aniwatch.models.Episode
+import com.elfennani.aniwatch.domain.models.DownloadState
+import com.elfennani.aniwatch.domain.models.Episode
 
 @Entity("cached_episodes")
 data class CachedEpisodeDto(
@@ -28,13 +28,13 @@ fun CachedEpisodeDto.toDomain(downloadedEpisode: LocalDownloadedEpisode?) = Epis
     thumbnail = thumbnail,
     duration = duration,
     state = when (downloadedEpisode?.state) {
-        LocalDownloadState.DOWNLOADING -> DownloadState.Downloading(downloadedEpisode.progress)
-        LocalDownloadState.DONE -> DownloadState.Downloaded(downloadedEpisode.audio)
-        LocalDownloadState.FAILURE -> DownloadState.Failure(
+        LocalDownloadState.DOWNLOADING -> com.elfennani.aniwatch.domain.models.DownloadState.Downloading(downloadedEpisode.progress)
+        LocalDownloadState.DONE -> com.elfennani.aniwatch.domain.models.DownloadState.Downloaded(downloadedEpisode.audio)
+        LocalDownloadState.FAILURE -> com.elfennani.aniwatch.domain.models.DownloadState.Failure(
             downloadedEpisode.errorRes ?: R.string.something_wrong
         )
-        LocalDownloadState.PENDING -> DownloadState.Pending
-        else -> DownloadState.NotSaved
+        LocalDownloadState.PENDING -> com.elfennani.aniwatch.domain.models.DownloadState.Pending
+        else -> com.elfennani.aniwatch.domain.models.DownloadState.NotSaved
     }
 )
 

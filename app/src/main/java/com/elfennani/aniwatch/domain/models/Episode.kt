@@ -1,4 +1,4 @@
-package com.elfennani.aniwatch.models
+package com.elfennani.aniwatch.domain.models
 
 data class Episode(
     val id: String,
@@ -9,5 +9,5 @@ data class Episode(
     val dubbed: Boolean,
     val thumbnail: String?,
     val duration: Int?,
-    val state: DownloadState
+    val state: _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState
 )

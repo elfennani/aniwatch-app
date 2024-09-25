@@ -1,6 +1,6 @@
 package com.elfennani.aniwatch.data.remote.models
 
-import com.elfennani.aniwatch.models.Tag
+import com.elfennani.aniwatch.domain.models.Tag
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)

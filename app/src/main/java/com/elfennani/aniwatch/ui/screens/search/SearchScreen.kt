@@ -31,7 +31,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.elfennani.aniwatch.models.ShowBasic
+import com.elfennani.aniwatch.domain.models.ShowBasic
 import com.elfennani.aniwatch.ui.screens.search.composables.SearchBox
 import com.elfennani.aniwatch.ui.composables.ShowCard
 import com.elfennani.aniwatch.ui.screens.show.ShowRoute

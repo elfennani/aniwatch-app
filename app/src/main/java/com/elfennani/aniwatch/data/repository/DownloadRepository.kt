@@ -5,8 +5,8 @@ import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
 import com.elfennani.aniwatch.data.local.entities.LocalDownloadedEpisode
 import com.elfennani.aniwatch.data.local.entities.toAppModel
 import com.elfennani.aniwatch.data.local.entities.toLocalDownloadState
-import com.elfennani.aniwatch.models.DownloadState
-import com.elfennani.aniwatch.models.EpisodeAudio
+import com.elfennani.aniwatch.domain.models.DownloadState
+import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import kotlinx.coroutines.flow.first
 import java.time.Instant
 import java.util.Date
@@ -14,7 +14,7 @@ import java.util.Date
 class DownloadRepository(
     private val downloadDao: DownloadDao,
 ) {
-    suspend fun addDownload(showId: Int, episode: Double, audio: EpisodeAudio): DownloadState {
+    suspend fun addDownload(showId: Int, episode: Double, audio: EpisodeAudio): com.elfennani.aniwatch.domain.models.DownloadState {
         val download = LocalDownloadedEpisode(
             showId = showId,
             episode = episode,
@@ -33,12 +33,12 @@ class DownloadRepository(
         return downloadDao.getDownloads().first()
     }
 
-    suspend fun markDownloadState(showId: Int, episode: Double, state: DownloadState) {
-        if (state is DownloadState.Downloading) {
+    suspend fun markDownloadState(showId: Int, episode: Double, state: com.elfennani.aniwatch.domain.models.DownloadState) {
+        if (state is com.elfennani.aniwatch.domain.models.DownloadState.Downloading) {
             progressDownload(showId, episode, state.progress)
             return;
         }
-        if (state is DownloadState.Failure) {
+        if (state is com.elfennani.aniwatch.domain.models.DownloadState.Failure) {
             setError(showId, episode, state.message)
             return
         }

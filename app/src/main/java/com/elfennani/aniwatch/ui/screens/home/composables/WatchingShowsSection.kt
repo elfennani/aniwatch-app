@@ -18,7 +18,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import com.elfennani.aniwatch.models.ShowBasic
+import com.elfennani.aniwatch.domain.models.ShowBasic
 import com.elfennani.aniwatch.ui.composables.Section
 import com.elfennani.aniwatch.ui.theme.AppTheme
 

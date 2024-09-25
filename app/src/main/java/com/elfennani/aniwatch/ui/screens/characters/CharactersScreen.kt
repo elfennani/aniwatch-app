@@ -37,7 +37,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.elfennani.aniwatch.dataStore
-import com.elfennani.aniwatch.models.Character
+import com.elfennani.aniwatch.domain.models.Character
 import com.elfennani.aniwatch.ui.screens.characters.composables.CharacterGridCard
 import com.elfennani.aniwatch.ui.screens.characters.composables.CharacterListCard
 import com.elfennani.aniwatch.ui.theme.AppTheme
@@ -49,7 +49,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharactersScreen(
-    characters: LazyPagingItems<Character>,
+    characters: LazyPagingItems<com.elfennani.aniwatch.domain.models.Character>,
     onBack: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -176,7 +176,7 @@ fun NavController.navigateToCharactersScreen(showId: Int, popUpToTop: Boolean = 
 @Preview
 @Composable
 private fun CharactersScreenPrev() {
-    val pagingData = flowOf(PagingData.empty<Character>()).collectAsLazyPagingItems()
+    val pagingData = flowOf(PagingData.empty<com.elfennani.aniwatch.domain.models.Character>()).collectAsLazyPagingItems()
     AppTheme {
         CharactersScreen(characters = pagingData, onBack = {})
     }

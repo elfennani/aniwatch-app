@@ -1,7 +1,7 @@
 package com.elfennani.aniwatch.data.remote.models
 
-import com.elfennani.aniwatch.models.DownloadState
-import com.elfennani.aniwatch.models.Episode
+import com.elfennani.aniwatch.domain.models.DownloadState
+import com.elfennani.aniwatch.domain.models.Episode
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -25,5 +25,5 @@ fun NetworkEpisode.toDomain() = Episode(
     dubbed = this.dubbed,
     thumbnail = this.thumbnail,
     duration = this.duration?.toInt(),
-    state = DownloadState.NotSaved
+    state = com.elfennani.aniwatch.domain.models.DownloadState.NotSaved
 )

@@ -1,6 +1,6 @@
 package com.elfennani.aniwatch.data.remote.models
 
-import com.elfennani.aniwatch.models.ShowBasic
+import com.elfennani.aniwatch.domain.models.ShowBasic
 import com.squareup.moshi.JsonClass
 
 data class NetworkShowBasic(

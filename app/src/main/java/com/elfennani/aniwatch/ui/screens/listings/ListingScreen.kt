@@ -29,8 +29,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.elfennani.aniwatch.models.ShowStatus
-import com.elfennani.aniwatch.models.formatText
+import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.formatText
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.ShowCard
 import com.elfennani.aniwatch.ui.screens.show.ShowRoute

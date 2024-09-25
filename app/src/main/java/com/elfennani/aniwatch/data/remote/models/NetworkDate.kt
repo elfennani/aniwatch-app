@@ -1,6 +1,6 @@
 package com.elfennani.aniwatch.data.remote.models
 
-import com.elfennani.aniwatch.models.StatusDate
+import com.elfennani.aniwatch.domain.models.StatusDate
 
 data class NetworkDate(
     val year: Int,

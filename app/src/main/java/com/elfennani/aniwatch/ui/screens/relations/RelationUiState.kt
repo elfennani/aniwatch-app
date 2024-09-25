@@ -1,7 +1,7 @@
 package com.elfennani.aniwatch.ui.screens.relations
 
 import androidx.compose.runtime.Immutable
-import com.elfennani.aniwatch.models.Relation
+import com.elfennani.aniwatch.domain.models.Relation
 
 @Immutable
 data class RelationUiState(

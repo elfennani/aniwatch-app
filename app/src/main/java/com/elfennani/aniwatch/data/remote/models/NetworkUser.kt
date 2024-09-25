@@ -1,8 +1,8 @@
 package com.elfennani.aniwatch.data.remote.models
 
-import com.elfennani.aniwatch.models.User
-import com.elfennani.aniwatch.models.UserAnimeStats
-import com.elfennani.aniwatch.models.UserMangaStats
+import com.elfennani.aniwatch.domain.models.User
+import com.elfennani.aniwatch.domain.models.UserAnimeStats
+import com.elfennani.aniwatch.domain.models.UserMangaStats
 import com.squareup.moshi.Json
 
 data class NetworkUser(

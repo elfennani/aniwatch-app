@@ -4,8 +4,8 @@ import android.util.Log
 import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.data.remote.APIService
 import com.elfennani.aniwatch.data.remote.models.asDomain
-import com.elfennani.aniwatch.models.Activity
-import com.elfennani.aniwatch.models.Resource
+import com.elfennani.aniwatch.domain.models.Activity
+import com.elfennani.aniwatch.domain.models.Resource
 import com.squareup.moshi.JsonDataException
 import okio.IOException
 import retrofit2.HttpException
@@ -13,7 +13,7 @@ import retrofit2.HttpException
 class ActivityRepository(
     private val apiService: APIService,
 ) {
-    suspend fun getFeed(page: Int): Resource<List<Activity>> {
+    suspend fun getFeed(page: Int): Resource<List<com.elfennani.aniwatch.domain.models.Activity>> {
         return try {
             Resource.Success(apiService.getFeedByPage(page).map { it.asDomain() })
         } catch (e: IOException) {

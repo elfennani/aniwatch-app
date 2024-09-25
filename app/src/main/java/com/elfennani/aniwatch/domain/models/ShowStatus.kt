@@ -1,4 +1,4 @@
-package com.elfennani.aniwatch.models
+package com.elfennani.aniwatch.domain.models
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd

@@ -1,4 +1,4 @@
-package com.elfennani.aniwatch.models
+package com.elfennani.aniwatch.domain.models
 
 import com.elfennani.aniwatch.data.remote.models.NetworkShowBasic
 import com.squareup.moshi.Json

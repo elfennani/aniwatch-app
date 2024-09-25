@@ -36,8 +36,8 @@ import androidx.navigation.compose.composable
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.elfennani.aniwatch.models.Activity
-import com.elfennani.aniwatch.models.MediaType
+import com.elfennani.aniwatch.domain.models.Activity
+import com.elfennani.aniwatch.domain.models.MediaType
 import com.elfennani.aniwatch.utils.plus
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.Section
@@ -55,7 +55,7 @@ fun HomeScreen(
     state: HomeUiState,
     onRefetch: () -> Unit,
     onErrorDismiss: (Int) -> Unit,
-    feed: LazyPagingItems<Activity>,
+    feed: LazyPagingItems<com.elfennani.aniwatch.domain.models.Activity>,
 ) {
     val lazyListState = rememberLazyListState()
     val pullState = rememberPullToRefreshState(positionalThreshold = 100.dp)

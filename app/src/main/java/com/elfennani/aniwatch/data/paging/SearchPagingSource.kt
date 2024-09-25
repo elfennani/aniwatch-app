@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.elfennani.aniwatch.data.remote.APIService
 import com.elfennani.aniwatch.data.remote.models.toDomain
-import com.elfennani.aniwatch.models.ShowBasic
+import com.elfennani.aniwatch.domain.models.ShowBasic
 
 class SearchPagingSource(
     val apiService: APIService,

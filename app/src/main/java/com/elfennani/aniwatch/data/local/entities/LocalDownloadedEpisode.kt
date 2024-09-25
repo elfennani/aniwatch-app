@@ -4,8 +4,8 @@ import androidx.annotation.StringRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.elfennani.aniwatch.data.local.dao.DownloadDao
-import com.elfennani.aniwatch.models.DownloadState
-import com.elfennani.aniwatch.models.EpisodeAudio
+import com.elfennani.aniwatch.domain.models.DownloadState
+import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import com.elfennani.aniwatch.services.DownloadService
 import java.time.Instant
 import java.util.Date
@@ -25,21 +25,21 @@ data class LocalDownloadedEpisode(
 )
 
 fun LocalDownloadedEpisode.toAppModel() = when (state) {
-    LocalDownloadState.DONE -> DownloadState.Downloaded(audio)
-    LocalDownloadState.DOWNLOADING -> DownloadState.Downloading(progress)
-    LocalDownloadState.FAILURE -> DownloadState.Failure(errorRes!!)
-    LocalDownloadState.PENDING -> DownloadState.Pending
+    LocalDownloadState.DONE -> com.elfennani.aniwatch.domain.models.DownloadState.Downloaded(audio)
+    LocalDownloadState.DOWNLOADING -> com.elfennani.aniwatch.domain.models.DownloadState.Downloading(progress)
+    LocalDownloadState.FAILURE -> com.elfennani.aniwatch.domain.models.DownloadState.Failure(errorRes!!)
+    LocalDownloadState.PENDING -> com.elfennani.aniwatch.domain.models.DownloadState.Pending
 }
 
-fun DownloadState.toLocalDownloadState() = when(this){
-    is DownloadState.Downloaded -> LocalDownloadState.DONE
-    is DownloadState.Downloading -> LocalDownloadState.DOWNLOADING
-    is DownloadState.Failure -> LocalDownloadState.FAILURE
-    DownloadState.Pending -> LocalDownloadState.PENDING
-    DownloadState.NotSaved -> throw Exception()
+fun com.elfennani.aniwatch.domain.models.DownloadState.toLocalDownloadState() = when(this){
+    is com.elfennani.aniwatch.domain.models.DownloadState.Downloaded -> LocalDownloadState.DONE
+    is com.elfennani.aniwatch.domain.models.DownloadState.Downloading -> LocalDownloadState.DOWNLOADING
+    is com.elfennani.aniwatch.domain.models.DownloadState.Failure -> LocalDownloadState.FAILURE
+    com.elfennani.aniwatch.domain.models.DownloadState.Pending -> LocalDownloadState.PENDING
+    com.elfennani.aniwatch.domain.models.DownloadState.NotSaved -> throw Exception()
 }
 
-fun DownloadState.toEntity(
+fun com.elfennani.aniwatch.domain.models.DownloadState.toEntity(
     showId: Int,
     episode: Double,
     audio: EpisodeAudio,
@@ -56,25 +56,25 @@ fun DownloadState.toEntity(
     )
 
     return when (this) {
-        is DownloadState.Downloaded -> download.copy(
+        is com.elfennani.aniwatch.domain.models.DownloadState.Downloaded -> download.copy(
             state = LocalDownloadState.DONE,
             audio = audio
         )
 
-        is DownloadState.Downloading -> download.copy(
+        is com.elfennani.aniwatch.domain.models.DownloadState.Downloading -> download.copy(
             state = LocalDownloadState.DOWNLOADING,
             progress = progress
         )
 
-        is DownloadState.Failure -> download.copy(
+        is com.elfennani.aniwatch.domain.models.DownloadState.Failure -> download.copy(
             state = LocalDownloadState.FAILURE,
             errorRes = message
         )
 
-        DownloadState.Pending -> download.copy(
+        com.elfennani.aniwatch.domain.models.DownloadState.Pending -> download.copy(
             state = LocalDownloadState.PENDING
         )
 
-        DownloadState.NotSaved -> throw Exception()
+        com.elfennani.aniwatch.domain.models.DownloadState.NotSaved -> throw Exception()
     }
 }

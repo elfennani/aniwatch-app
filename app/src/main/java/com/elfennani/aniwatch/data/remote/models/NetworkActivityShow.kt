@@ -1,7 +1,7 @@
 package com.elfennani.aniwatch.data.remote.models
 
-import com.elfennani.aniwatch.models.ActivtyShow
-import com.elfennani.aniwatch.models.MediaType
+import com.elfennani.aniwatch.domain.models.ActivtyShow
+import com.elfennani.aniwatch.domain.models.MediaType
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -13,7 +13,7 @@ data class NetworkActivityShow(
     val year: Int?,
 )
 
-fun NetworkActivityShow.asDomain() = ActivtyShow(
+fun NetworkActivityShow.asDomain() = com.elfennani.aniwatch.domain.models.ActivtyShow(
     id = id,
     name = name,
     image = image,

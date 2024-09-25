@@ -15,9 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.elfennani.aniwatch.models.ShowStatus
-import com.elfennani.aniwatch.models.formatText
-import com.elfennani.aniwatch.models.toIcon
+import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.formatText
+import com.elfennani.aniwatch.domain.models.toIcon
 import com.elfennani.aniwatch.ui.theme.AppTheme
 
 @Composable

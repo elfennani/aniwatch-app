@@ -1,9 +1,9 @@
 package com.elfennani.aniwatch.ui.screens.home
 
 import androidx.compose.runtime.Stable
-import com.elfennani.aniwatch.models.Activity
-import com.elfennani.aniwatch.models.ShowBasic
-import com.elfennani.aniwatch.models.User
+import com.elfennani.aniwatch.domain.models.Activity
+import com.elfennani.aniwatch.domain.models.ShowBasic
+import com.elfennani.aniwatch.domain.models.User
 
 @Stable
 data class HomeUiState(
@@ -12,5 +12,5 @@ data class HomeUiState(
     val errors: List<Int> = emptyList(),
     val isLoading: Boolean = true,
     val isFetching: Boolean = false,
-    val feed: List<Activity> = emptyList()
+    val feed: List<com.elfennani.aniwatch.domain.models.Activity> = emptyList()
 )

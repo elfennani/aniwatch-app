@@ -16,15 +16,15 @@ import com.elfennani.aniwatch.data.remote.models.asDomain
 import com.elfennani.aniwatch.data.remote.models.asNetwork
 import com.elfennani.aniwatch.data.remote.models.toDomain
 import com.elfennani.aniwatch.data.remote.models.toSerializable
-import com.elfennani.aniwatch.models.DownloadState
-import com.elfennani.aniwatch.models.Episode
-import com.elfennani.aniwatch.models.EpisodeAudio
-import com.elfennani.aniwatch.models.Resource
-import com.elfennani.aniwatch.models.ShowBasic
-import com.elfennani.aniwatch.models.ShowDetails
-import com.elfennani.aniwatch.models.ShowStatus
-import com.elfennani.aniwatch.models.StatusDetails
-import com.elfennani.aniwatch.models.toNetwork
+import com.elfennani.aniwatch.domain.models.DownloadState
+import com.elfennani.aniwatch.domain.models.Episode
+import com.elfennani.aniwatch.domain.models.EpisodeAudio
+import com.elfennani.aniwatch.domain.models.Resource
+import com.elfennani.aniwatch.domain.models.ShowBasic
+import com.elfennani.aniwatch.domain.models.ShowDetails
+import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.StatusDetails
+import com.elfennani.aniwatch.domain.models.toNetwork
 import com.elfennani.aniwatch.utils.resourceOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -53,7 +53,7 @@ class ShowRepository(
             it.map { show -> show.toDomain() }
                 .filter { show ->
                     show.episodes
-                        .fastAny { episode -> episode.state !is DownloadState.NotSaved }
+                        .fastAny { episode -> episode.state !is com.elfennani.aniwatch.domain.models.DownloadState.NotSaved }
                 }
         }
 

@@ -4,7 +4,7 @@ import android.database.sqlite.SQLiteException
 import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.data.local.dao.SessionDao
 import com.elfennani.aniwatch.data.local.entities.SessionEntity
-import com.elfennani.aniwatch.models.Resource
+import com.elfennani.aniwatch.domain.models.Resource
 
 
 class SessionRepository(private val sessionDao: SessionDao) {

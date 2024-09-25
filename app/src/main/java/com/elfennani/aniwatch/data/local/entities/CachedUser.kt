@@ -3,9 +3,9 @@ package com.elfennani.aniwatch.data.local.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.elfennani.aniwatch.models.User
-import com.elfennani.aniwatch.models.UserAnimeStats
-import com.elfennani.aniwatch.models.UserMangaStats
+import com.elfennani.aniwatch.domain.models.User
+import com.elfennani.aniwatch.domain.models.UserAnimeStats
+import com.elfennani.aniwatch.domain.models.UserMangaStats
 import com.squareup.moshi.Json
 
 @Entity(tableName = "cached_user")

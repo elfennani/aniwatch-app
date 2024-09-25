@@ -13,8 +13,8 @@ import com.elfennani.aniwatch.data.local.entities.toEntity
 import com.elfennani.aniwatch.data.remote.APIService
 import com.elfennani.aniwatch.data.remote.models.toDomain
 import com.elfennani.aniwatch.dataStore
-import com.elfennani.aniwatch.models.Resource
-import com.elfennani.aniwatch.models.User
+import com.elfennani.aniwatch.domain.models.Resource
+import com.elfennani.aniwatch.domain.models.User
 import com.squareup.moshi.JsonDataException
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first

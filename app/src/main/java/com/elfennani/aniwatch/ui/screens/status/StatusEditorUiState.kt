@@ -1,7 +1,7 @@
 package com.elfennani.aniwatch.ui.screens.status
 
-import com.elfennani.aniwatch.models.ShowDetails
-import com.elfennani.aniwatch.models.StatusDetails
+import com.elfennani.aniwatch.domain.models.ShowDetails
+import com.elfennani.aniwatch.domain.models.StatusDetails
 
 data class StatusEditorUiState(
     val show: ShowDetails? = null,

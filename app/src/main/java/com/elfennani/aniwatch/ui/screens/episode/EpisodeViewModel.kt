@@ -15,9 +15,9 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.navigation.toRoute
 import com.elfennani.aniwatch.data.repository.ShowRepository
-import com.elfennani.aniwatch.models.Resource
-import com.elfennani.aniwatch.models.ShowDetails
-import com.elfennani.aniwatch.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.Resource
+import com.elfennani.aniwatch.domain.models.ShowDetails
+import com.elfennani.aniwatch.domain.models.ShowStatus
 import com.elfennani.aniwatch.services.PlaybackService
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors

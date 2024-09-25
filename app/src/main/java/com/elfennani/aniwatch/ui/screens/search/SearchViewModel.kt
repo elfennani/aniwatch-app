@@ -8,7 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.elfennani.aniwatch.data.paging.SearchPagingSource
 import com.elfennani.aniwatch.data.remote.APIService
-import com.elfennani.aniwatch.models.ShowBasic
+import com.elfennani.aniwatch.domain.models.ShowBasic
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow

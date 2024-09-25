@@ -1,7 +1,7 @@
 package com.elfennani.aniwatch.data.remote.models
 
-import com.elfennani.aniwatch.models.ShowStatus
-import com.elfennani.aniwatch.models.StatusDetails
+import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.StatusDetails
 
 data class NetworkStatusDetails(
     val status: SerializableShowStatus?,

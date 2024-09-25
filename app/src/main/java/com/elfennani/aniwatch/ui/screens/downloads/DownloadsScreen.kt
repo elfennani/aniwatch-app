@@ -40,9 +40,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import coil.compose.AsyncImage
-import com.elfennani.aniwatch.models.DownloadState
-import com.elfennani.aniwatch.models.Episode
-import com.elfennani.aniwatch.models.ShowDetails
+import com.elfennani.aniwatch.domain.models.DownloadState
+import com.elfennani.aniwatch.domain.models.Episode
+import com.elfennani.aniwatch.domain.models.ShowDetails
 import com.elfennani.aniwatch.ui.screens.episode.EpisodeRoute
 import com.elfennani.aniwatch.ui.screens.show.ShowRoute
 import com.elfennani.aniwatch.ui.theme.AppTheme
@@ -113,7 +113,7 @@ fun DownloadsScreen(
                             .clip(AppTheme.shapes.card)
                             .combinedClickable(
                                 onClick = {
-                                    if (episode.state is DownloadState.Downloaded)
+                                    if (episode.state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded)
                                         onNavigate(
                                             EpisodeRoute(
                                                 id = show.id,
@@ -154,7 +154,7 @@ fun DownloadsScreen(
                                 text = "Episode ${episode.episode}",
                                 style = AppTheme.typography.labelSmall
                             )
-                            if (episode.state is DownloadState.Downloading) {
+                            if (episode.state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloading) {
                                 LinearProgressIndicator(
                                     progress = episode.state.progress,
                                     color = AppTheme.colorScheme.primary,

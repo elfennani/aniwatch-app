@@ -39,11 +39,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastRoundToInt
 import coil.compose.AsyncImage
-import com.elfennani.aniwatch.models.DownloadState
+import com.elfennani.aniwatch.domain.models.DownloadState
 import com.elfennani.aniwatch.utils.formatSeconds
 import com.elfennani.aniwatch.utils.imageLoader
-import com.elfennani.aniwatch.models.Episode
-import com.elfennani.aniwatch.models.EpisodeState
+import com.elfennani.aniwatch.domain.models.Episode
+import com.elfennani.aniwatch.domain.models.EpisodeState
 import com.elfennani.aniwatch.ui.theme.AppTheme
 
 private const val MAX_LINES_MINIMAL = 2
@@ -133,11 +133,11 @@ fun EpisodeCard(
                         )
                     }
 
-                    if (episode.state !is DownloadState.NotSaved) {
+                    if (episode.state !is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved) {
                         BulletSeparator()
                     }
                     when (episode.state) {
-                        is DownloadState.Downloaded ->
+                        is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded ->
                             Icon(
                                 imageVector = Icons.Default.FileDownloadDone,
                                 contentDescription = null,
@@ -145,13 +145,13 @@ fun EpisodeCard(
                                 tint = AppTheme.colorScheme.primary
                             )
 
-                        is DownloadState.Pending ->
+                        is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Pending ->
                             CircularProgressIndicator(
                                 modifier = Modifier.size(AppTheme.sizes.medium),
                                 color = AppTheme.colorScheme.primary
                             )
 
-                        is DownloadState.Downloading -> {
+                        is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloading -> {
                             val progressRounded = (episode.state.progress * 100).fastRoundToInt()
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
@@ -170,7 +170,7 @@ fun EpisodeCard(
                             }
                         }
 
-                        is DownloadState.Failure ->
+                        is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Failure ->
                             Icon(
                                 imageVector = Icons.Default.Error,
                                 contentDescription = null,

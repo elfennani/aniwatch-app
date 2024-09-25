@@ -5,11 +5,11 @@ import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.room.TypeConverter
 import coil.request.Tags
 import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
-import com.elfennani.aniwatch.models.EpisodeAudio
-import com.elfennani.aniwatch.models.ShowBasic
-import com.elfennani.aniwatch.models.ShowSeason
-import com.elfennani.aniwatch.models.ShowStatus
-import com.elfennani.aniwatch.models.Tag
+import com.elfennani.aniwatch.domain.models.EpisodeAudio
+import com.elfennani.aniwatch.domain.models.ShowBasic
+import com.elfennani.aniwatch.domain.models.ShowSeason
+import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.Tag
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory

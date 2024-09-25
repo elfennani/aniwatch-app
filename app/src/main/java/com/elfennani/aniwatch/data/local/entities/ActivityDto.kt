@@ -3,10 +3,10 @@ package com.elfennani.aniwatch.data.local.entities
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.elfennani.aniwatch.models.Activity
-import com.elfennani.aniwatch.models.ActivityType
-import com.elfennani.aniwatch.models.ActivtyShow
-import com.elfennani.aniwatch.models.MediaType
+import com.elfennani.aniwatch.domain.models.Activity
+import com.elfennani.aniwatch.domain.models.ActivityType
+import com.elfennani.aniwatch.domain.models.ActivtyShow
+import com.elfennani.aniwatch.domain.models.MediaType
 import java.util.Date
 
 @Entity(tableName = "feed")
@@ -32,17 +32,17 @@ data class CachedActivityShow(
     val year: Int?,
 )
 
-fun ActivityDto.asDomain() = Activity(
+fun ActivityDto.asDomain() = com.elfennani.aniwatch.domain.models.Activity(
     id = id,
     content = content,
-    type = ActivityType.valueOf(type),
+    type = com.elfennani.aniwatch.domain.models.ActivityType.valueOf(type),
     userId = userId,
     userName = userName,
     userAvatar = userAvatar,
     createdAt = createdAt,
     likes = likes,
     replies = replies,
-    show = if(show != null) ActivtyShow(
+    show = if (show != null) com.elfennani.aniwatch.domain.models.ActivtyShow(
         id = show.id,
         name = show.name,
         image = show.image,
@@ -51,7 +51,7 @@ fun ActivityDto.asDomain() = Activity(
     ) else null
 )
 
-fun Activity.asEntity() = ActivityDto(
+fun com.elfennani.aniwatch.domain.models.Activity.asEntity() = ActivityDto(
     id = id,
     content = content,
     type = type.name,

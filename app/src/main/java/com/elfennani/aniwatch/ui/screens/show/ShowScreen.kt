@@ -42,9 +42,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.elfennani.aniwatch.models.DownloadState
-import com.elfennani.aniwatch.models.EpisodeAudio
-import com.elfennani.aniwatch.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.DownloadState
+import com.elfennani.aniwatch.domain.models.EpisodeAudio
+import com.elfennani.aniwatch.domain.models.ShowStatus
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.PillButton
 import com.elfennani.aniwatch.ui.composables.dummyShow
@@ -283,8 +283,8 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
                         id = showState.show?.id!!,
                         allanimeId = showState.show?.allanimeId!!,
                         episode = episode.toFloat(),
-                        audio = if (state is DownloadState.Downloaded) state.audio else audio,
-                        useSaved = state is DownloadState.Downloaded
+                        audio = if (state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded) state.audio else audio,
+                        useSaved = state is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded
                     )
                 )
             },

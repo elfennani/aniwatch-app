@@ -28,14 +28,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.elfennani.aniwatch.models.Character
-import com.elfennani.aniwatch.models.VoiceActor
+import com.elfennani.aniwatch.domain.models.Character
+import com.elfennani.aniwatch.domain.models.VoiceActor
 import com.elfennani.aniwatch.ui.theme.AppTheme
 import com.elfennani.aniwatch.utils.imageLoader
 import com.elfennani.aniwatch.utils.plus
 
 @Composable
-fun CharacterListCard(character: Character, showVA: Boolean = true) {
+fun CharacterListCard(character: com.elfennani.aniwatch.domain.models.Character, showVA: Boolean = true) {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -130,7 +130,7 @@ fun CharacterListCard(character: Character, showVA: Boolean = true) {
 @Preview
 @Composable
 private fun CharacterListCardPrev() {
-    val character = Character(
+    val character = com.elfennani.aniwatch.domain.models.Character(
         id = 283788,
         name = "Kumiko Oumae",
         image = "https://s4.anilist.co/file/anilistcdn/character/large/b88708-ZiVPl8LjIjaK.jpg",

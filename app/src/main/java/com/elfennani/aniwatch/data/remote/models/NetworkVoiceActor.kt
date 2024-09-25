@@ -1,6 +1,6 @@
 package com.elfennani.aniwatch.data.remote.models
 
-import com.elfennani.aniwatch.models.VoiceActor
+import com.elfennani.aniwatch.domain.models.VoiceActor
 
 data class NetworkVoiceActor(
     val id: Int,

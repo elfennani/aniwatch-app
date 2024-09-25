@@ -16,8 +16,8 @@ import com.elfennani.aniwatch.data.local.entities.ActivityDto
 import com.elfennani.aniwatch.data.local.entities.asEntity
 import com.elfennani.aniwatch.data.repository.ActivityRepository
 import com.elfennani.aniwatch.dataStore
-import com.elfennani.aniwatch.models.Activity
-import com.elfennani.aniwatch.models.Resource
+import com.elfennani.aniwatch.domain.models.Activity
+import com.elfennani.aniwatch.domain.models.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -103,7 +103,7 @@ class FeedRemoteMediator(
                         feedDao.clearAll()
                     }
 
-                    feedDao.insertAll(response.data?.map(Activity::asEntity)!!)
+                    feedDao.insertAll(response.data?.map(com.elfennani.aniwatch.domain.models.Activity::asEntity)!!)
                 }
 
                 context.dataStore.edit {

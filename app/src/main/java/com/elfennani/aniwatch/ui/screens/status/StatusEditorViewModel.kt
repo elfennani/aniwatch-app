@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.data.repository.ShowRepository
-import com.elfennani.aniwatch.models.Resource
-import com.elfennani.aniwatch.models.StatusDetails
-import com.elfennani.aniwatch.models.toStatusDate
+import com.elfennani.aniwatch.domain.models.Resource
+import com.elfennani.aniwatch.domain.models.StatusDetails
+import com.elfennani.aniwatch.domain.models.toStatusDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

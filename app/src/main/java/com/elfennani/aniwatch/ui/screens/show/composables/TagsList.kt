@@ -29,7 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.elfennani.aniwatch.models.Tag
+import com.elfennani.aniwatch.domain.models.Tag
 import com.elfennani.aniwatch.ui.composables.PillButton
 import com.elfennani.aniwatch.ui.theme.AppTheme
 

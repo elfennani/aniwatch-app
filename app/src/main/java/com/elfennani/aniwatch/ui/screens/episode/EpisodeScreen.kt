@@ -35,7 +35,7 @@ import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.elfennani.aniwatch.models.EpisodeAudio
+import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.KeepScreenON
 import com.elfennani.aniwatch.ui.theme.AppTheme

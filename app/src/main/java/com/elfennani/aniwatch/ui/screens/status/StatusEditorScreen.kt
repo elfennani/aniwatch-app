@@ -24,11 +24,11 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.elfennani.aniwatch.models.ShowStatus
-import com.elfennani.aniwatch.models.StatusDate
-import com.elfennani.aniwatch.models.StatusDetails
-import com.elfennani.aniwatch.models.formatText
-import com.elfennani.aniwatch.models.toCalendar
+import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.StatusDate
+import com.elfennani.aniwatch.domain.models.StatusDetails
+import com.elfennani.aniwatch.domain.models.formatText
+import com.elfennani.aniwatch.domain.models.toCalendar
 import com.elfennani.aniwatch.ui.composables.Button
 import com.elfennani.aniwatch.ui.composables.TextSkeleton
 import com.elfennani.aniwatch.ui.composables.dummyShow

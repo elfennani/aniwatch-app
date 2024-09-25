@@ -5,10 +5,10 @@ import androidx.compose.ui.graphics.Paint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elfennani.aniwatch.data.repository.ShowRepository
-import com.elfennani.aniwatch.models.DownloadState
-import com.elfennani.aniwatch.models.Episode
-import com.elfennani.aniwatch.models.ShowDetails
-import com.elfennani.aniwatch.models.toLabel
+import com.elfennani.aniwatch.domain.models.DownloadState
+import com.elfennani.aniwatch.domain.models.Episode
+import com.elfennani.aniwatch.domain.models.ShowDetails
+import com.elfennani.aniwatch.domain.models.toLabel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,7 +30,7 @@ class DownloadsViewModel @Inject constructor(
             val map = mutableMapOf<String, List<Pair<ShowDetails, Episode>>>()
             shows.forEach { show ->
                 show.episodes.forEach { episode ->
-                    if (episode.state !is DownloadState.NotSaved) {
+                    if (episode.state !is _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.NotSaved) {
                         val list = map[episode.state.toLabel()] ?: emptyList()
                         map[episode.state.toLabel()] = list + Pair(show, episode)
                     }

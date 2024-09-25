@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.utils.imageLoader
-import com.elfennani.aniwatch.models.User
+import com.elfennani.aniwatch.domain.models.User
 import com.elfennani.aniwatch.ui.theme.AppTheme
 
 private const val DIVIDER_FADE_DURATION = 150

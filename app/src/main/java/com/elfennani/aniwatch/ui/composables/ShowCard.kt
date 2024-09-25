@@ -29,11 +29,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.elfennani.aniwatch.models.ShowBasic
-import com.elfennani.aniwatch.models.ShowImage
-import com.elfennani.aniwatch.models.ShowStatus
-import com.elfennani.aniwatch.models.formatText
-import com.elfennani.aniwatch.models.toIcon
+import com.elfennani.aniwatch.domain.models.ShowBasic
+import com.elfennani.aniwatch.domain.models.ShowImage
+import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.formatText
+import com.elfennani.aniwatch.domain.models.toIcon
 import com.elfennani.aniwatch.ui.theme.AppTheme
 import com.elfennani.aniwatch.utils.imageLoader
 

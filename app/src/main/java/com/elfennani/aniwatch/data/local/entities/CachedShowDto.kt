@@ -5,12 +5,12 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import com.elfennani.aniwatch.models.Episode
-import com.elfennani.aniwatch.models.ShowDetails
-import com.elfennani.aniwatch.models.ShowImage
-import com.elfennani.aniwatch.models.ShowSeason
-import com.elfennani.aniwatch.models.ShowStatus
-import com.elfennani.aniwatch.models.Tag
+import com.elfennani.aniwatch.domain.models.Episode
+import com.elfennani.aniwatch.domain.models.ShowDetails
+import com.elfennani.aniwatch.domain.models.ShowImage
+import com.elfennani.aniwatch.domain.models.ShowSeason
+import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.Tag
 import com.elfennani.aniwatch.utils.toColor
 import com.elfennani.aniwatch.utils.toHexString
 

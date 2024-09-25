@@ -1,6 +1,6 @@
 package com.elfennani.aniwatch.data.remote.models
 
-import com.elfennani.aniwatch.models.Relation
+import com.elfennani.aniwatch.domain.models.Relation
 import com.squareup.moshi.Json
 
 data class NetworkRelation(

@@ -1,4 +1,4 @@
-package com.elfennani.aniwatch.models
+package com.elfennani.aniwatch.domain.models
 
 data class Character(
     val id: Int,
@@ -6,5 +6,5 @@ data class Character(
     val image: String?,
     val imageSD: String?,
     val role: String,
-    val voiceActor: List<VoiceActor>
+    val voiceActor: List<com.elfennani.aniwatch.domain.models.VoiceActor>
 )

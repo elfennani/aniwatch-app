@@ -1,6 +1,6 @@
 package com.elfennani.aniwatch.data.remote.models
 
-import com.elfennani.aniwatch.models.Character
+import com.elfennani.aniwatch.domain.models.Character
 import com.squareup.moshi.Json
 
 data class NetworkCharacter(
@@ -12,7 +12,7 @@ data class NetworkCharacter(
     @Json(name = "voice_actors") val voiceActor: List<NetworkVoiceActor>,
 )
 
-fun NetworkCharacter.asDomain() = Character(
+fun NetworkCharacter.asDomain() = com.elfennani.aniwatch.domain.models.Character(
     id = id,
     name = name,
     image = image,

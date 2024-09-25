@@ -2,7 +2,7 @@ package com.elfennani.aniwatch.utils
 
 import android.database.sqlite.SQLiteException
 import com.elfennani.aniwatch.R
-import com.elfennani.aniwatch.models.Resource
+import com.elfennani.aniwatch.domain.models.Resource
 import com.squareup.moshi.JsonDataException
 import java.io.IOException
 
