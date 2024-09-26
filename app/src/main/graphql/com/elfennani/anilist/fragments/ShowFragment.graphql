@@ -19,6 +19,17 @@ fragment ShowFragment on Media {
     mediaListEntry {
         progress
         status
+        score
+        startedAt {
+            year
+            month
+            day
+        }
+        completedAt {
+            year
+            month
+            day
+        }
     }
     tags {
         id

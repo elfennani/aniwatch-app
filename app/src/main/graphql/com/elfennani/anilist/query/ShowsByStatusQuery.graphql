@@ -1,4 +1,4 @@
-query BasicShowQuery($userId: Int!,$status: MediaListStatus!, $sort: [MediaListSort]!) {
+query ShowsByStatusQuery($userId: Int!,$status: MediaListStatus!, $sort: [MediaListSort]!) {
     collection:MediaListCollection(
         userId: $userId
         type: ANIME

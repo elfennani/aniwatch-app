@@ -7,7 +7,7 @@ data class EmbeddedCover(
     val extraLarge: String,
     val medium: String,
     val large: String,
-    val color: String,
+    val color: String?,
 )
 
 fun EmbeddedCover.asAppModel() = ShowImage(

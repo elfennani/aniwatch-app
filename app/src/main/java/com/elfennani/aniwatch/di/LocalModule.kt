@@ -40,5 +40,9 @@ class LocalModule {
 
     @Provides
     @Singleton
+    fun provideRelationDao(database: AppDatabase) = database.relationDao()
+
+    @Provides
+    @Singleton
     fun provideDataStore(@ApplicationContext context: Context) = context.dataStore
 }

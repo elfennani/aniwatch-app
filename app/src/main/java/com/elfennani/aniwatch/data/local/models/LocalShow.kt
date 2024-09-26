@@ -16,14 +16,17 @@ data class LocalShow(
     val description: String?,
     val genres: List<String>,
     val episodes: Int?,
-    @Embedded val cover: EmbeddedCover,
+    @Embedded("cover_") val cover: EmbeddedCover,
     val season: ShowSeason?,
     val year: Int?,
     val format: ShowFormat,
     val banner: String?,
     val progress:Int?,
     val status: ShowStatus?,
-    val tags: List<Tag>
+    val tags: List<Tag>,
+    val score: Double?,
+    @Embedded("started_") val startedAt: EmbeddedDate?,
+    @Embedded("ended_") val endedAt: EmbeddedDate?
 )
 
 fun LocalShow.asAppModel() = Show(

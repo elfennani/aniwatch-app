@@ -12,3 +12,12 @@ fun MediaListStatus.asAppModel() = when(this){
     MediaListStatus.REPEATING -> ShowStatus.REPEATING
     MediaListStatus.UNKNOWN__ -> null
 }
+
+fun ShowStatus.asRemoteModel() = when(this){
+    ShowStatus.WATCHING -> MediaListStatus.CURRENT
+    ShowStatus.PLAN_TO_WATCH -> MediaListStatus.PLANNING
+    ShowStatus.COMPLETED -> MediaListStatus.COMPLETED
+    ShowStatus.DROPPED -> MediaListStatus.DROPPED
+    ShowStatus.ON_HOLD -> MediaListStatus.PAUSED
+    ShowStatus.REPEATING -> MediaListStatus.REPEATING
+}

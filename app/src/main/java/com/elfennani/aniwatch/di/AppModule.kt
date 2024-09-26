@@ -1,8 +1,10 @@
 package com.elfennani.aniwatch.di
 
 import com.elfennani.aniwatch.data.repository.FeedRepositoryImpl
+import com.elfennani.aniwatch.data.repository.ListingRepositoryImpl
 import com.elfennani.aniwatch.data.repository.SessionRepositoryImpl
 import com.elfennani.aniwatch.domain.repositories.FeedRepository
+import com.elfennani.aniwatch.domain.repositories.ListingRepository
 import com.elfennani.aniwatch.domain.repositories.SessionRepository
 import dagger.Binds
 import dagger.Module
@@ -21,4 +23,9 @@ abstract class AppModule {
     abstract fun bindFeedRepository(
         feedRepositoryImpl: FeedRepositoryImpl
     ): FeedRepository
+
+    @Binds
+    abstract fun bindListingRepository(
+        listingRepositoryImpl: ListingRepositoryImpl
+    ): ListingRepository
 }

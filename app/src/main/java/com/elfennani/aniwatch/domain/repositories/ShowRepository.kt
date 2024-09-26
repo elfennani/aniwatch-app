@@ -1,16 +1,18 @@
 package com.elfennani.aniwatch.domain.repositories
 
+import com.elfennani.aniwatch.domain.models.Character
 import com.elfennani.aniwatch.domain.models.Show
 import com.elfennani.aniwatch.domain.models.StatusDetails
+import com.elfennani.aniwatch.domain.models.enums.RelationType
 import kotlinx.coroutines.flow.Flow
 
 interface ShowRepository {
     fun showById(id: Int): Flow<Show>
     suspend fun fetchShowById(id: Int)
 
-    fun statusDetailsById(id: Int): Flow<StatusDetails>
-    suspend fun fetchStatusDetailsBy(id: Int)
+    fun relationsById(showId: Int): Flow<List<Pair<RelationType, Show>>>
+    suspend fun fetchRelationsById(showId: Int)
 
-    fun relationsById(id: Int): Flow<List<Show>>
-    suspend fun fetchRelationsById(id: Int)
+    fun charactersById(showId: Int): Flow<List<Character>>
+    suspend fun fetchCharactersById(showId: Int)
 }

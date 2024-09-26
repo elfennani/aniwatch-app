@@ -1,6 +1,8 @@
 package com.elfennani.aniwatch.data.remote.converters
 
 import com.elfennani.anilist.fragment.ShowFragment
+import com.elfennani.aniwatch.data.local.models.EmbeddedCover
+import com.elfennani.aniwatch.data.local.models.EmbeddedDate
 import com.elfennani.aniwatch.data.local.models.LocalShow
 import com.elfennani.aniwatch.domain.models.Tag
 
@@ -10,13 +12,27 @@ fun ShowFragment.asEntity() = LocalShow(
     description = description,
     genres = genres?.filterNotNull() ?: emptyList(),
     episodes = episodes,
-    cover = coverImage?.large!!,
+    cover = with(coverImage!!) {
+        EmbeddedCover(
+            extraLarge = extraLarge!!,
+            medium = medium!!,
+            large = large!!,
+            color = color
+        )
+    },
     season = season?.asAppModel(),
     year = seasonYear,
     format = format?.asAppModel()!!,
     banner = bannerImage,
     progress = mediaListEntry?.progress,
     status = mediaListEntry?.status?.asAppModel(),
+    score = mediaListEntry?.score,
+    startedAt = mediaListEntry?.startedAt?.let {
+        EmbeddedDate(year = it.year!!, month = it.month!!, day = it.day!!)
+    },
+    endedAt = mediaListEntry?.completedAt?.let {
+        EmbeddedDate(year = it.year!!, month = it.month!!, day = it.day!!)
+    },
     tags = tags?.map {
         Tag(
             id = it!!.id,

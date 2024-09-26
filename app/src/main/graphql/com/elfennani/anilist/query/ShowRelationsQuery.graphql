@@ -1,0 +1,9 @@
+query ShowRelationsQuery($id: Int!) {
+    media:Media(id: $id){
+        relations {
+            edges {
+                ...RelationFragment
+            }
+        }
+    }
+}
