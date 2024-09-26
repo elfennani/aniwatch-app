@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.elfennani.aniwatch.domain.models.MediaType
+import com.elfennani.aniwatch.domain.models.enums.ActivityType
 import java.util.Date
 
 @Entity(tableName = "feed")
@@ -32,7 +33,7 @@ data class CachedActivityShow(
 fun ActivityDto.asDomain() = com.elfennani.aniwatch.domain.models.Activity(
     id = id,
     content = content,
-    type = com.elfennani.aniwatch.domain.models.ActivityType.valueOf(type),
+    type = ActivityType.valueOf(type),
     userId = userId,
     userName = userName,
     userAvatar = userAvatar,

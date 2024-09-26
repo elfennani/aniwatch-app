@@ -14,7 +14,7 @@ import com.elfennani.aniwatch.data_old.repository.ShowRepository
 import com.elfennani.aniwatch.dataStore
 import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import com.elfennani.aniwatch.domain.models.Resource
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.services.DownloadService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

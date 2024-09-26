@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.elfennani.aniwatch.data_old.local.entities.CachedListingDto
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import kotlinx.coroutines.flow.Flow
 
 @Dao

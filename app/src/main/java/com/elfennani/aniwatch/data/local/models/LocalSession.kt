@@ -9,11 +9,13 @@ import kotlinx.datetime.Instant
 data class LocalSession(
     @PrimaryKey(autoGenerate = true) val id: Int?,
     val token: String,
-    val expiration: Long
+    val expiration: Long,
+    val userId: Int
 )
 
 fun LocalSession.asDomain() = Session(
     id=id!!,
     expiration= Instant.fromEpochMilliseconds(expiration),
-    token=this.token
+    token=this.token,
+    userId = userId
 )

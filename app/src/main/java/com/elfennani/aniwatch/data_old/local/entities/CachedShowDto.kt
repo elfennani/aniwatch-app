@@ -4,10 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.elfennani.aniwatch.domain.models.ShowDetails
+import com.elfennani.aniwatch.domain.models.Show
 import com.elfennani.aniwatch.domain.models.ShowImage
-import com.elfennani.aniwatch.domain.models.ShowSeason
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.enums.ShowSeason
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.domain.models.Tag
 import com.elfennani.aniwatch.utils.toColor
 import com.elfennani.aniwatch.utils.toHexString
@@ -32,7 +32,7 @@ data class CachedShowDto(
 
 
 
-fun CachedShowDto.toDomain() = ShowDetails(
+fun CachedShowDto.toDomain() = Show(
     id = id,
     allanimeId = allanimeId,
     name = name,
@@ -55,7 +55,7 @@ fun CachedShowDto.toDomain() = ShowDetails(
     episodes = emptyList()
 )
 
-fun ShowDetails.asEntity() = CachedShowDto(
+fun Show.asEntity() = CachedShowDto(
     id = id,
     allanimeId = allanimeId,
     name = name,

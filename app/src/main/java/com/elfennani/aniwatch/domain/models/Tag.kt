@@ -5,12 +5,5 @@ data class Tag(
     val label: String,
     val percentage: Int,
     val spoiler: Boolean,
+    val description: String?,
 )
-
-
-//export interface Tag {
-//    id: number
-//    label: string
-//    percentage: number
-//    spoiler: boolean
-//}

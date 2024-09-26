@@ -3,8 +3,8 @@ package com.elfennani.aniwatch.data_old.local
 import androidx.room.TypeConverter
 import com.elfennani.aniwatch.data_old.local.entities.LocalDownloadState
 import com.elfennani.aniwatch.domain.models.EpisodeAudio
-import com.elfennani.aniwatch.domain.models.ShowSeason
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.enums.ShowSeason
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.domain.models.Tag
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types

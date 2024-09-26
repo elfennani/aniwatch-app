@@ -13,9 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.elfennani.aniwatch.domain.models.ShowStatus
-import com.elfennani.aniwatch.domain.models.formatText
-import com.elfennani.aniwatch.domain.models.toIcon
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
+import com.elfennani.aniwatch.domain.models.enums.formatText
+import com.elfennani.aniwatch.domain.models.enums.toIcon
 import com.elfennani.aniwatch.ui.composables.Button
 import com.elfennani.aniwatch.ui.theme.AppTheme
 

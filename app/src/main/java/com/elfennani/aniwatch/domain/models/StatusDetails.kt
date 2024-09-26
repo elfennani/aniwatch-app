@@ -1,5 +1,7 @@
 package com.elfennani.aniwatch.domain.models
 
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
+
 data class StatusDetails(
     val status: ShowStatus?,
     val score: Int,

@@ -6,6 +6,11 @@ import android.net.Uri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.network.okHttpClient
+import com.elfennani.anilist.ViewerQuery
+import com.elfennani.aniwatch.R
+import com.elfennani.aniwatch.data.local.dao.ActivityDao
 import com.elfennani.aniwatch.data.local.dao.SessionDao
 import com.elfennani.aniwatch.data.local.models.LocalSession
 import com.elfennani.aniwatch.data.local.models.asDomain
@@ -36,7 +41,14 @@ class SessionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addNewSession(accessToken: String, expiration: Long) {
-        val sessionId = sessionDao.insertSession(LocalSession(null, accessToken, expiration))
+        val apolloClient = ApolloClient.Builder()
+            .serverUrl(context.getString(R.string.anilist_graphql))
+            .addHttpHeader("Authorization", "Bearer $accessToken")
+            .build()
+        val viewer = apolloClient.query(ViewerQuery()).execute()
+        val viewerId = viewer.data?.Viewer?.id!!
+
+        val sessionId = sessionDao.insertSession(LocalSession(null, accessToken, expiration, viewerId))
         dataStore.edit {
             it[SessionRepository.SESSION_KEY] = sessionId
         }

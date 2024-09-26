@@ -34,8 +34,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.elfennani.aniwatch.utils.imageLoader
 import com.elfennani.aniwatch.domain.models.Activity
-import com.elfennani.aniwatch.domain.models.ActivityType
-import com.elfennani.aniwatch.domain.models.ActivtyShow
+import com.elfennani.aniwatch.domain.models.enums.ActivityType
 import com.elfennani.aniwatch.domain.models.MediaType
 import com.elfennani.aniwatch.ui.theme.AppTheme
 import java.text.DateFormat

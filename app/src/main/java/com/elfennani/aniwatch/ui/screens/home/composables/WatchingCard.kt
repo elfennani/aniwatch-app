@@ -23,9 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.elfennani.aniwatch.utils.imageLoader
-import com.elfennani.aniwatch.domain.models.ShowBasic
 import com.elfennani.aniwatch.domain.models.ShowImage
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.ui.theme.AppTheme
 
 @Composable

@@ -11,7 +11,7 @@ fragment UserFragment on User {
         anime{
             count
             meanScore
-            episodesWatched
+            minutesWatched
         }
         manga{
             count

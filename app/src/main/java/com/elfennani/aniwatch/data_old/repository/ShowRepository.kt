@@ -19,9 +19,8 @@ import com.elfennani.aniwatch.data_old.remote.models.toSerializable
 import com.elfennani.aniwatch.domain.models.Episode
 import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import com.elfennani.aniwatch.domain.models.Resource
-import com.elfennani.aniwatch.domain.models.ShowBasic
-import com.elfennani.aniwatch.domain.models.ShowDetails
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.Show
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.domain.models.StatusDetails
 import com.elfennani.aniwatch.domain.models.toNetwork
 import com.elfennani.aniwatch.utils.resourceOf
@@ -46,7 +45,7 @@ class ShowRepository(
         apiService.getRelationsByShowId(showId).map { it.asDomain() }
     }
 
-    fun getDownloads(): Flow<List<ShowDetails>> = cachedShowDao
+    fun getDownloads(): Flow<List<Show>> = cachedShowDao
         .getCachedShows()
         .map {
             it.map { show -> show.toDomain() }
@@ -75,7 +74,7 @@ class ShowRepository(
         cachedEpisodesDao.insertAll(show.episodes.map(Episode::toCached))
     }
 
-    fun getShowFlowById(showId: Int): Flow<ShowDetails?> =
+    fun getShowFlowById(showId: Int): Flow<Show?> =
         cachedShowDao.getCachedShow(showId).map { it?.toDomain() }
 
     suspend fun getShowById(showId: Int) = resourceOf {

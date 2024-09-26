@@ -1,6 +1,6 @@
 package com.elfennani.aniwatch.data_old.remote.models
 
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 

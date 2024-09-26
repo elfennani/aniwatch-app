@@ -1,6 +1,6 @@
 package com.elfennani.aniwatch.ui.screens.status
 
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 
 sealed class StatusEditorUiEvent {
     class OpenDateModal(val modal: StatusDateModal) : StatusEditorUiEvent()

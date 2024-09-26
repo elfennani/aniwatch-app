@@ -27,15 +27,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.elfennani.aniwatch.domain.models.ShowDetails
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.Show
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.ui.composables.Divider
 import com.elfennani.aniwatch.ui.theme.AppTheme
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 
 @Composable
 fun ShowScreenHeader(
-    show: ShowDetails,
+    show: Show,
     lazyListState: LazyListState,
     padding: PaddingValues,
     isAppendingEpisode: Boolean,

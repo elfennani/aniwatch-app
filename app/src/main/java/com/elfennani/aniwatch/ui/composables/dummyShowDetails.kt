@@ -3,14 +3,14 @@ package com.elfennani.aniwatch.ui.composables
 import androidx.compose.ui.graphics.Color
 import com.elfennani.aniwatch.domain.models.DownloadState
 import com.elfennani.aniwatch.domain.models.Episode
-import com.elfennani.aniwatch.domain.models.ShowDetails
+import com.elfennani.aniwatch.domain.models.Show
 import com.elfennani.aniwatch.domain.models.ShowImage
-import com.elfennani.aniwatch.domain.models.ShowSeason
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.enums.ShowSeason
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.domain.models.Tag
 
 val dummyShow
-    get() = ShowDetails(
+    get() = Show(
         id = 109731,
         allanimeId = "oso3xi8Knpv5BKqem",
         name = "Sound! Euphonium 3",
@@ -141,16 +141,76 @@ val dummyShow
         ),
         genres = listOf("Drama", "Music", "Slice of Life"),
         tags = listOf(
-            Tag(id = 98, label = "Female Protagonist", percentage = 97, spoiler = false),
-            Tag(id = 110, label = "Band", percentage = 94, spoiler = false),
-            Tag(id = 84, label = "School Club", percentage = 94, spoiler = false),
-            Tag(id = 102, label = "Coming of Age", percentage = 89, spoiler = false),
-            Tag(id = 86, label = "Primarily Female Cast", percentage = 85, spoiler = false),
-            Tag(id = 1673, label = "Classical Music", percentage = 85, spoiler = false),
-            Tag(id = 1228, label = "Primarily Teen Cast", percentage = 83, spoiler = false),
-            Tag(id = 46, label = "School", percentage = 65, spoiler = false),
-            Tag(id = 294, label = "Bisexual", percentage = 60, spoiler = false),
-            Tag(id = 153, label = "Time Skip", percentage = 53, spoiler = true)
+            Tag(
+                id = 98,
+                label = "Female Protagonist",
+                percentage = 97,
+                spoiler = false,
+                description = it.description
+            ),
+            Tag(
+                id = 110,
+                label = "Band",
+                percentage = 94,
+                spoiler = false,
+                description = it.description
+            ),
+            Tag(
+                id = 84,
+                label = "School Club",
+                percentage = 94,
+                spoiler = false,
+                description = it.description
+            ),
+            Tag(
+                id = 102,
+                label = "Coming of Age",
+                percentage = 89,
+                spoiler = false,
+                description = it.description
+            ),
+            Tag(
+                id = 86,
+                label = "Primarily Female Cast",
+                percentage = 85,
+                spoiler = false,
+                description = it.description
+            ),
+            Tag(
+                id = 1673,
+                label = "Classical Music",
+                percentage = 85,
+                spoiler = false,
+                description = it.description
+            ),
+            Tag(
+                id = 1228,
+                label = "Primarily Teen Cast",
+                percentage = 83,
+                spoiler = false,
+                description = it.description
+            ),
+            Tag(
+                id = 46,
+                label = "School",
+                percentage = 65,
+                spoiler = false,
+                description = it.description
+            ),
+            Tag(
+                id = 294,
+                label = "Bisexual",
+                percentage = 60,
+                spoiler = false,
+                description = it.description
+            ),
+            Tag(
+                id = 153,
+                label = "Time Skip",
+                percentage = 53,
+                spoiler = true,
+                description = it.description
+            )
         ),
         season = ShowSeason.SPRING,
         year = 2024,

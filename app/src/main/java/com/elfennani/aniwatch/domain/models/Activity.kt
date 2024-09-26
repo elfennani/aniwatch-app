@@ -1,16 +1,15 @@
 package com.elfennani.aniwatch.domain.models
 
-import java.util.Date
+import com.elfennani.aniwatch.domain.models.enums.ActivityType
+import kotlinx.datetime.Instant
 
 data class Activity(
     val id: Int,
     val content: String,
     val type: ActivityType,
-    val userId: Int,
-    val userName: String,
-    val userAvatar: String,
-    val createdAt: Date,
+    val createdAt: Instant,
     val likes: Int,
     val replies: Int,
-    val show: ActivtyShow?
+    val user: User,
+    val show: Show?
 )

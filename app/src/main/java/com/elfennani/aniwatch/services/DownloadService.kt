@@ -22,7 +22,7 @@ import com.elfennani.aniwatch.data_old.repository.DownloadRepository
 import com.elfennani.aniwatch.data_old.repository.ShowRepository
 import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import com.elfennani.aniwatch.domain.models.ResourceException
-import com.elfennani.aniwatch.domain.models.ShowDetails
+import com.elfennani.aniwatch.domain.models.Show
 import com.elfennani.aniwatch.domain.models.dataOrThrow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
@@ -189,7 +189,7 @@ class DownloadService : Service() {
     }
 
     private fun updateNotification(
-        show: ShowDetails,
+        show: Show,
         episode: Double,
         audio: EpisodeAudio,
         progress: Float,

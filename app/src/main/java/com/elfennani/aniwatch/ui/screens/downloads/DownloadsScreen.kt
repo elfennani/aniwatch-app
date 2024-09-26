@@ -4,7 +4,6 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,12 +11,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
@@ -42,7 +39,7 @@ import androidx.navigation.compose.composable
 import coil.compose.AsyncImage
 import com.elfennani.aniwatch.domain.models.DownloadState
 import com.elfennani.aniwatch.domain.models.Episode
-import com.elfennani.aniwatch.domain.models.ShowDetails
+import com.elfennani.aniwatch.domain.models.Show
 import com.elfennani.aniwatch.ui.screens.episode.EpisodeRoute
 import com.elfennani.aniwatch.ui.screens.show.ShowRoute
 import com.elfennani.aniwatch.ui.theme.AppTheme
@@ -52,7 +49,7 @@ import com.elfennani.aniwatch.utils.plus
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun DownloadsScreen(
-    downloads: Map<String, List<Pair<ShowDetails, Episode>>>,
+    downloads: Map<String, List<Pair<Show, Episode>>>,
     onNavigate: (Any) -> Unit,
 ) {
     val imageLoader = LocalContext.current.imageLoader()

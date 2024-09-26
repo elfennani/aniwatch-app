@@ -15,5 +15,6 @@ fun SerializableTag.toDomain() = Tag(
     id = this.id,
     label = this.label,
     percentage = this.percentage,
-    spoiler = this.spoiler
+    spoiler = this.spoiler,
+    description = it.description
 )

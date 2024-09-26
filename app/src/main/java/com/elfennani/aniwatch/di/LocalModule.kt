@@ -1,9 +1,9 @@
 package com.elfennani.aniwatch.di
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.room.Room
+import com.elfennani.aniwatch.data.local.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +15,28 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class LocalModule {
     private val Context.dataStore by preferencesDataStore(name = "settings")
+
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context) = Room
+        .databaseBuilder(context, AppDatabase::class.java, "app_dp")
+        .build()
+
+    @Provides
+    @Singleton
+    fun provideSessionDao(database: AppDatabase) = database.sessionDao()
+
+    @Provides
+    @Singleton
+    fun provideActivityDao(database: AppDatabase) = database.activityDao()
+
+    @Provides
+    @Singleton
+    fun provideUserDao(database: AppDatabase) = database.userDao()
+
+    @Provides
+    @Singleton
+    fun provideShowDao(database: AppDatabase) = database.showDao()
 
     @Provides
     @Singleton

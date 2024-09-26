@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -13,7 +15,7 @@ android {
     namespace = "com.elfennani.aniwatch"
     compileSdk = 34
 
-    sourceSets{
+    sourceSets {
         getByName("main") {
             java.srcDir("src/main/graphql")
             kotlin.srcDir("src/main/graphql")
@@ -132,7 +134,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
 
-    implementation("com.apollographql.apollo:apollo-runtime:4.0.0")
+    implementation(libs.apollo.runtime)
 }
 
 kapt {
@@ -140,21 +142,23 @@ kapt {
 }
 
 apollo {
-    service("service") {
-        packageName.set("com.elfennani")
+    service("anilist") {
+        packageName.set("com.elfennani.anilist")
+        srcDir("src/main/graphql/com/elfennani/anilist")
 
         introspection {
+            val token = gradleLocalProperties(rootDir, providers).getProperty("token")
             endpointUrl.set("https://graphql.anilist.co")
-            schemaFile.set(file("src/main/graphql/anilist/schema.graphqls"))
+            headers.insert("Authorization", "Bearer $token")
         }
     }
 
     service("allanime") {
-        packageName.set("com.elfennani")
+        packageName.set("com.elfennani.allanime")
+        srcDir("src/main/graphql/com/elfennani/allanime")
 
         introspection {
             endpointUrl.set("https://api.allanime.day/api")
-            schemaFile.set(file("src/main/graphql/allanime/schema.graphqls"))
         }
     }
 }

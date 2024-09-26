@@ -1,0 +1,15 @@
+fragment ListActivityFragment on ListActivity{
+    id
+    createdAt
+    likeCount
+    userId
+    replyCount
+    user{
+        ...UserFragment
+    }
+    media {
+        ...ShowFragment
+    }
+    status
+    progress
+}

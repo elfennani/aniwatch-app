@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface FeedRepository {
     val lazyFeed: Flow<PagingData<Activity>>
-    suspend fun fetchFeedByPage(page: Int)
+    suspend fun fetchFeedByPage(page: Int, clearAll:Boolean = false): Boolean
 }

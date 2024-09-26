@@ -1,7 +1,5 @@
 package com.elfennani.aniwatch.data_old.remote.models
 
-import com.elfennani.aniwatch.domain.models.ShowBasic
-
 data class NetworkShowBasic(
     val id: Int,
     val name: String,

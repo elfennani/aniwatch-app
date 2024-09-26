@@ -1,7 +1,6 @@
 package com.elfennani.aniwatch.domain.repositories
 
-import com.elfennani.aniwatch.domain.models.ShowBasic
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import kotlinx.coroutines.flow.Flow
 
 interface ListingRepository {

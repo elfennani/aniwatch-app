@@ -2,7 +2,6 @@ package com.elfennani.aniwatch.ui.screens.home
 
 import androidx.compose.runtime.Stable
 import com.elfennani.aniwatch.domain.models.Activity
-import com.elfennani.aniwatch.domain.models.ShowBasic
 import com.elfennani.aniwatch.domain.models.User
 
 @Stable

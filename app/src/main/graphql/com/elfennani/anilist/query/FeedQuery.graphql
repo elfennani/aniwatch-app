@@ -1,0 +1,16 @@
+query FeedQuery($page: Int!, $userId: Int!) {
+    activitiesPage:Page(page: $page,perPage: 25) {
+        pageInfo {
+            ...PageInfoFragment
+        }
+        activities(userId:$userId,sort: [PINNED,ID_DESC]) {
+            __typename
+            ... on TextActivity{
+                ...TextActivityFragment
+            }
+            ... on ListActivity {
+                ...ListActivityFragment
+            }
+        }
+    }
+}

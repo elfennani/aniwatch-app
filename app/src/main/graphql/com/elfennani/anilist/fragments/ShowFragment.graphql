@@ -1,0 +1,35 @@
+fragment ShowFragment on Media {
+    id
+    genres
+    episodes
+    description
+    bannerImage
+    seasonYear
+    season
+    format
+    title {
+        userPreferred
+    }
+    coverImage {
+        extraLarge
+        medium
+        large
+        color
+    }
+    mediaListEntry {
+        progress
+        status
+    }
+    tags {
+        id
+        name
+        description
+        rank
+        isMediaSpoiler
+        isGeneralSpoiler
+    }
+    streamingEpisodes {
+        title
+        thumbnail
+    }
+}

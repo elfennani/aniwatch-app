@@ -1,6 +1,6 @@
 package com.elfennani.aniwatch.data_old.remote.models
 
-import com.elfennani.aniwatch.domain.models.ShowDetails
+import com.elfennani.aniwatch.domain.models.Show
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -23,7 +23,7 @@ data class SerializableShowDetails(
     val status: SerializableShowStatus?,
 )
 
-fun SerializableShowDetails.toDomain() = ShowDetails(
+fun SerializableShowDetails.toDomain() = Show(
     id = this.id,
     name = this.name,
     tags = this.tags.map { it.toDomain() },

@@ -1,5 +1,6 @@
 package com.elfennani.aniwatch.data_old.remote.models
 
+import com.elfennani.aniwatch.domain.models.enums.ActivityType
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import java.util.Date
@@ -8,7 +9,7 @@ import java.util.Date
 data class NetworkActivity(
     val id: Int,
     val content: String,
-    val type: com.elfennani.aniwatch.domain.models.ActivityType,
+    val type: ActivityType,
     @Json(name = "user_id") val userId: Int,
     @Json(name = "user_name") val userName: String,
     @Json(name = "user_avatar") val userAvatar: String,

@@ -15,8 +15,8 @@ import androidx.media3.session.SessionToken
 import androidx.navigation.toRoute
 import com.elfennani.aniwatch.data_old.repository.ShowRepository
 import com.elfennani.aniwatch.domain.models.Resource
-import com.elfennani.aniwatch.domain.models.ShowDetails
-import com.elfennani.aniwatch.domain.models.ShowStatus
+import com.elfennani.aniwatch.domain.models.Show
+import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.services.PlaybackService
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
@@ -51,7 +51,7 @@ class EpisodeViewModel @Inject constructor(
     private var didUpdateProgress = false
     private val progress = MutableStateFlow(0L)
     private val episode = MutableStateFlow<String?>(null)
-    private val show = MutableStateFlow<ShowDetails?>(null)
+    private val show = MutableStateFlow<Show?>(null)
 
     private val _state = MutableStateFlow(EpisodeUiState())
     val state = _state.asStateFlow()

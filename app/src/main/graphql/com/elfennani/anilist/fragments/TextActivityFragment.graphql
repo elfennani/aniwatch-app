@@ -1,0 +1,11 @@
+fragment TextActivityFragment on TextActivity {
+    id
+    text
+    createdAt
+    likeCount
+    userId
+    replyCount
+    user{
+        ...UserFragment
+    }
+}
