@@ -1,27 +1,17 @@
 package com.elfennani.aniwatch.di
 
 import com.elfennani.aniwatch.data.repository.DownloadRepositoryImpl
-import com.elfennani.aniwatch.data.repository.EpisodeRepositoryImpl
 import com.elfennani.aniwatch.data.repository.FeedRepositoryImpl
 import com.elfennani.aniwatch.data.repository.ListingRepositoryImpl
 import com.elfennani.aniwatch.data.repository.SessionRepositoryImpl
 import com.elfennani.aniwatch.data.repository.ShowRepositoryImpl
 import com.elfennani.aniwatch.data.repository.UserRepositoryImpl
 import com.elfennani.aniwatch.domain.repositories.DownloadRepository
-import com.elfennani.aniwatch.domain.repositories.EpisodeRepository
 import com.elfennani.aniwatch.domain.repositories.FeedRepository
 import com.elfennani.aniwatch.domain.repositories.ListingRepository
 import com.elfennani.aniwatch.domain.repositories.SessionRepository
 import com.elfennani.aniwatch.domain.repositories.ShowRepository
 import com.elfennani.aniwatch.domain.repositories.UserRepository
-import com.elfennani.aniwatch.domain.usecases.FetchListingUseCase
-import com.elfennani.aniwatch.domain.usecases.FetchRelationsUseCase
-import com.elfennani.aniwatch.domain.usecases.FetchShowUseCase
-import com.elfennani.aniwatch.domain.usecases.FetchUserByIdUseCase
-import com.elfennani.aniwatch.domain.usecases.FetchViewerUseCase
-import com.elfennani.aniwatch.domain.usecases.IncrementEpisodeUseCase
-import com.elfennani.aniwatch.domain.usecases.UpdateShowStatusUseCase
-import com.elfennani.aniwatch.domain.usecases.ValidateTokenUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -59,9 +49,4 @@ abstract class AppModule {
     abstract fun bindDownloadRepository(
         downloadRepositoryImpl: DownloadRepositoryImpl
     ): DownloadRepository
-
-    @Binds
-    abstract fun bindEpisodeRepository(
-        episodeRepositoryImpl: EpisodeRepositoryImpl
-    ): EpisodeRepository
 }

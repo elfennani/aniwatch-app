@@ -1,11 +1,11 @@
 package com.elfennani.aniwatch.data.repository
 
+import com.elfennani.aniwatch.data_old.local.entities.LocalDownloadedEpisode
 import com.elfennani.aniwatch.domain.models.DownloadState
 import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import com.elfennani.aniwatch.domain.repositories.DownloadRepository
-import javax.inject.Inject
 
-class DownloadRepositoryImpl @Inject constructor(): DownloadRepository {
+class DownloadRepositoryImpl: DownloadRepository {
     override suspend fun addDownload(
         showId: Int,
         episode: Double,
@@ -14,7 +14,7 @@ class DownloadRepositoryImpl @Inject constructor(): DownloadRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getToBeDownloaded() {
+    override suspend fun getToBeDownloaded(): List<LocalDownloadedEpisode> {
         TODO("Not yet implemented")
     }
 
