@@ -4,7 +4,6 @@ import android.content.Context
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.network.okHttpClient
 import com.elfennani.aniwatch.R
-import com.elfennani.aniwatch.data_old.local.dao.SessionDao
 import com.elfennani.aniwatch.data.remote.AuthInterceptor
 import com.elfennani.aniwatch.domain.repositories.SessionRepository
 import dagger.Module

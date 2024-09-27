@@ -1,11 +1,17 @@
 package com.elfennani.aniwatch.di
 
+import com.elfennani.aniwatch.data.repository.DownloadRepositoryImpl
 import com.elfennani.aniwatch.data.repository.FeedRepositoryImpl
 import com.elfennani.aniwatch.data.repository.ListingRepositoryImpl
 import com.elfennani.aniwatch.data.repository.SessionRepositoryImpl
+import com.elfennani.aniwatch.data.repository.ShowRepositoryImpl
+import com.elfennani.aniwatch.data.repository.UserRepositoryImpl
+import com.elfennani.aniwatch.domain.repositories.DownloadRepository
 import com.elfennani.aniwatch.domain.repositories.FeedRepository
 import com.elfennani.aniwatch.domain.repositories.ListingRepository
 import com.elfennani.aniwatch.domain.repositories.SessionRepository
+import com.elfennani.aniwatch.domain.repositories.ShowRepository
+import com.elfennani.aniwatch.domain.repositories.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -28,4 +34,19 @@ abstract class AppModule {
     abstract fun bindListingRepository(
         listingRepositoryImpl: ListingRepositoryImpl
     ): ListingRepository
+
+    @Binds
+    abstract fun bindShowRepository(
+        showRepositoryImpl: ShowRepositoryImpl
+    ): ShowRepository
+
+    @Binds
+    abstract fun bindUserRepository(
+        userRepositoryImpl: UserRepositoryImpl
+    ): UserRepository
+
+    @Binds
+    abstract fun bindDownloadRepository(
+        downloadRepositoryImpl: DownloadRepositoryImpl
+    ): DownloadRepository
 }

@@ -46,7 +46,7 @@ class SessionRepositoryImpl @Inject constructor(
             .addHttpHeader("Authorization", "Bearer $accessToken")
             .build()
         val viewer = apolloClient.query(ViewerQuery()).execute()
-        val viewerId = viewer.data?.Viewer?.id!!
+        val viewerId = viewer.data?.Viewer?.userFragment?.id!!
 
         val sessionId = sessionDao.insertSession(LocalSession(null, accessToken, expiration, viewerId))
         dataStore.edit {

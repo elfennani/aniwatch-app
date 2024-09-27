@@ -1,0 +1,5 @@
+query UserQuery($id: Int!){
+    User(id: $id){
+        ...UserFragment
+    }
+}
