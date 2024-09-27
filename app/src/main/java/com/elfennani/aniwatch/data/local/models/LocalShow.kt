@@ -3,6 +3,7 @@ package com.elfennani.aniwatch.data.local.models
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.elfennani.aniwatch.domain.models.MediaType
 import com.elfennani.aniwatch.domain.models.Show
 import com.elfennani.aniwatch.domain.models.Tag
 import com.elfennani.aniwatch.domain.models.enums.ShowFormat
@@ -25,6 +26,7 @@ data class LocalShow(
     val status: ShowStatus?,
     val tags: List<Tag>,
     val score: Double?,
+    val type:MediaType,
     @Embedded("started_") val startedAt: EmbeddedDate?,
     @Embedded("ended_") val endedAt: EmbeddedDate?
 )
@@ -42,5 +44,6 @@ fun LocalShow.asAppModel() = Show(
     image = cover.asAppModel(),
     banner = banner,
     progress = progress,
-    status = status
+    status = status,
+    type = type
 )

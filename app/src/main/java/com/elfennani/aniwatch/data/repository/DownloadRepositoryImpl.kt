@@ -1,6 +1,5 @@
 package com.elfennani.aniwatch.data.repository
 
-import com.elfennani.aniwatch.data_old.local.entities.LocalDownloadedEpisode
 import com.elfennani.aniwatch.domain.models.DownloadState
 import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import com.elfennani.aniwatch.domain.repositories.DownloadRepository
@@ -14,7 +13,7 @@ class DownloadRepositoryImpl: DownloadRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getToBeDownloaded(): List<LocalDownloadedEpisode> {
+    override suspend fun getToBeDownloaded() {
         TODO("Not yet implemented")
     }
 

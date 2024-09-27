@@ -18,4 +18,5 @@ data class Show(
     val banner: String?,
     val progress: Int?,
     val status: ShowStatus?,
+    val type: MediaType
 )

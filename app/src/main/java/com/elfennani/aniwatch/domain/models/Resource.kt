@@ -1,18 +1,15 @@
 package com.elfennani.aniwatch.domain.models
 
-import android.content.Context
-import androidx.annotation.StringRes
-import com.elfennani.aniwatch.R
+import com.elfennani.aniwatch.domain.errors.AppError
+import com.elfennani.aniwatch.domain.errors.AppError.Companion.readable
 
-class ResourceException(@StringRes val errorResource: Int) : Exception()
-
-sealed class Resource<T>(val data: T? = null, @StringRes val message: Int? = null) {
-    class Success<T>(data: T?) : Resource<T>(data)
-    class Error<T>(@StringRes message: Int = R.string.something_wrong, data: T? = null) :
-        Resource<T>(data, message)
+sealed class Resource<out S, out E> {
+    data class Ok<out S>(val data: S) : Resource<S, Nothing>()
+    data class Err<out E>(val error: E) : Resource<Nothing, E>()
 }
 
-fun <T> Resource<T>.dataOrThrow(context: Context) = when (this) {
-    is Resource.Success -> data!!
-    is Resource.Error -> throw ResourceException(message!!)
+fun Resource<Any, AppError>.handleError(onError: (error: Int) -> Unit){
+    if(this is Resource.Err){
+        onError(error.readable())
+    }
 }

@@ -42,13 +42,14 @@ fun ShowScreenHeader(
     onStatusClick: () -> Unit,
     onAppendEpisode: () -> Unit,
     onBack: () -> Unit,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     var descriptionExpanded by remember { mutableStateOf(false) }
     val richTextState = rememberRichTextState()
 
     LaunchedEffect(show.description) {
-        richTextState.setHtml(show.description)
+        if (!show.description.isNullOrEmpty())
+            richTextState.setHtml(show.description)
     }
 
     Column {
@@ -73,7 +74,7 @@ fun ShowScreenHeader(
                     color = AppTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "${show.year} • ${show.season} • ${show.episodesCount} Episodes",
+                    text = "${show.year} • ${show.season} • ${show.episodes} Episodes",
                     style = AppTheme.typography.labelSmall,
                     color = AppTheme.colorScheme.onSecondary
                 )
@@ -89,10 +90,10 @@ fun ShowScreenHeader(
                     modifier = Modifier.weight(1f),
                     status = show.status,
                     progress = show.progress,
-                    total = show.episodesCount,
+                    total = show.episodes,
                     onClick = { onStatusClick() }
                 )
-                if(show.status in listOf(ShowStatus.WATCHING, ShowStatus.REPEATING)){
+                if (show.status in listOf(ShowStatus.WATCHING, ShowStatus.REPEATING)) {
                     OutlinedButton(
                         onClick = { onAppendEpisode() },
                         colors = ButtonDefaults.outlinedButtonColors()

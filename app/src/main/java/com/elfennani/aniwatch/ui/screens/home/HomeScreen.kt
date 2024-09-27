@@ -60,12 +60,10 @@ fun HomeScreen(
     val lazyListState = rememberLazyListState()
     val pullState = rememberPullToRefreshState(positionalThreshold = 100.dp)
     val snackbarHostState = remember { SnackbarHostState() }
-    val dir = LocalLayoutDirection.current
 
     LaunchedEffect(pullState.isRefreshing) {
         if (pullState.isRefreshing) {
             onRefetch()
-            feed.refresh()
         }
     }
 
@@ -163,24 +161,17 @@ fun NavGraphBuilder.homeScreen(navController: NavController) {
     ) {
         val viewModel: HomeViewModel = hiltViewModel()
         val homeState by viewModel.state.collectAsState()
-        val feed = viewModel.feedPagingFlow.collectAsLazyPagingItems()
+        val feed = viewModel.lazyFeed.collectAsLazyPagingItems()
 
         HomeScreen(
             navController = navController,
             state = homeState,
             feed = feed,
-            onRefetch = viewModel::refetch,
+            onRefetch = {
+                feed.refresh()
+                viewModel.onRefresh()
+            },
             onErrorDismiss = viewModel::dismissError,
         )
-    }
-}
-
-fun NavController.navigateToHomeScreen(popUpToTop: Boolean = false) {
-    this.navigate(HomeScreenPattern) {
-        if (popUpToTop) {
-            popUpTo(0) {
-                inclusive = true
-            }
-        }
     }
 }

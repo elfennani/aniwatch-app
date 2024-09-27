@@ -22,13 +22,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.elfennani.aniwatch.domain.models.Show
 import com.elfennani.aniwatch.utils.imageLoader
 import com.elfennani.aniwatch.domain.models.ShowImage
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.ui.theme.AppTheme
 
 @Composable
-fun WatchingCard(show: ShowBasic, onPress: () -> Unit = {}) {
+fun WatchingCard(show: Show, onPress: () -> Unit = {}) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -74,37 +75,5 @@ fun WatchingCard(show: ShowBasic, onPress: () -> Unit = {}) {
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-    }
-}
-
-@Preview
-@Composable
-fun WatchingCardPreview() {
-    val fakeShow = ShowBasic(
-        id = 100077,
-        name = "Sound Euphonium S3",
-        status = ShowStatus.WATCHING,
-        progress = 8,
-        description = "The comedy manga centers around a super-powered girl named Hina and Nitta, a young member of the yakuza. Hina suddenly appears in Nitta's room and threatens him with her extraordinary powers. However, they end up living together.<br><br>\\n\\n(Source: Anime News Network)",
-        episodes = 12,
-        image = ShowImage(
-            large = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx100077-B4bfXz0wVOPO.jpg",
-            medium = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx100077-B4bfXz0wVOPO.jpg",
-            original = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx100077-B4bfXz0wVOPO.jpg",
-            color = Color(0xFFe47850)
-        ),
-        banner = null,
-        updatedAt = null
-    )
-
-    AppTheme {
-        Column(
-            modifier = Modifier
-                .background(AppTheme.colorScheme.background)
-                .padding(AppTheme.sizes.normal)
-                .width(411.dp)
-        ) {
-            WatchingCard(show = fakeShow)
-        }
     }
 }

@@ -1,0 +1,22 @@
+mutation UpdateStatus(
+    $progress:Int,
+    $mediaId:Int!,
+    $status: MediaListStatus,
+    $score:Float,
+    $startedAt: FuzzyDateInput,
+    $completedAt: FuzzyDateInput
+){
+    SaveMediaListEntry(
+        mediaId: $mediaId,
+        progress: $progress,
+        status: $status,
+        score: $score,
+        startedAt: $startedAt,
+        completedAt: $completedAt
+    ){
+        id
+        media {
+            ...ShowFragment
+        }
+    }
+}

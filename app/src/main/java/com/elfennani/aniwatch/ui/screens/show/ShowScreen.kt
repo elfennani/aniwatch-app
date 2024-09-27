@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountTree
@@ -109,15 +108,7 @@ fun ShowScreen(
                     icon = { Icon(Icons.Default.PlayArrow, contentDescription = null) },
                     containerColor = AppTheme.colorScheme.primary,
                     contentColor = AppTheme.colorScheme.onPrimary,
-                    onClick = {
-                        val nextEpisode = state.show.episodes.find {
-                            it.episode == ((state.show.progress ?: 0) + 1).toDouble()
-                        }?.episode
-
-                        if (nextEpisode != null) {
-                            onOpenEpisode(nextEpisode, state.defaultAudio ?: EpisodeAudio.SUB)
-                        }
-                    }
+                    onClick = {}
                 )
             }
         }
@@ -138,7 +129,7 @@ fun ShowScreen(
                         onBack = onBack,
                         onStatusClick = onStatusClick,
                         onAppendEpisode = onAppendEpisode,
-                        isAppendingEpisode = state.isAppendingEpisode
+                        isAppendingEpisode = state.isIncrementingEpisode
                     ) {
                         FlowRow(
                             verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.small),
@@ -178,69 +169,69 @@ fun ShowScreen(
 
                                 .padding(vertical = AppTheme.sizes.medium)
                         )
-                        if (state.defaultAudio != null && state.show.episodes.fastAny { it.dubbed })
-                            AnimatedContent(
-                                targetState = state.defaultAudio,
-                                label = ""
-                            ) { defaultAudio ->
-                                PillButton(
-                                    onClick = { onToggleAudio() },
-                                    text = defaultAudio.name,
-                                    icon = Icons.Default.Language
-                                )
-                            }
+//                        if (state.defaultAudio != null && state.show.episodes.fastAny { it.dubbed })
+//                            AnimatedContent(
+//                                targetState = state.defaultAudio,
+//                                label = ""
+//                            ) { defaultAudio ->
+//                                PillButton(
+//                                    onClick = { onToggleAudio() },
+//                                    text = defaultAudio.name,
+//                                    icon = Icons.Default.Language
+//                                )
+//                            }
                     }
                 }
 
-                items(
-                    state.show.episodes.sortedBy { it.episode },
-                    key = { ep -> ep.id }
-                ) { episode ->
-                    Log.d(
-                        "ShowScreen", "ShowScreen: ${
-                            state.show.progress != null &&
-                                    episode.episode <= state.show.progress &&
-                                    state.show.status.isWatching()
-                        }"
-                    )
-                    EpisodeCard(
-                        modifier = Modifier.let {
-                            if (
-                                state.show.progress != null &&
-                                episode.episode <= state.show.progress &&
-                                state.show.status.isWatching()
-                            ) {
-                                return@let it.alpha(0.5f)
-                            }
-
-                            it
-                        },
-                        episode = episode,
-                        onClick = {
-                            val audio = when {
-                                episode.dubbed -> state.defaultAudio ?: EpisodeAudio.SUB
-                                else -> EpisodeAudio.SUB
-                            }
-                            onOpenEpisode(episode.episode, audio)
-                        },
-                        onOptions = { selectedEpisode = episode.id }
-                    )
-                }
+//                items(
+//                    state.show.episodes.sortedBy { it.episode },
+//                    key = { ep -> ep.id }
+//                ) { episode ->
+//                    Log.d(
+//                        "ShowScreen", "ShowScreen: ${
+//                            state.show.progress != null &&
+//                                    episode.episode <= state.show.progress &&
+//                                    state.show.status.isWatching()
+//                        }"
+//                    )
+//                    EpisodeCard(
+//                        modifier = Modifier.let {
+//                            if (
+//                                state.show.progress != null &&
+//                                episode.episode <= state.show.progress &&
+//                                state.show.status.isWatching()
+//                            ) {
+//                                return@let it.alpha(0.5f)
+//                            }
+//
+//                            it
+//                        },
+//                        episode = episode,
+//                        onClick = {
+//                            val audio = when {
+//                                episode.dubbed -> state.defaultAudio ?: EpisodeAudio.SUB
+//                                else -> EpisodeAudio.SUB
+//                            }
+//                            onOpenEpisode(episode.episode, audio)
+//                        },
+//                        onOptions = { selectedEpisode = episode.id }
+//                    )
+//                }
             }
         }
         if (state.isLoading) {
             ShowScreenSkeleton(padding = padding)
         }
-        if (selectedEpisode != null) {
-            val episode = state.show?.episodes?.find { it.id == selectedEpisode }!!
-            EpisodeDialog(
-                onDismissRequest = { selectedEpisode = null },
-                episode = episode,
-                onOpenEpisode = onOpenEpisode,
-                onDownload = { onDownloadEpisode(episode.episode, it) },
-                onDelete = { onDeleteEpisode(episode.episode) }
-            )
-        }
+//        if (selectedEpisode != null) {
+//            val episode = state.show?.episodes?.find { it.id == selectedEpisode }!!
+//            EpisodeDialog(
+//                onDismissRequest = { selectedEpisode = null },
+//                episode = episode,
+//                onOpenEpisode = onOpenEpisode,
+//                onDownload = { onDownloadEpisode(episode.episode, it) },
+//                onDelete = { onDeleteEpisode(episode.episode) }
+//            )
+//        }
     }
 }
 
@@ -273,19 +264,7 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
             onBack = navController::popBackStack,
             onErrorDismiss = viewModel::dismissError,
             onOpenEpisode = { episode, audio ->
-                val state = showState
-                    .show?.episodes?.find { it.episode == episode }
-                    ?.state
 
-                navController.navigate(
-                    EpisodeRoute(
-                        id = showState.show?.id!!,
-                        allanimeId = showState.show?.allanimeId!!,
-                        episode = episode.toFloat(),
-                        audio = if (state is DownloadState.Downloaded) state.audio else audio,
-                        useSaved = state is DownloadState.Downloaded
-                    )
-                )
             },
             onDownloadEpisode = viewModel::downloadEpisode,
             onDeleteEpisode = viewModel::deleteEpisode,

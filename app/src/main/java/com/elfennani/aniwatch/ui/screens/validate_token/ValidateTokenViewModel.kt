@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.domain.errors.AppError.Companion.readable
-import com.elfennani.aniwatch.domain.models.Result
+import com.elfennani.aniwatch.domain.models.Resource
 import com.elfennani.aniwatch.domain.usecases.ValidateTokenUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,12 +41,12 @@ class ValidateTokenViewModel @Inject constructor(
 
         viewModelScope.launch {
             when (val result = validateTokenUseCase(accessToken, expiration.toLong())) {
-                is Result.Ok -> {
+                is Resource.Ok -> {
                     Toast.makeText(context, "Successfully signed in", Toast.LENGTH_SHORT).show()
                     onSuccess()
                 }
 
-                is Result.Err -> {
+                is Resource.Err -> {
                     _errors.update {
                         it + result.error.readable()
                     }

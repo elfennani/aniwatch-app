@@ -16,4 +16,6 @@ interface ShowRepository {
 
     fun charactersById(showId: Int): Flow<PagingData<Character>>
     suspend fun fetchCharactersById(showId: Int, page: Int): Boolean
+
+    suspend fun incrementEpisodeProgress(showId: Int)
 }

@@ -18,13 +18,14 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import com.elfennani.aniwatch.domain.models.Show
 import com.elfennani.aniwatch.ui.composables.Section
 import com.elfennani.aniwatch.ui.theme.AppTheme
 
 @Composable
 fun WatchingShowsSection(
     onPressShow: (showId: Int) -> Unit = {},
-    shows: List<ShowBasic>,
+    shows: List<Show>,
     isLoading: Boolean = false,
 ) {
     val isEmpty = !isLoading && shows.isEmpty()
