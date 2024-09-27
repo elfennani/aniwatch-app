@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.elfennani.aniwatch.data.local.dao.ActivityDao
+import com.elfennani.aniwatch.data.local.dao.CharacterDao
 import com.elfennani.aniwatch.data.local.dao.RelationDao
 import com.elfennani.aniwatch.data.local.dao.SessionDao
 import com.elfennani.aniwatch.data.local.dao.ShowDao
@@ -33,4 +34,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun showDao(): ShowDao
     abstract fun relationDao():RelationDao
+    abstract fun characterDao(): CharacterDao
 }

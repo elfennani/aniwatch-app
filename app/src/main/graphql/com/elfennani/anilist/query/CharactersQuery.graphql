@@ -1,0 +1,12 @@
+query CharactersQuery($id: Int!, $page: Int!) {
+    media:Media(id: $id){
+        characters(page: $page,perPage: 25,sort: [ROLE,RELEVANCE, ID]){
+            edges{
+                ...CharacterFragment
+            }
+            pageInfo{
+                ...PageInfoFragment
+            }
+        }
+    }
+}

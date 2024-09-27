@@ -9,23 +9,21 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
-import com.elfennani.aniwatch.data.local.models.LocalActivity
-import com.elfennani.aniwatch.domain.models.Activity
-import com.elfennani.aniwatch.domain.paging.CharactersMediator.Companion
-import com.elfennani.aniwatch.domain.repositories.FeedRepository
+import com.elfennani.aniwatch.data.local.models.LocalCharacter
+import com.elfennani.aniwatch.domain.repositories.ShowRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
 import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalPagingApi::class)
-class FeedMediator(
-    private val feedRepository: FeedRepository,
+class CharactersMediator(
+    private val showRepository: ShowRepository,
     private val dataStore: DataStore<Preferences>,
-) : RemoteMediator<String, LocalActivity>() {
-
+    private val showId: Int,
+) : RemoteMediator<Int, LocalCharacter>() {
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<String, LocalActivity>,
+        state: PagingState<Int, LocalCharacter>,
     ): MediatorResult {
         val loadKey = when (loadType) {
             LoadType.REFRESH -> null
@@ -33,25 +31,21 @@ class FeedMediator(
             LoadType.PREPEND ->
                 return MediatorResult.Success(endOfPaginationReached = true)
 
-            LoadType.APPEND -> dataStore.data.first()[FEED_PAGE_KEY]
-
+            LoadType.APPEND -> dataStore.data.first()[PAGE_KEY]
         }
 
         return try {
-            val hasNextPage = feedRepository.fetchFeedByPage(
-                page = loadKey ?: 1,
-                clearAll = loadType == LoadType.REFRESH
-            )
+            val hasNextPage = showRepository.fetchCharactersById(showId, loadKey ?: 1)
 
             dataStore.edit {
                 if (loadType == LoadType.REFRESH) {
                     it[LAST_UPDATED_KEY] = Clock.System.now().toEpochMilliseconds()
                 }
 
-                it[FEED_PAGE_KEY] = (loadKey ?: 1) + 1
+                it[PAGE_KEY] = (loadKey ?: 1) + 1
             }
 
-            MediatorResult.Success(endOfPaginationReached = !hasNextPage)
+            MediatorResult.Success(endOfPaginationReached = !hasNextPage,)
         } catch (e: Exception) {
             e.printStackTrace()
             MediatorResult.Error(e)
@@ -70,9 +64,8 @@ class FeedMediator(
         }
     }
 
-
     companion object {
-        val FEED_PAGE_KEY = intPreferencesKey("FEED_PAGE")
-        val LAST_UPDATED_KEY = longPreferencesKey("FEED_LAST_UPDATED")
+        val PAGE_KEY = intPreferencesKey("CHARACTERS_PAGE")
+        val LAST_UPDATED_KEY = longPreferencesKey("CHARACTERS_LAST_UPDATED")
     }
 }

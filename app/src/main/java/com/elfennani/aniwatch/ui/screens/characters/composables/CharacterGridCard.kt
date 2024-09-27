@@ -77,12 +77,12 @@ fun CharacterGridCard(character: Character, showVA: Boolean = true) {
             modifier = Modifier.fillMaxWidth()
         )
         AnimatedVisibility(
-            showVA && character.voiceActor.isNotEmpty(),
+            showVA && character.voiceActors.isNotEmpty(),
             label = "va-${character.id}"
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.small)) {
                 HorizontalDivider(modifier = Modifier.padding(horizontal = AppTheme.sizes.medium))
-                character.voiceActor.forEach {
+                character.voiceActors.forEach {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
@@ -116,7 +116,7 @@ private fun CharacterGridCardPrev() {
         image = "https://s4.anilist.co/file/anilistcdn/character/large/b88708-ZiVPl8LjIjaK.jpg",
         imageSD = "https://s4.anilist.co/file/anilistcdn/character/medium/b88708-ZiVPl8LjIjaK.jpg",
         role = "MAIN",
-        voiceActor = listOf(
+        voiceActors = listOf(
             VoiceActor(
                 id = 106661,
                 name = "Tomoyo Kurosawa",

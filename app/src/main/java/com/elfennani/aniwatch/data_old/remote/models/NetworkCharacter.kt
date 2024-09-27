@@ -17,5 +17,5 @@ fun NetworkCharacter.asDomain() = com.elfennani.aniwatch.domain.models.Character
     image = image,
     imageSD = imageSD,
     role = role,
-    voiceActor = voiceActor.map { it.asDomain() }
+    voiceActors = voiceActor.map { it.asDomain() }
 )

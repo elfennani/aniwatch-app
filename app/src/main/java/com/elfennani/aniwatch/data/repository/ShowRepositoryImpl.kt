@@ -1,10 +1,18 @@
 package com.elfennani.aniwatch.data.repository
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.map
 import androidx.room.withTransaction
 import com.apollographql.apollo.ApolloClient
+import com.elfennani.anilist.CharactersQuery
 import com.elfennani.anilist.ShowByIdQuery
 import com.elfennani.anilist.ShowRelationsQuery
 import com.elfennani.aniwatch.data.local.AppDatabase
+import com.elfennani.aniwatch.data.local.dao.CharacterDao
 import com.elfennani.aniwatch.data.local.dao.RelationDao
 import com.elfennani.aniwatch.data.local.dao.ShowDao
 import com.elfennani.aniwatch.data.local.models.LocalMediaRelation
@@ -17,9 +25,11 @@ import com.elfennani.aniwatch.domain.models.Character
 import com.elfennani.aniwatch.domain.models.Show
 import com.elfennani.aniwatch.domain.models.StatusDetails
 import com.elfennani.aniwatch.domain.models.enums.RelationType
+import com.elfennani.aniwatch.domain.paging.CharactersMediator
 import com.elfennani.aniwatch.domain.repositories.ShowRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -27,7 +37,9 @@ class ShowRepositoryImpl(
     @AniListApolloClient private val apolloClient: ApolloClient,
     private val showDao: ShowDao,
     private val relationDao: RelationDao,
+    private val characterDao: CharacterDao,
     private val database: AppDatabase,
+    private val dataStore: DataStore<Preferences>,
 ) : ShowRepository {
     override fun showById(id: Int) = showDao.getByIdFlow(id).map { it.asAppModel() }
 
@@ -80,11 +92,32 @@ class ShowRepositoryImpl(
         }
     }
 
-    override fun charactersById(showId: Int): Flow<List<Character>> {
-        TODO("Not yet implemented")
+    @OptIn(ExperimentalPagingApi::class)
+    override fun charactersById(showId: Int) = Pager(
+        PagingConfig(pageSize = 25),
+        remoteMediator = CharactersMediator(this, dataStore, showId)
+    ) {
+        characterDao.getPaging(showId)
+    }.flow
+        .map { it.map { character -> character.asAppModel() } }
+
+    override suspend fun fetchCharactersById(showId: Int, page: Int): Boolean {
+        return withContext(Dispatchers.IO) {
+            val response = apolloClient.query(CharactersQuery(showId, page)).execute()
+            val hasNextPage =
+                response.data?.media?.characters?.pageInfo?.pageInfoFragment?.hasNextPage
+                    ?: false
+            val characters = response.data?.media?.characters?.edges?.mapNotNull {
+                it?.characterFragment?.asEntity(showId)
+            } ?: emptyList()
+
+            database.withTransaction {
+                characterDao.deleteByShowId(showId)
+                characterDao.upsert(characters)
+            }
+
+            return@withContext hasNextPage
+        }
     }
 
-    override suspend fun fetchCharactersById(showId: Int) {
-        TODO("Not yet implemented")
-    }
 }

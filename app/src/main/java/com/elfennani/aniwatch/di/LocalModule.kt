@@ -44,5 +44,9 @@ class LocalModule {
 
     @Provides
     @Singleton
+    fun provideCharacterDao(database: AppDatabase) = database.characterDao()
+
+    @Provides
+    @Singleton
     fun provideDataStore(@ApplicationContext context: Context) = context.dataStore
 }
