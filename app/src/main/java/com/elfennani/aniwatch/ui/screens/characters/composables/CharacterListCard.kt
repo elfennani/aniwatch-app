@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.elfennani.aniwatch.domain.models.Character
 import com.elfennani.aniwatch.domain.models.VoiceActor
-import com.elfennani.aniwatch.domain.models.enums.CharacterRole.Companion.value
 import com.elfennani.aniwatch.ui.theme.AppTheme
 import com.elfennani.aniwatch.utils.imageLoader
 import com.elfennani.aniwatch.utils.plus
@@ -66,7 +65,7 @@ fun CharacterListCard(character: Character, showVA: Boolean = true) {
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = character.role.value,
+                    text = character.role,
                     style = AppTheme.typography.labelSmall
                 )
             }
@@ -121,6 +120,48 @@ fun CharacterListCard(character: Character, showVA: Boolean = true) {
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun CharacterListCardPrev() {
+    val character = Character(
+        id = 283788,
+        name = "Kumiko Oumae",
+        image = "https://s4.anilist.co/file/anilistcdn/character/large/b88708-ZiVPl8LjIjaK.jpg",
+        imageSD = "https://s4.anilist.co/file/anilistcdn/character/medium/b88708-ZiVPl8LjIjaK.jpg",
+        role = "MAIN",
+        voiceActors = listOf(
+            VoiceActor(
+                id = 106661,
+                name = "Tomoyo Kurosawa",
+                image = "https://s4.anilist.co/file/anilistcdn/staff/medium/n106661-r5f4gxJEyU67.jpg",
+                language = "Japanese"
+            ),
+
+            )
+    )
+
+    AppTheme {
+        Scaffold(
+            containerColor = AppTheme.colorScheme.background,
+            contentColor = AppTheme.colorScheme.onBackground
+        ) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium),
+                contentPadding = it.plus(PaddingValues(AppTheme.sizes.medium))
+            ) {
+                val characters = listOf(character, character, character, character)
+                items(characters) {
+                    Column(
+                        modifier = Modifier
+                    ) {
+                        CharacterListCard(character = character)
                     }
                 }
             }

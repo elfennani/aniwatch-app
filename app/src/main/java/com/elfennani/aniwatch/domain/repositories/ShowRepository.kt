@@ -16,10 +16,4 @@ interface ShowRepository {
 
     fun charactersById(showId: Int): Flow<PagingData<Character>>
     suspend fun fetchCharactersById(showId: Int, page: Int): Boolean
-
-    fun showsBySearchQuery(query: String): Flow<PagingData<Show>>
-    suspend fun fetchShowsBySearchQuery(query:String, page: Int): Boolean
-
-    suspend fun updateShowStatus(showId: Int,statusDetails: StatusDetails)
-    suspend fun incrementEpisodeProgress(showId: Int)
 }

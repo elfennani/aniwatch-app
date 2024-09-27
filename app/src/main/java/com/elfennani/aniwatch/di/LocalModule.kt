@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class LocalModule {
-    private val Context.dataStore by preferencesDataStore(name = "app")
+    private val Context.dataStore by preferencesDataStore(name = "settings")
 
     @Provides
     @Singleton
@@ -45,10 +45,6 @@ class LocalModule {
     @Provides
     @Singleton
     fun provideCharacterDao(database: AppDatabase) = database.characterDao()
-
-    @Provides
-    @Singleton
-    fun provideEpisodeDao(database: AppDatabase) = database.episodeDao()
 
     @Provides
     @Singleton
