@@ -5,11 +5,13 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.map
 import androidx.room.withTransaction
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Optional
 import com.elfennani.anilist.CharactersQuery
+import com.elfennani.anilist.SeachQuery
 import com.elfennani.anilist.ShowByIdQuery
 import com.elfennani.anilist.ShowRelationsQuery
 import com.elfennani.anilist.UpdateStatusMutation
@@ -18,6 +20,7 @@ import com.elfennani.aniwatch.data.local.dao.CharacterDao
 import com.elfennani.aniwatch.data.local.dao.RelationDao
 import com.elfennani.aniwatch.data.local.dao.ShowDao
 import com.elfennani.aniwatch.data.local.models.LocalMediaRelation
+import com.elfennani.aniwatch.data.local.models.LocalSearch
 import com.elfennani.aniwatch.data.local.models.LocalShow
 import com.elfennani.aniwatch.data.local.models.asAppModel
 import com.elfennani.aniwatch.data.remote.converters.asAppModel
@@ -29,12 +32,17 @@ import com.elfennani.aniwatch.domain.models.Show
 import com.elfennani.aniwatch.domain.models.enums.RelationType
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.domain.paging.CharactersMediator
+import com.elfennani.aniwatch.domain.paging.SearchMediator
 import com.elfennani.aniwatch.domain.repositories.ShowRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalPagingApi::class)
 class ShowRepositoryImpl(
     @AniListApolloClient private val apolloClient: ApolloClient,
     private val showDao: ShowDao,
@@ -94,7 +102,6 @@ class ShowRepositoryImpl(
         }
     }
 
-    @OptIn(ExperimentalPagingApi::class)
     override fun charactersById(showId: Int) = Pager(
         PagingConfig(pageSize = 25),
         remoteMediator = CharactersMediator(this, dataStore, showId)
@@ -117,6 +124,33 @@ class ShowRepositoryImpl(
             }
 
             return@withContext hasNextPage
+        }
+    }
+
+    override fun showsBySearchQuery(query: String): Flow<PagingData<Show>> =
+        Pager(
+            config = PagingConfig(pageSize = 8),
+            remoteMediator = SearchMediator(this, dataStore, query)
+        ) {
+            showDao.getSearchPagingByQuery(query)
+        }.flow
+            .map { it.map { search -> showDao.getById(id = search.showId)!!.asAppModel() } }
+            .flowOn(Dispatchers.IO)
+
+    override suspend fun fetchShowsBySearchQuery(query: String, page: Int): Boolean {
+        return withContext(Dispatchers.IO) {
+            val response = apolloClient.query(SeachQuery(query, page)).execute()
+            val shows = response.data?.anime?.media?.mapNotNull {
+                it?.showFragment?.asEntity()
+            } ?: emptyList()
+
+            database.withTransaction {
+                showDao.upsert(shows)
+                showDao.upsertSearchQuery(shows.map { LocalSearch(it.id, query, page) })
+            }
+
+            return@withContext response.data?.anime?.pageInfo?.pageInfoFragment?.hasNextPage
+                ?: false
         }
     }
 

@@ -1,0 +1,15 @@
+query SeachQuery($query: String!, $page: Int!) {
+    anime: Page(perPage: 8, page: $page) {
+        media(
+            type: ANIME,
+            search: $query,
+            isAdult: false,
+            sort: POPULARITY_DESC
+        ) {
+            ...ShowFragment
+        }
+        pageInfo{
+            ...PageInfoFragment
+        }
+    }
+}

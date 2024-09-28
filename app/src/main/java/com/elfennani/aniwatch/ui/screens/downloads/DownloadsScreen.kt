@@ -111,15 +111,15 @@ fun DownloadsScreen(
                             .combinedClickable(
                                 onClick = {
                                     if (episode.state is DownloadState.Downloaded)
-                                        onNavigate(
-                                            EpisodeRoute(
-                                                id = show.id,
-                                                allanimeId = show.allanimeId,
-                                                episode = episode.episode.toFloat(),
-                                                audio = episode.state.audio,
-                                                useSaved = true
-                                            )
-                                        )
+//                                        onNavigate(
+////                                            EpisodeRoute(
+////                                                id = show.id,
+////                                                allanimeId = show.allanimeId,
+////                                                episode = episode.episode.toFloat(),
+////                                                audio = episode.state.audio,
+////                                                useSaved = true
+////                                            )
+//                                        )
                                     else {
                                         onNavigate(ShowRoute(id = show.id))
                                     }
@@ -174,10 +174,9 @@ fun NavGraphBuilder.downloadsScreen(navController: NavController) {
         exitTransition = { ExitTransition.None }
     ) {
         val viewModel: DownloadsViewModel = hiltViewModel()
-        val downloads by viewModel.downloads.collectAsStateWithLifecycle()
 
         DownloadsScreen(
-            downloads = downloads,
+            downloads = emptyMap(),
             onNavigate = navController::navigate
         )
     }

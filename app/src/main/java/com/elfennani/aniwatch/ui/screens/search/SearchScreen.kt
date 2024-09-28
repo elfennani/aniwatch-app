@@ -31,6 +31,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.elfennani.aniwatch.domain.models.Show
 import com.elfennani.aniwatch.ui.screens.search.composables.SearchBox
 import com.elfennani.aniwatch.ui.composables.ShowCard
 import com.elfennani.aniwatch.ui.screens.show.ShowRoute
@@ -42,7 +43,7 @@ fun SearchScreen(
     navController: NavController,
     query: String,
     onQueryChanged: (String) -> Unit,
-    showsList: LazyPagingItems<ShowBasic>?,
+    lazyShows: LazyPagingItems<Show>?,
 ) {
     Scaffold(
         containerColor = AppTheme.colorScheme.background,
@@ -52,13 +53,13 @@ fun SearchScreen(
         LazyColumn(
             contentPadding = it
         ) {
-            if (showsList != null) {
+            if (lazyShows != null) {
                 items(
-                    count = showsList.itemCount,
-                    key = showsList.itemKey { show -> show.id },
+                    count = lazyShows.itemCount,
+                    key = lazyShows.itemKey { show -> show.id },
                 ) { index ->
-                    val item = showsList[index]
-                    Log.d("SearchScreen", "SearchScreen: $item")
+                    val item = lazyShows[index]
+
                     if (item != null) {
                         ShowCard(
                             show = item,
@@ -66,11 +67,11 @@ fun SearchScreen(
                         )
                     }
                 }
-                when (showsList.loadState.append) {
+                when (lazyShows.loadState.append) {
                     is LoadState.Error -> {
                         item {
                             val error =
-                                (showsList.loadState.append as LoadState.Error).error.message
+                                (lazyShows.loadState.append as LoadState.Error).error.message
                             Column(
                                 verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.normal),
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -99,7 +100,7 @@ fun SearchScreen(
                                     )
                                 }
                                 TextButton(
-                                    onClick = { showsList.retry() },
+                                    onClick = { lazyShows.retry() },
                                     colors = ButtonDefaults.textButtonColors()
                                         .copy(contentColor = AppTheme.colorScheme.primary)
                                 ) {
@@ -125,7 +126,7 @@ fun SearchScreen(
 
                     else -> {}
                 }
-                if (showsList.loadState.append.endOfPaginationReached) {
+                if (lazyShows.loadState.append.endOfPaginationReached) {
                     item {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.normal),
@@ -152,15 +153,14 @@ const val SEARCH_SCREEN_PATTERN = "search"
 fun NavGraphBuilder.searchScreen(navController: NavController) {
     composable(SEARCH_SCREEN_PATTERN) {
         val viewModel: SearchViewModel = hiltViewModel()
-        val lazyPagingItemsState by viewModel.pagingDataFlow.collectAsState()
-        val lazyPagingItems = lazyPagingItemsState?.collectAsLazyPagingItems()
+        val lazyPagingItems = viewModel.listing.collectAsLazyPagingItems()
         val query by viewModel.query.collectAsState()
 
         SearchScreen(
             navController = navController,
             query = query,
             onQueryChanged = viewModel::setQuery,
-            showsList = lazyPagingItems,
+            lazyShows = lazyPagingItems,
         )
     }
 }

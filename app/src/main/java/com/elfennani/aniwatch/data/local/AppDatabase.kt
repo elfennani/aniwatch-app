@@ -10,7 +10,9 @@ import com.elfennani.aniwatch.data.local.dao.SessionDao
 import com.elfennani.aniwatch.data.local.dao.ShowDao
 import com.elfennani.aniwatch.data.local.dao.UserDao
 import com.elfennani.aniwatch.data.local.models.LocalActivity
+import com.elfennani.aniwatch.data.local.models.LocalCharacter
 import com.elfennani.aniwatch.data.local.models.LocalMediaRelation
+import com.elfennani.aniwatch.data.local.models.LocalSearch
 import com.elfennani.aniwatch.data.local.models.LocalSession
 import com.elfennani.aniwatch.data.local.models.LocalShow
 import com.elfennani.aniwatch.data.local.models.LocalUser
@@ -22,7 +24,9 @@ import com.elfennani.aniwatch.data.local.models.LocalUser
         LocalActivity::class,
         LocalUser::class,
         LocalShow::class,
-        LocalMediaRelation::class
+        LocalMediaRelation::class,
+        LocalSearch::class,
+        LocalCharacter::class
     ],
     autoMigrations = [],
     exportSchema = true
@@ -33,6 +37,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun activityDao(): ActivityDao
     abstract fun userDao(): UserDao
     abstract fun showDao(): ShowDao
-    abstract fun relationDao():RelationDao
+    abstract fun relationDao(): RelationDao
     abstract fun characterDao(): CharacterDao
 }

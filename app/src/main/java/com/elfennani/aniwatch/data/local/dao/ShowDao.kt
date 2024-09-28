@@ -1,10 +1,12 @@
 package com.elfennani.aniwatch.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.elfennani.aniwatch.data.local.models.LocalMediaRelation
+import com.elfennani.aniwatch.data.local.models.LocalSearch
 import com.elfennani.aniwatch.data.local.models.LocalShow
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import kotlinx.coroutines.flow.Flow
@@ -31,4 +33,10 @@ interface ShowDao {
 
     @Query("DELETE FROM LocalShow WHERE status=:status")
     suspend fun deleteByStatus(status: ShowStatus)
+
+    @Query("SELECT * FROM LocalSearch WHERE `query`=:query")
+    fun getSearchPagingByQuery(query: String): PagingSource<Int, LocalSearch>
+
+    @Upsert
+    suspend fun upsertSearchQuery(results: List<LocalSearch>)
 }
