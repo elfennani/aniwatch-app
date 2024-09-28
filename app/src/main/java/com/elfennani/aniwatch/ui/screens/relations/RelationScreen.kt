@@ -1,13 +1,17 @@
 package com.elfennani.aniwatch.ui.screens.relations
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,6 +22,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -30,6 +35,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.elfennani.aniwatch.domain.models.enums.RelationType.Companion.value
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.ShowCard
 import com.elfennani.aniwatch.ui.screens.show.ShowRoute
@@ -75,31 +81,43 @@ fun RelationScreen(
             )
         }
     ) { paddingValues ->
-        LazyColumn(contentPadding = paddingValues) {
-            items(state.relations) {
-                ShowCard(
-                    show = it.show,
-                    subtitle = "${it.format?.replace("_", " ")} • ${it.state?.replace("_", " ")}",
-                    overlay = {
-                        Box(
-                            modifier = Modifier
-                                .padding(AppTheme.sizes.small)
-                                .clip(RoundedCornerShape(2.dp))
-                                .background(Color.Black.copy(alpha = 0.2f))
-                                .padding(AppTheme.sizes.smaller)
-                        ) {
-                            Text(
-                                text = it.relationType.replace("_", " "),
-                                style = AppTheme.typography.labelSmallBold,
-                                color = Color.White,
-                                fontSize = 8.sp,
-                                modifier = Modifier,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                    },
-                    onClick = { onOpenShow(it.show.id) }
-                )
+        if (!state.isLoading) {
+            LazyColumn(contentPadding = paddingValues) {
+                items(state.relations) { (relationType, show) ->
+                    ShowCard(
+                        show = show,
+                        subtitle = "${show.format.value} • ${show.state?.value}",
+                        overlay = {
+                            Box(
+                                modifier = Modifier
+                                    .padding(AppTheme.sizes.small)
+                                    .clip(RoundedCornerShape(2.dp))
+                                    .background(Color.Black.copy(alpha = 0.2f))
+                                    .padding(AppTheme.sizes.smaller)
+                            ) {
+                                Text(
+                                    text = relationType.value,
+                                    style = AppTheme.typography.labelSmallBold,
+                                    color = Color.White,
+                                    fontSize = 8.sp,
+                                    modifier = Modifier,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        },
+                        onClick = { onOpenShow(show.id) }
+                    )
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator(color = AppTheme.colorScheme.primary)
             }
         }
     }

@@ -37,7 +37,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.elfennani.aniwatch.domain.models.Activity
-import com.elfennani.aniwatch.domain.models.MediaType
 import com.elfennani.aniwatch.utils.plus
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.Section

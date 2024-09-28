@@ -1,6 +1,6 @@
 package com.elfennani.aniwatch.domain.models.enums
 
-enum class RelationType{
+enum class RelationType {
     ADAPTATION,
     PREQUEL,
     SEQUEL,
@@ -13,5 +13,14 @@ enum class RelationType{
     OTHER,
     SOURCE,
     COMPILATION,
-    CONTAINS
+    CONTAINS;
+
+    companion object {
+        val RelationType.value: String
+            get() = this.name
+                .split("_")
+                .joinToString(" ") {
+                    it.lowercase().replaceFirstChar(Char::uppercase)
+                }
+    }
 }

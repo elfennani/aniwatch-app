@@ -8,7 +8,7 @@ import com.elfennani.aniwatch.data.local.AppDatabase
 import com.elfennani.aniwatch.data.local.dao.ShowDao
 import com.elfennani.aniwatch.data.local.models.asAppModel
 import com.elfennani.aniwatch.data.remote.converters.asEntity
-import com.elfennani.aniwatch.data.remote.converters.asRemoteModel
+import com.elfennani.aniwatch.data.remote.converters.enums.asRemoteModel
 import com.elfennani.aniwatch.di.AniListApolloClient
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.domain.repositories.ListingRepository

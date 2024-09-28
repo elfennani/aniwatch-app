@@ -1,5 +1,7 @@
 package com.elfennani.aniwatch.domain.models
 
+import com.elfennani.aniwatch.domain.models.enums.MediaState
+import com.elfennani.aniwatch.domain.models.enums.MediaType
 import com.elfennani.aniwatch.domain.models.enums.ShowFormat
 import com.elfennani.aniwatch.domain.models.enums.ShowSeason
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus
@@ -18,5 +20,6 @@ data class Show(
     val banner: String?,
     val progress: Int?,
     val status: ShowStatus?,
-    val type: MediaType
+    val type: MediaType,
+    val state: MediaState?
 )

@@ -4,6 +4,7 @@ fragment ShowFragment on Media {
     episodes
     description
     bannerImage
+    status
     seasonYear
     season
     format

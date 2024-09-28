@@ -1,4 +1,4 @@
-package com.elfennani.aniwatch.data.remote.converters
+package com.elfennani.aniwatch.data.remote.converters.enums
 
 import com.elfennani.anilist.type.MediaListStatus
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus

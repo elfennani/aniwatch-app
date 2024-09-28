@@ -4,6 +4,7 @@ import com.elfennani.anilist.fragment.ShowFragment
 import com.elfennani.aniwatch.data.local.models.EmbeddedCover
 import com.elfennani.aniwatch.data.local.models.EmbeddedDate
 import com.elfennani.aniwatch.data.local.models.LocalShow
+import com.elfennani.aniwatch.data.remote.converters.enums.asAppModel
 import com.elfennani.aniwatch.domain.models.Tag
 
 fun ShowFragment.asEntity() = LocalShow(
@@ -27,6 +28,8 @@ fun ShowFragment.asEntity() = LocalShow(
     progress = mediaListEntry?.progress,
     status = mediaListEntry?.status?.asAppModel(),
     score = mediaListEntry?.score,
+    state = status?.asAppModel(),
+    type = type!!.asAppModel(),
     startedAt = mediaListEntry?.startedAt?.let {
         EmbeddedDate(year = it.year!!, month = it.month!!, day = it.day!!)
     },

@@ -2,6 +2,7 @@ package com.elfennani.aniwatch.data.remote.converters
 
 import com.elfennani.anilist.fragment.CharacterFragment
 import com.elfennani.aniwatch.data.local.models.LocalCharacter
+import com.elfennani.aniwatch.data.remote.converters.enums.asAppModel
 import com.elfennani.aniwatch.domain.models.VoiceActor
 
 fun CharacterFragment.asEntity(showId: Int) = LocalCharacter(

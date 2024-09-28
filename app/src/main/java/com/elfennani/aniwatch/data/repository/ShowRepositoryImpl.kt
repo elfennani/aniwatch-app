@@ -13,7 +13,6 @@ import com.elfennani.anilist.CharactersQuery
 import com.elfennani.anilist.ShowByIdQuery
 import com.elfennani.anilist.ShowRelationsQuery
 import com.elfennani.anilist.UpdateStatusMutation
-import com.elfennani.anilist.type.MediaStatus
 import com.elfennani.aniwatch.data.local.AppDatabase
 import com.elfennani.aniwatch.data.local.dao.CharacterDao
 import com.elfennani.aniwatch.data.local.dao.RelationDao
@@ -21,20 +20,17 @@ import com.elfennani.aniwatch.data.local.dao.ShowDao
 import com.elfennani.aniwatch.data.local.models.LocalMediaRelation
 import com.elfennani.aniwatch.data.local.models.LocalShow
 import com.elfennani.aniwatch.data.local.models.asAppModel
-import com.elfennani.aniwatch.data.remote.converters.asAppModel
+import com.elfennani.aniwatch.data.remote.converters.enums.asAppModel
 import com.elfennani.aniwatch.data.remote.converters.asEntity
-import com.elfennani.aniwatch.data.remote.converters.asRemoteModel
+import com.elfennani.aniwatch.data.remote.converters.enums.asRemoteModel
 import com.elfennani.aniwatch.di.AniListApolloClient
-import com.elfennani.aniwatch.domain.models.Character
 import com.elfennani.aniwatch.domain.models.Show
-import com.elfennani.aniwatch.domain.models.StatusDetails
 import com.elfennani.aniwatch.domain.models.enums.RelationType
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.domain.paging.CharactersMediator
 import com.elfennani.aniwatch.domain.repositories.ShowRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
