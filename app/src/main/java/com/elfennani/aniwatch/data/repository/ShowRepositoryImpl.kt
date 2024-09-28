@@ -20,6 +20,7 @@ import com.elfennani.aniwatch.data.local.dao.ShowDao
 import com.elfennani.aniwatch.data.local.models.LocalMediaRelation
 import com.elfennani.aniwatch.data.local.models.LocalShow
 import com.elfennani.aniwatch.data.local.models.asAppModel
+import com.elfennani.aniwatch.data.remote.converters.asAppModel
 import com.elfennani.aniwatch.data.remote.converters.enums.asAppModel
 import com.elfennani.aniwatch.data.remote.converters.asEntity
 import com.elfennani.aniwatch.data.remote.converters.enums.asRemoteModel
@@ -97,10 +98,8 @@ class ShowRepositoryImpl(
     override fun charactersById(showId: Int) = Pager(
         PagingConfig(pageSize = 25),
         remoteMediator = CharactersMediator(this, dataStore, showId)
-    ) {
-        characterDao.getPaging(showId)
-    }.flow
-        .map { it.map { character -> character.asAppModel() } }
+    ) { characterDao.getPaging(showId) }
+        .flow.map { it.map { character -> character.asAppModel() } }
 
     override suspend fun fetchCharactersById(showId: Int, page: Int): Boolean {
         return withContext(Dispatchers.IO) {

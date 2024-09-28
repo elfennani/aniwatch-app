@@ -2,6 +2,7 @@ package com.elfennani.aniwatch.data.local
 
 import androidx.room.TypeConverter
 import com.elfennani.aniwatch.domain.models.Tag
+import com.elfennani.aniwatch.domain.models.VoiceActor
 import com.elfennani.aniwatch.domain.models.enums.ActivityType
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -9,10 +10,17 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.datetime.Instant
 
 class Converters {
-    val moshi = Moshi.Builder()
+    private val moshi = Moshi.Builder()
         .addLast(KotlinJsonAdapterFactory())
         .build()
-    val adapter = moshi.adapter<List<String>>(
+    private val stringListAdapter = moshi.adapter<List<String>>(
+        Types.newParameterizedType(
+            List::class.java,
+            String::class.java
+        )
+    )
+
+    private val vaListAdapter = moshi.adapter<List<VoiceActor>>(
         Types.newParameterizedType(
             List::class.java,
             String::class.java
@@ -33,12 +41,12 @@ class Converters {
 
     @TypeConverter
     fun fromListString(list: List<String>?): String? {
-        return list?.let { adapter.toJson(list) }
+        return list?.let { stringListAdapter.toJson(list) }
     }
 
     @TypeConverter
     fun toListString(json: String?): List<String>? {
-        return json?.let { adapter.fromJson(json) }
+        return json?.let { stringListAdapter.fromJson(json) }
     }
 
     @TypeConverter
@@ -73,4 +81,10 @@ class Converters {
             return emptyList()
         }
     }
+
+    @TypeConverter
+    fun fromVAList(list:List<VoiceActor>?): String? = vaListAdapter.toJson(list)
+
+    @TypeConverter
+    fun toVAList(json: String?) = json?.let { vaListAdapter.fromJson(it) }
 }
