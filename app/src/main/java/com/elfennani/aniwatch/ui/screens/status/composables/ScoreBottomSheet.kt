@@ -14,9 +14,9 @@ import com.elfennani.aniwatch.ui.theme.AppTheme
 
 @Composable
 fun ScoreBottomSheet(
-    initialValue: Int = 0,
+    initialValue: Double = 0.0,
     onDismiss: () -> Unit,
-    onConfirm: (Int) -> Unit,
+    onConfirm: (Double) -> Unit,
 ) {
     var value by remember {
         mutableStateOf(initialValue.toString())
@@ -25,7 +25,7 @@ fun ScoreBottomSheet(
     BottomSheetContainer(
         title = "Set Score",
         onDismiss = { onDismiss() },
-        onConfirm = { onConfirm(value.toIntOrNull() ?: 0) }
+        onConfirm = { onConfirm(value.toDoubleOrNull() ?: 0.0) }
     ) {
         RangeTextField(
             value = value,
@@ -33,26 +33,5 @@ fun ScoreBottomSheet(
             max = 100,
             increment = 5
         )
-    }
-}
-
-@Preview
-@Composable
-private fun ScoreBottomSheetPreview() {
-    AppTheme {
-        Scaffold(
-            containerColor = AppTheme.colorScheme.background,
-            contentColor = AppTheme.colorScheme.onBackground
-        ) {
-            Box(
-                modifier = Modifier.padding(it)
-            ) {
-                ScoreBottomSheet(
-                    initialValue = 0,
-                    onDismiss = {},
-                    onConfirm = {}
-                )
-            }
-        }
     }
 }

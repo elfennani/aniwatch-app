@@ -85,14 +85,14 @@ fun StatusEditorScreen(
 
         when (state.bottomModal) {
             EditorSheetModal.SCORE -> ScoreBottomSheet(
-                initialValue = state.status?.score ?: 0,
+                initialValue = state.status?.score ?: 0.0,
                 onDismiss = { onUiEvent(StatusEditorUiEvent.CloseBottomSheet) },
                 onConfirm = { onUiEvent(StatusEditorUiEvent.SetScore(it)) }
             )
 
             EditorSheetModal.PROGRESS -> ProgressBottomSheet(
                 initialValue = state.status?.progress ?: 0,
-                total = state.show?.episodesCount ?: 0,
+                total = state.show?.episodes ?: 0,
                 onDismiss = { onUiEvent(StatusEditorUiEvent.CloseBottomSheet) },
                 onConfirm = { onUiEvent(StatusEditorUiEvent.SetProgress(it)) }
             )
@@ -202,55 +202,6 @@ fun StatusEditorScreen(
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun ShowEditorScreenPreview() {
-    AppTheme {
-        StatusEditorScreen(
-            state = StatusEditorUiState(
-                isPending = false,
-                show = dummyShow,
-                status = StatusDetails(
-                    status = ShowStatus.WATCHING,
-                    score = 100,
-                    progress = 12,
-                    favorite = false,
-                    startedAt = StatusDate(year = 2024, month = 6, day = 29),
-                    completedAt = StatusDate(year = 2024, month = 7, day = 1)
-                )
-            ),
-            onBack = {},
-            onErrorDismiss = {},
-            onUiEvent = {}
-        )
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun ShowEditorScreenPreviewDark() {
-    AppTheme {
-        StatusEditorScreen(
-            state = StatusEditorUiState(
-                isPending = false,
-                show = dummyShow,
-                bottomModal = EditorSheetModal.STATUS,
-                status = StatusDetails(
-                    status = ShowStatus.WATCHING,
-                    score = 100,
-                    progress = 12,
-                    favorite = false,
-                    startedAt = StatusDate(year = 2024, month = 6, day = 29),
-                    completedAt = StatusDate(year = 2024, month = 7, day = 1)
-                )
-            ),
-            onBack = {},
-            onErrorDismiss = {},
-            onUiEvent = {}
-        )
     }
 }
 

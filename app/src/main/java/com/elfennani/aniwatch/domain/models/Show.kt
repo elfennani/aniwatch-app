@@ -21,5 +21,9 @@ data class Show(
     val progress: Int?,
     val status: ShowStatus?,
     val type: MediaType,
-    val state: MediaState?
+    val state: MediaState?,
+    val score: Double?,
+    val favorite: Boolean,
+    val startedAt: StatusDate?,
+    val endedAt:StatusDate?
 )

@@ -36,6 +36,7 @@ fun ShowFragment.asEntity() = LocalShow(
     endedAt = mediaListEntry?.completedAt?.let {
         EmbeddedDate(year = it.year!!, month = it.month!!, day = it.day!!)
     },
+    favorite = isFavourite,
     tags = tags?.map {
         Tag(
             id = it!!.id,

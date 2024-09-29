@@ -9,6 +9,7 @@ fragment ShowFragment on Media {
     season
     format
     type
+    isFavourite
     title {
         userPreferred
     }

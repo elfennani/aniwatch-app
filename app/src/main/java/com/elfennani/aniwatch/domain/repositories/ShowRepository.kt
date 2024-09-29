@@ -20,5 +20,6 @@ interface ShowRepository {
     fun showsBySearchQuery(query: String): Flow<PagingData<Show>>
     suspend fun fetchShowsBySearchQuery(query:String, page: Int): Boolean
 
+    suspend fun updateShowStatus(showId: Int,statusDetails: StatusDetails)
     suspend fun incrementEpisodeProgress(showId: Int)
 }

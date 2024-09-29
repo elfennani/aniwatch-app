@@ -15,6 +15,7 @@ import com.elfennani.anilist.SeachQuery
 import com.elfennani.anilist.ShowByIdQuery
 import com.elfennani.anilist.ShowRelationsQuery
 import com.elfennani.anilist.UpdateStatusMutation
+import com.elfennani.anilist.type.FuzzyDateInput
 import com.elfennani.aniwatch.data.local.AppDatabase
 import com.elfennani.aniwatch.data.local.dao.CharacterDao
 import com.elfennani.aniwatch.data.local.dao.RelationDao
@@ -29,6 +30,8 @@ import com.elfennani.aniwatch.data.remote.converters.asEntity
 import com.elfennani.aniwatch.data.remote.converters.enums.asRemoteModel
 import com.elfennani.aniwatch.di.AniListApolloClient
 import com.elfennani.aniwatch.domain.models.Show
+import com.elfennani.aniwatch.domain.models.StatusDate
+import com.elfennani.aniwatch.domain.models.StatusDetails
 import com.elfennani.aniwatch.domain.models.enums.RelationType
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.domain.paging.CharactersMediator
@@ -151,6 +154,42 @@ class ShowRepositoryImpl(
 
             return@withContext response.data?.anime?.pageInfo?.pageInfoFragment?.hasNextPage
                 ?: false
+        }
+    }
+
+    private fun StatusDate.asRemoteModel() = FuzzyDateInput(
+        year = Optional.present(year),
+        month = Optional.present(month),
+        day = Optional.present(day)
+    )
+
+    private fun StatusDetails.asMutation(showId: Int) = UpdateStatusMutation(
+        mediaId = showId,
+        status = Optional.present(status?.asRemoteModel()),
+        progress = Optional.present(progress),
+        score = Optional.present(score),
+        startedAt = startedAt?.asRemoteModel().let {
+            return@let if (it == null)
+                Optional.absent()
+            else
+                Optional.present(it)
+        },
+        completedAt = completedAt?.asRemoteModel().let {
+            return@let if (it == null)
+                Optional.absent()
+            else
+                Optional.present(it)
+        }
+    )
+
+    override suspend fun updateShowStatus(showId: Int, statusDetails: StatusDetails) {
+        withContext(Dispatchers.IO) {
+            val mutation = statusDetails.asMutation(showId)
+            val mutationResponse = apolloClient.mutation(mutation).execute()
+
+            mutationResponse.data?.SaveMediaListEntry?.media?.showFragment?.let {
+                showDao.upsert(it.asEntity())
+            }
         }
     }
 

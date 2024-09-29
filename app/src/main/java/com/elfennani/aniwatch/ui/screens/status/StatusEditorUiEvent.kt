@@ -12,7 +12,7 @@ sealed class StatusEditorUiEvent {
     class OpenBottomSheet(val modal: EditorSheetModal) : StatusEditorUiEvent()
     data object CloseBottomSheet : StatusEditorUiEvent()
 
-    data class SetScore(val score: Int) : StatusEditorUiEvent()
+    data class SetScore(val score: Double) : StatusEditorUiEvent()
     data class SetProgress(val progress: Int) : StatusEditorUiEvent()
     data class SetStatus(val status: ShowStatus): StatusEditorUiEvent()
 

@@ -29,6 +29,7 @@ data class LocalShow(
     val score: Double?,
     val type:MediaType,
     val state: MediaState?,
+    val favorite: Boolean,
     @Embedded("started_") val startedAt: EmbeddedDate?,
     @Embedded("ended_") val endedAt: EmbeddedDate?
 )
@@ -48,5 +49,9 @@ fun LocalShow.asAppModel() = Show(
     progress = progress,
     status = status,
     type = type,
-    state = state
+    state = state,
+    score = score,
+    favorite = favorite,
+    startedAt = startedAt?.asAppModel(),
+    endedAt = endedAt?.asAppModel()
 )
