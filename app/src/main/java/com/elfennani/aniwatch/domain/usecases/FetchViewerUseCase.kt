@@ -6,8 +6,9 @@ import com.elfennani.aniwatch.domain.models.Resource
 import com.elfennani.aniwatch.domain.repositories.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class FetchViewerUseCase(private val userRepository: UserRepository) {
+class FetchViewerUseCase @Inject constructor(private val userRepository: UserRepository) {
     suspend operator fun invoke(): Resource<Unit, AppError> {
         return withContext(Dispatchers.IO){
             try {

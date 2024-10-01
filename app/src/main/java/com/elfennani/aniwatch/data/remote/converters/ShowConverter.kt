@@ -1,11 +1,13 @@
 package com.elfennani.aniwatch.data.remote.converters
 
+import android.util.Log
 import com.elfennani.anilist.fragment.ShowFragment
 import com.elfennani.aniwatch.data.local.models.EmbeddedCover
 import com.elfennani.aniwatch.data.local.models.EmbeddedDate
 import com.elfennani.aniwatch.data.local.models.LocalShow
 import com.elfennani.aniwatch.data.remote.converters.enums.asAppModel
 import com.elfennani.aniwatch.domain.models.Tag
+import kotlinx.datetime.Instant
 
 fun ShowFragment.asEntity() = LocalShow(
     id = id,
@@ -30,11 +32,15 @@ fun ShowFragment.asEntity() = LocalShow(
     score = mediaListEntry?.score,
     state = status?.asAppModel(),
     type = type!!.asAppModel(),
+    updatedAt = mediaListEntry?.updatedAt?.let { Instant.fromEpochSeconds(it.toLong()) },
     startedAt = mediaListEntry?.startedAt?.let {
+        if(it.year == null || it.month == null || it.day == null) return@let null
+
         EmbeddedDate(year = it.year!!, month = it.month!!, day = it.day!!)
     },
     endedAt = mediaListEntry?.completedAt?.let {
-        EmbeddedDate(year = it.year!!, month = it.month!!, day = it.day!!)
+        if(it.year == null || it.month == null || it.day == null) return@let null
+        EmbeddedDate(year = it.year, month = it.month, day = it.day)
     },
     favorite = isFavourite,
     tags = tags?.map {

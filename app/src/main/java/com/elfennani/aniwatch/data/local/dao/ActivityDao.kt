@@ -16,7 +16,7 @@ interface ActivityDao {
     @Query("DELETE FROM LocalActivity")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM LocalActivity")
-    fun pagingSource(): PagingSource<String, LocalActivity>
+    @Query("SELECT * FROM LocalActivity ORDER BY id DESC")
+    fun pagingSource(): PagingSource<Int, LocalActivity>
 
 }

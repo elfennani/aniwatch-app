@@ -14,5 +14,5 @@ fun EmbeddedCover.asAppModel() = ShowImage(
     large = large,
     medium = medium,
     original = extraLarge,
-    color = color.toColor()
+    color = color?.toColor()
 )

@@ -20,7 +20,7 @@ fun UserFragment.asEntity() = LocalUser(
             meanScore = meanScore.toFloat()
         )
     },
-    mangaStats = with(statistics!!.manga!!) {
+    mangaStats = with(statistics.manga!!) {
         EmbeddedMangaStats(
             count = count,
             readChapters = chaptersRead,

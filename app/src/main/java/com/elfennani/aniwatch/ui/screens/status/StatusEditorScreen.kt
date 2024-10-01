@@ -1,6 +1,5 @@
 package com.elfennani.aniwatch.ui.screens.status
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -24,14 +22,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.elfennani.aniwatch.domain.models.enums.ShowStatus
-import com.elfennani.aniwatch.domain.models.StatusDate
-import com.elfennani.aniwatch.domain.models.StatusDetails
 import com.elfennani.aniwatch.domain.models.enums.formatText
 import com.elfennani.aniwatch.domain.models.toCalendar
 import com.elfennani.aniwatch.ui.composables.Button
 import com.elfennani.aniwatch.ui.composables.TextSkeleton
-import com.elfennani.aniwatch.ui.composables.dummyShow
 import com.elfennani.aniwatch.ui.screens.status.composables.ProgressBottomSheet
 import com.elfennani.aniwatch.ui.screens.status.composables.ScoreBottomSheet
 import com.elfennani.aniwatch.ui.screens.status.composables.Setting

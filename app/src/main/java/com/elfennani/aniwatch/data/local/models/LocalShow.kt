@@ -10,6 +10,7 @@ import com.elfennani.aniwatch.domain.models.enums.MediaType
 import com.elfennani.aniwatch.domain.models.enums.ShowFormat
 import com.elfennani.aniwatch.domain.models.enums.ShowSeason
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus
+import kotlinx.datetime.Instant
 
 @Entity
 data class LocalShow(
@@ -30,6 +31,7 @@ data class LocalShow(
     val type:MediaType,
     val state: MediaState?,
     val favorite: Boolean,
+    val updatedAt: Instant?,
     @Embedded("started_") val startedAt: EmbeddedDate?,
     @Embedded("ended_") val endedAt: EmbeddedDate?
 )
@@ -53,5 +55,6 @@ fun LocalShow.asAppModel() = Show(
     score = score,
     favorite = favorite,
     startedAt = startedAt?.asAppModel(),
-    endedAt = endedAt?.asAppModel()
+    endedAt = endedAt?.asAppModel(),
+    updatedAt = updatedAt
 )

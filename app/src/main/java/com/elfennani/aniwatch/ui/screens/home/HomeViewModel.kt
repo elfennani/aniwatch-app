@@ -3,6 +3,7 @@ package com.elfennani.aniwatch.ui.screens.home
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.elfennani.aniwatch.domain.errors.AppError
 import com.elfennani.aniwatch.domain.errors.AppError.Companion.readable
 import com.elfennani.aniwatch.domain.models.Resource
@@ -37,7 +38,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     private val shows = listingRepository.listingByStatus(ShowStatus.WATCHING)
     private val user = userRepository.viewer
-    val lazyFeed = feedRepository.lazyFeed
+    val lazyFeed = feedRepository.lazyFeed.cachedIn(viewModelScope)
 
     private val _state = MutableStateFlow(HomeUiState())
     val state: StateFlow<HomeUiState> = combine(_state, shows, user) { state, shows, user ->

@@ -12,8 +12,10 @@ import com.elfennani.anilist.ViewerQuery
 import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.data.local.dao.ActivityDao
 import com.elfennani.aniwatch.data.local.dao.SessionDao
+import com.elfennani.aniwatch.data.local.dao.UserDao
 import com.elfennani.aniwatch.data.local.models.LocalSession
 import com.elfennani.aniwatch.data.local.models.asDomain
+import com.elfennani.aniwatch.data.remote.converters.asEntity
 import com.elfennani.aniwatch.domain.models.Session
 import com.elfennani.aniwatch.domain.repositories.SessionRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -24,6 +26,7 @@ import javax.inject.Inject
 class SessionRepositoryImpl @Inject constructor(
     private val sessionDao: SessionDao,
     private val dataStore: DataStore<Preferences>,
+    private val userDao: UserDao,
     @ApplicationContext private val context: Context,
 ) : SessionRepository {
     override suspend fun getCurrentSession(): Session? {
@@ -49,8 +52,9 @@ class SessionRepositoryImpl @Inject constructor(
         val viewerId = viewer.data?.Viewer?.userFragment?.id!!
 
         val sessionId = sessionDao.insertSession(LocalSession(null, accessToken, expiration, viewerId))
+        viewer.data?.Viewer?.userFragment?.let { userDao.upsert(it.asEntity()) }
         dataStore.edit {
-            it[SessionRepository.SESSION_KEY] = sessionId
+            it[SessionRepository.SESSION_KEY] = sessionId.toInt()
         }
     }
 
@@ -63,6 +67,7 @@ class SessionRepositoryImpl @Inject constructor(
             .toString()
 
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(browserIntent)
     }
 }

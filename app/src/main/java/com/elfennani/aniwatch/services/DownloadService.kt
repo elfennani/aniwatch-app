@@ -17,19 +17,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.os.bundleOf
 import com.elfennani.aniwatch.R
-import com.elfennani.aniwatch.data_old.remote.APIService
-import com.elfennani.aniwatch.data_old.repository.DownloadRepository
-import com.elfennani.aniwatch.data_old.repository.ShowRepository
 import com.elfennani.aniwatch.domain.models.EpisodeAudio
-import com.elfennani.aniwatch.domain.models.ResourceException
 import com.elfennani.aniwatch.domain.models.Show
-import com.elfennani.aniwatch.domain.models.dataOrThrow
+import com.elfennani.aniwatch.domain.repositories.ShowRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import java.io.File
-import java.net.URL
-import java.time.Duration
-import java.time.Instant
 import javax.inject.Inject
 
 
@@ -41,11 +34,11 @@ class DownloadService : Service() {
     @Inject
     lateinit var showRepository: ShowRepository
 
-    @Inject
-    lateinit var apiService: APIService
+//    @Inject
+//    lateinit var apiService: APIService
 
-    @Inject
-    lateinit var downloadRepository: DownloadRepository
+//    @Inject
+//    lateinit var downloadRepository: DownloadRepository
 
 
     private var serviceLooper: Looper? = null
@@ -74,113 +67,101 @@ class DownloadService : Service() {
 
             try {
                 runBlocking {
-                    downloadRepository.markDownloadState(
-                        showId,
-                        episodeNumber,
-                        _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloading(0f)
-                    )
+//                    downloadRepository.markDownloadState(
+//                        showId,
+//                        episodeNumber,
+//                        _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloading(0f)
+//                    )
                     notificationManager.notify(100, notification.build())
 
                     Log.d("DownloadService", "handleMessage: Loading Show")
-                    val show = showRepository
-                        .getShowById(showId)
-                        .dataOrThrow(this@DownloadService)
+//                    val show = showRepository
+//                        .getShowById(showId)
+//                        .dataOrThrow(this@DownloadService)
+//
+//                    Log.d("DownloadService", "handleMessage: Loading Episode")
+//                    val episode = showRepository
+//                        .getEpisodeById(show.allanimeId, episodeNumber, audio)
+//                        .dataOrThrow(this@DownloadService)
 
-                    Log.d("DownloadService", "handleMessage: Loading Episode")
-                    val episode = showRepository
-                        .getEpisodeById(show.allanimeId, episodeNumber, audio)
-                        .dataOrThrow(this@DownloadService)
+//                    notificationManager.notify(
+//                        100,
+//                        notification
+//                            .setContentTitle(show.name)
+//                            .build()
+//                    )
+//
+//                    val updateProgress: (suspend (Float) -> Unit) = { progress ->
+//                        downloadRepository.progressDownload(showId, episodeNumber, progress)
+//                        updateNotification(show, episodeNumber, audio, progress)
+//                    }
 
-                    notificationManager.notify(
-                        100,
-                        notification
-                            .setContentTitle(show.name)
-                            .build()
-                    )
-
-                    val updateProgress: (suspend (Float) -> Unit) = { progress ->
-                        downloadRepository.progressDownload(showId, episodeNumber, progress)
-                        updateNotification(show, episodeNumber, audio, progress)
-                    }
-
-                    updateProgress(0f)
+//                    updateProgress(0f)
                     Log.d("DownloadService", "handleMessage: Downloading Episode File")
                     val directory = File(applicationContext.filesDir, "shows/$showId")
                     if (!directory.exists()) directory.mkdirs()
                     val file = File(directory, "$episodeNumber.mp4")
 
-                    if (episode.mp4 == null) {
-                        Log.d("DownloadService", "handleMessage: empty episode")
-                    }
+//                    if (episode.mp4 == null) {
+//                        Log.d("DownloadService", "handleMessage: empty episode")
+//                    }
 
-                    val url = URL(episode.mp4!!)
-                    val connection = url.openConnection()
-                    connection.connect()
-
-                    var count: Int
-                    val lengthOfFile = connection.contentLength
-                    val input = connection.getInputStream()
-                    val output = file.outputStream()
-                    val data = ByteArray(1024)
-                    var total = 0L
-
-                    while ((input.read(data).also { count = it }) != -1) {
-                        total += count.toLong()
-                        output.write(data, 0, count)
-
-                        val lastDifference =Instant.now().toEpochMilli() - lastNotificationUpdate
-                        val timeout = Duration.ofSeconds(1).toMillis()
-                        if (lastDifference < timeout) {
-                            continue
-                        }
-                        lastNotificationUpdate = Instant.now().toEpochMilli()
-                        updateProgress(total.toFloat() / lengthOfFile)
-                        Log.d("DownloadService", "handleMessage: $lengthOfFile $total")
-                    }
-
-                    output.flush()
-
-                    // closing streams
-                    output.close()
-                    input.close()
-                    val doneNotification = NotificationCompat
-                        .Builder(this@DownloadService, "DOWNLOADS")
-                        .setContentTitle(show.name)
-                        .setContentText("Episode $episodeNumber Downloaded")
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
-                        .build()
-
-                    notificationManager.notify(showId, doneNotification)
-                    downloadRepository.markDownloadState(
-                        showId,
-                        episodeNumber,
-                        _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded(audio)
-                    )
+//                    val url = URL(episode.mp4!!)
+//                    val connection = url.openConnection()
+//                    connection.connect()
+//
+//                    var count: Int
+//                    val lengthOfFile = connection.contentLength
+//                    val input = connection.getInputStream()
+//                    val output = file.outputStream()
+//                    val data = ByteArray(1024)
+//                    var total = 0L
+//
+//                    while ((input.read(data).also { count = it }) != -1) {
+//                        total += count.toLong()
+//                        output.write(data, 0, count)
+//
+//                        val lastDifference =Instant.now().toEpochMilli() - lastNotificationUpdate
+//                        val timeout = Duration.ofSeconds(1).toMillis()
+//                        if (lastDifference < timeout) {
+//                            continue
+//                        }
+//                        lastNotificationUpdate = Instant.now().toEpochMilli()
+//                        updateProgress(total.toFloat() / lengthOfFile)
+//                        Log.d("DownloadService", "handleMessage: $lengthOfFile $total")
+//                    }
+//
+//                    output.flush()
+//
+//                    // closing streams
+//                    output.close()
+//                    input.close()
+//                    val doneNotification = NotificationCompat
+//                        .Builder(this@DownloadService, "DOWNLOADS")
+//                        .setContentTitle(show.name)
+//                        .setContentText("Episode $episodeNumber Downloaded")
+//                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+//                        .build()
+//
+//                    notificationManager.notify(showId, doneNotification)
+//                    downloadRepository.markDownloadState(
+//                        showId,
+//                        episodeNumber,
+//                        _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Downloaded(audio)
+//                    )
                 }
             } catch (e: InterruptedException) {
                 Log.d("DownloadService", "handleMessage: Interruption $e")
                 Thread.currentThread().interrupt()
-            } catch (e: ResourceException) {
-                Log.d(
-                    "DownloadService",
-                    "handleMessage: ResourceException ${getString(e.errorResource)}"
-                )
-                runBlocking {
-                    downloadRepository.markDownloadState(
-                        showId,
-                        episodeNumber,
-                        _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Failure(e.errorResource)
-                    )
-                }
-            } catch (e: Exception) {
+            }  catch (e: Exception) {
                 Log.d("DownloadService", "handleMessage: EXCEPTION: $e")
                 e.printStackTrace()
                 runBlocking {
-                    downloadRepository.markDownloadState(
-                        showId,
-                        episodeNumber,
-                        _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Failure(R.string.something_wrong)
-                    )
+//                    downloadRepository.markDownloadState(
+//                        showId,
+//                        episodeNumber,
+//                        _root_ide_package_.com.elfennani.aniwatch.domain.models.DownloadState.Failure(R.string.something_wrong)
+//                    )
                 }
             }
 

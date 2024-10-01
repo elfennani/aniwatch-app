@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.elfennani.aniwatch.domain.models.Show
 import com.elfennani.aniwatch.domain.models.ShowImage
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.domain.models.enums.formatText
@@ -38,7 +39,7 @@ import com.elfennani.aniwatch.utils.imageLoader
 
 @Composable
 fun ShowCard(
-    show: ShowBasic,
+    show: Show,
     subtitle: String? = null,
     overlay: @Composable BoxScope.() -> Unit = {},
     onClick: () -> Unit = {},
@@ -96,70 +97,6 @@ fun ShowCard(
                     )
                 }
             }
-        }
-    }
-}
-
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Preview
-@Composable
-private fun ShowCardPrev() {
-    val fakeShow = ShowBasic(
-        id = 100077,
-        name = "Sound Euphonium S3",
-        status = ShowStatus.WATCHING,
-        progress = 8,
-        description = "The comedy manga centers around a super-powered girl named Hina and Nitta, a young member of the yakuza. Hina suddenly appears in Nitta's room and threatens him with her extraordinary powers. However, they end up living together.<br><br>\\n\\n(Source: Anime News Network)",
-        episodes = 12,
-        image = ShowImage(
-            large = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx100077-B4bfXz0wVOPO.jpg",
-            medium = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx100077-B4bfXz0wVOPO.jpg",
-            original = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx100077-B4bfXz0wVOPO.jpg",
-            color = Color(0xFFe47850)
-        ),
-        banner = null,
-        updatedAt = null
-    )
-
-    AppTheme {
-        Scaffold(
-            containerColor = AppTheme.colorScheme.background,
-            contentColor = AppTheme.colorScheme.onBackground,
-            modifier = Modifier.height(200.dp)
-        ) {
-            ShowCard(show = fakeShow)
-        }
-    }
-}
-
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun ShowCardPrevDark() {
-    val fakeShow = ShowBasic(
-        id = 100077,
-        name = "Sound Euphonium S3",
-        status = ShowStatus.WATCHING,
-        progress = 8,
-        description = "The comedy manga centers around a super-powered girl named Hina and Nitta, a young member of the yakuza. Hina suddenly appears in Nitta's room and threatens him with her extraordinary powers. However, they end up living together.<br><br>\\n\\n(Source: Anime News Network)",
-        episodes = 12,
-        image = ShowImage(
-            large = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx100077-B4bfXz0wVOPO.jpg",
-            medium = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx100077-B4bfXz0wVOPO.jpg",
-            original = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx100077-B4bfXz0wVOPO.jpg",
-            color = Color(0xFFe47850)
-        ),
-        banner = null,
-        updatedAt = null
-    )
-
-    AppTheme {
-        Scaffold(
-            containerColor = AppTheme.colorScheme.background,
-            contentColor = AppTheme.colorScheme.onBackground,
-            modifier = Modifier.height(200.dp)
-        ) {
-            ShowCard(show = fakeShow)
         }
     }
 }

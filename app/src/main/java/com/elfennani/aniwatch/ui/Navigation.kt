@@ -28,10 +28,10 @@ const val ANIM_DURATION_MILLIS = 100
 
 @Composable
 fun Navigation(
-    navController: NavHostController
+    navController: NavHostController,
+    session: Int?
 ) {
     val context = LocalContext.current
-    val session = runBlocking { context.dataStore.data.first().sessionId }
     val startingDestination = if (session != null) MainGraphPattern else AuthGraphPattern
     val spec = remember{ tween<Float>(ANIM_DURATION_MILLIS, easing = FastOutSlowInEasing) }
     val specInt = remember { tween<IntOffset>(ANIM_DURATION_MILLIS, easing = FastOutSlowInEasing) }

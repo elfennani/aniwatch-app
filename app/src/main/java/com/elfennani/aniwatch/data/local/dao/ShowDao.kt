@@ -8,6 +8,7 @@ import androidx.room.Upsert
 import com.elfennani.aniwatch.data.local.models.LocalMediaRelation
 import com.elfennani.aniwatch.data.local.models.LocalSearch
 import com.elfennani.aniwatch.data.local.models.LocalShow
+import com.elfennani.aniwatch.domain.models.enums.MediaType
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import kotlinx.coroutines.flow.Flow
 
@@ -28,8 +29,8 @@ interface ShowDao {
     @Query("SELECT * FROM LocalShow WHERE id=:id")
     fun getByIdFlow(id:Int): Flow<LocalShow>
 
-    @Query("SELECT * FROM LocalShow WHERE status=:status")
-    fun getByStatusFlow(status: ShowStatus): Flow<List<LocalShow>>
+    @Query("SELECT * FROM LocalShow WHERE status=:status AND type=:type ORDER BY updatedAt DESC")
+    fun getByStatusFlow(status: ShowStatus, type: MediaType = MediaType.ANIME): Flow<List<LocalShow>>
 
     @Query("DELETE FROM LocalShow WHERE status=:status")
     suspend fun deleteByStatus(status: ShowStatus)

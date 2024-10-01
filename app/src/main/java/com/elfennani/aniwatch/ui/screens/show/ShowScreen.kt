@@ -1,8 +1,6 @@
 package com.elfennani.aniwatch.ui.screens.show
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -15,7 +13,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountTree
 import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,25 +29,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.util.fastAny
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.elfennani.aniwatch.domain.models.DownloadState
 import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.PillButton
-import com.elfennani.aniwatch.ui.composables.dummyShow
 import com.elfennani.aniwatch.ui.screens.characters.navigateToCharactersScreen
-import com.elfennani.aniwatch.ui.screens.episode.EpisodeRoute
 import com.elfennani.aniwatch.ui.screens.relations.navigateToRelationScreen
-import com.elfennani.aniwatch.ui.screens.show.composables.EpisodeCard
-import com.elfennani.aniwatch.ui.screens.show.composables.EpisodeDialog
 import com.elfennani.aniwatch.ui.screens.show.composables.ShowScreenHeader
 import com.elfennani.aniwatch.ui.screens.show.composables.ShowScreenSkeleton
 import com.elfennani.aniwatch.ui.screens.show.composables.TagsList
@@ -237,19 +226,6 @@ fun ShowScreen(
 
 private fun ShowStatus?.isWatching() = this == ShowStatus.WATCHING || this == ShowStatus.REPEATING
 
-@Preview
-@Composable
-private fun ShowScreenPreview() {
-    AppTheme {
-        ShowScreen(
-            state = ShowUiState(
-                show = dummyShow,
-                isLoading = false,
-                errors = emptyList()
-            )
-        )
-    }
-}
 
 @Serializable
 data class ShowRoute(val id: Int)

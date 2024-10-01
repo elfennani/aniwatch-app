@@ -33,20 +33,24 @@ import coil.compose.AsyncImage
 import com.elfennani.aniwatch.domain.models.Activity
 import com.elfennani.aniwatch.ui.theme.AppTheme
 import com.elfennani.aniwatch.utils.imageLoader
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import java.text.DateFormat
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
 fun ActivityCard(modifier: Modifier = Modifier, activity: Activity, onClick: () -> Unit = {}) {
     val formattedDateTime by remember {
         derivedStateOf {
-            val dateFormatter = DateFormat.getDateInstance(DateFormat.DEFAULT)
-            val timeFormatter = DateFormat.getTimeInstance(DateFormat.DEFAULT)
+            val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy hh:mm a")
 
-            val formattedDate = dateFormatter.format(activity.createdAt)
-            val formattedTime = timeFormatter.format(activity.createdAt)
-
-            "$formattedDate $formattedTime"
+            activity.createdAt
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .toJavaLocalDateTime().format(formatter)
         }
     }
 
@@ -103,7 +107,7 @@ fun ActivityCard(modifier: Modifier = Modifier, activity: Activity, onClick: () 
         if (activity.show != null) {
             Row {
                 AsyncImage(
-                    model = activity.show.image,
+                    model = activity.show.image.medium,
                     contentDescription = null,
                     modifier = Modifier
                         .clip(AppTheme.shapes.thumbnail)

@@ -5,6 +5,7 @@ import com.elfennani.aniwatch.domain.models.enums.MediaType
 import com.elfennani.aniwatch.domain.models.enums.ShowFormat
 import com.elfennani.aniwatch.domain.models.enums.ShowSeason
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus
+import kotlinx.datetime.Instant
 
 data class Show(
     val id: Int,
@@ -25,5 +26,6 @@ data class Show(
     val score: Double?,
     val favorite: Boolean,
     val startedAt: StatusDate?,
-    val endedAt:StatusDate?
+    val endedAt:StatusDate?,
+    val updatedAt: Instant?
 )

@@ -3,8 +3,9 @@ package com.elfennani.aniwatch.data.repository
 import com.elfennani.aniwatch.domain.models.DownloadState
 import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import com.elfennani.aniwatch.domain.repositories.DownloadRepository
+import javax.inject.Inject
 
-class DownloadRepositoryImpl: DownloadRepository {
+class DownloadRepositoryImpl @Inject constructor(): DownloadRepository {
     override suspend fun addDownload(
         showId: Int,
         episode: Double,

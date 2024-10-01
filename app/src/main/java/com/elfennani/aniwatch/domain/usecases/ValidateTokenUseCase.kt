@@ -7,8 +7,9 @@ import com.elfennani.aniwatch.domain.repositories.SessionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant
+import javax.inject.Inject
 
-class ValidateTokenUseCase(private val sessionRepository: SessionRepository) {
+class ValidateTokenUseCase @Inject constructor(private val sessionRepository: SessionRepository) {
 
     suspend operator fun invoke(accessToken:String, expirationDuration: Long): Resource<Unit, AppError> {
         return withContext(Dispatchers.IO) {

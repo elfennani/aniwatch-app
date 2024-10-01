@@ -12,6 +12,14 @@ import com.elfennani.aniwatch.domain.repositories.ListingRepository
 import com.elfennani.aniwatch.domain.repositories.SessionRepository
 import com.elfennani.aniwatch.domain.repositories.ShowRepository
 import com.elfennani.aniwatch.domain.repositories.UserRepository
+import com.elfennani.aniwatch.domain.usecases.FetchListingUseCase
+import com.elfennani.aniwatch.domain.usecases.FetchRelationsUseCase
+import com.elfennani.aniwatch.domain.usecases.FetchShowUseCase
+import com.elfennani.aniwatch.domain.usecases.FetchUserByIdUseCase
+import com.elfennani.aniwatch.domain.usecases.FetchViewerUseCase
+import com.elfennani.aniwatch.domain.usecases.IncrementEpisodeUseCase
+import com.elfennani.aniwatch.domain.usecases.UpdateShowStatusUseCase
+import com.elfennani.aniwatch.domain.usecases.ValidateTokenUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -5,5 +5,5 @@ data class Relation(
     val relationType: String,
     val format: String?,
     val state: String?,
-    val show: ShowBasic
+    val show: Show
 )

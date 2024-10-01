@@ -21,11 +21,11 @@ import java.util.concurrent.TimeUnit
 class FeedMediator(
     private val feedRepository: FeedRepository,
     private val dataStore: DataStore<Preferences>,
-) : RemoteMediator<String, LocalActivity>() {
+) : RemoteMediator<Int, LocalActivity>() {
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<String, LocalActivity>,
+        state: PagingState<Int, LocalActivity>,
     ): MediatorResult {
         val loadKey = when (loadType) {
             LoadType.REFRESH -> null

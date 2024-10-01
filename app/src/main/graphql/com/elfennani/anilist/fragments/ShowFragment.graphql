@@ -20,6 +20,7 @@ fragment ShowFragment on Media {
         color
     }
     mediaListEntry {
+        updatedAt
         progress
         status
         score

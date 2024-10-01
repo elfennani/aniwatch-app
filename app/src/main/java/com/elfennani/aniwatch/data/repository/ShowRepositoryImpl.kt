@@ -44,9 +44,10 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalPagingApi::class)
-class ShowRepositoryImpl(
+class ShowRepositoryImpl @Inject constructor(
     @AniListApolloClient private val apolloClient: ApolloClient,
     private val showDao: ShowDao,
     private val relationDao: RelationDao,

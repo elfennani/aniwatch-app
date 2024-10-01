@@ -3,7 +3,7 @@ query FeedQuery($page: Int!, $userId: Int!) {
         pageInfo {
             ...PageInfoFragment
         }
-        activities(userId:$userId,sort: [PINNED,ID_DESC]) {
+        activities(userId:$userId,sort: [ID_DESC]) {
             __typename
             ... on TextActivity{
                 ...TextActivityFragment

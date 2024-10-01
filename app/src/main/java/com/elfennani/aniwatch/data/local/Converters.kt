@@ -23,7 +23,7 @@ class Converters {
     private val vaListAdapter = moshi.adapter<List<VoiceActor>>(
         Types.newParameterizedType(
             List::class.java,
-            String::class.java
+            VoiceActor::class.java
         )
     )
 
@@ -83,7 +83,7 @@ class Converters {
     }
 
     @TypeConverter
-    fun fromVAList(list:List<VoiceActor>?): String? = vaListAdapter.toJson(list)
+    fun fromVAList(list:List<VoiceActor>?): String? = vaListAdapter?.toJson(list)
 
     @TypeConverter
     fun toVAList(json: String?) = json?.let { vaListAdapter.fromJson(it) }

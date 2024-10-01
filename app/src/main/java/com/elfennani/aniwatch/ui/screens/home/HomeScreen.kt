@@ -7,38 +7,37 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.elfennani.aniwatch.domain.models.Activity
 import com.elfennani.aniwatch.domain.models.enums.MediaType
-import com.elfennani.aniwatch.utils.plus
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.Section
 import com.elfennani.aniwatch.ui.screens.home.composables.ActivityCard
@@ -47,8 +46,9 @@ import com.elfennani.aniwatch.ui.screens.home.composables.WatchingShowsSection
 import com.elfennani.aniwatch.ui.screens.search.navigateToSearchScreen
 import com.elfennani.aniwatch.ui.screens.show.ShowRoute
 import com.elfennani.aniwatch.ui.theme.AppTheme
+import com.elfennani.aniwatch.utils.plus
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -58,18 +58,13 @@ fun HomeScreen(
     feed: LazyPagingItems<Activity>,
 ) {
     val lazyListState = rememberLazyListState()
-    val pullState = rememberPullToRefreshState(positionalThreshold = 100.dp)
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    LaunchedEffect(pullState.isRefreshing) {
-        if (pullState.isRefreshing) {
-            onRefetch()
+    val isRefreshing by remember {
+        derivedStateOf {
+            state.isFetching || feed.loadState.refresh is LoadState.Loading
         }
     }
-
-    LaunchedEffect(key1 = state.isFetching) {
-        if (!state.isFetching) pullState.endRefresh()
-    }
+    val pullState = rememberPullRefreshState(isRefreshing, onRefetch)
+    val snackbarHostState = remember { SnackbarHostState() }
 
     if (state.errors.isNotEmpty()) {
         val errorMessage = stringResource(id = state.errors.first())
@@ -96,7 +91,7 @@ fun HomeScreen(
                 user = state.user,
                 onSearch = navController::navigateToSearchScreen
             )
-            Box(Modifier.nestedScroll(pullState.nestedScrollConnection)) {
+            Box(Modifier.pullRefresh(pullState)) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     state = lazyListState,
@@ -137,16 +132,12 @@ fun HomeScreen(
                     }
                 }
 
-                if (pullState.progress > 0 || pullState.isRefreshing) {
-                    val extraTopPadding = if (pullState.isRefreshing) 20.dp else 0.dp
-                    PullToRefreshContainer(
-                        modifier = Modifier
-                            .padding(top = containerPadding.calculateTopPadding() + extraTopPadding)
-                            .align(Alignment.TopCenter)
-                            .absoluteOffset(y = (-50).dp),
-                        state = pullState,
-                    )
-                }
+                PullRefreshIndicator(
+                    refreshing = isRefreshing,
+                    state = pullState,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                )
             }
         }
     }
