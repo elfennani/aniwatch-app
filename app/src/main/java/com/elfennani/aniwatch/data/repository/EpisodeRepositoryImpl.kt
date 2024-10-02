@@ -107,13 +107,13 @@ class EpisodeRepositoryImpl @Inject constructor(
 
                 val localEpisodes = availableDetails.sub.map { ep ->
                     val details = episodes.data?.episodeInfos?.find {
-                        it!!.episodeIdNum.toString() == ep || it.episodeIdNum?.toInt().toString() == ep
+                        it!!.episodeIdNum.toString() == ep || it.episodeIdNum?.toInt()
+                            .toString() == ep
                     }
 
                     val streamingEpisode = show.data?.media?.streamingEpisodes
                         ?.sortedBy { it?.title }
                         ?.find { it?.title?.startsWith("Episode $ep") ?: false }
-
 
                     LocalEpisode(
                         showId = showId,
@@ -121,7 +121,12 @@ class EpisodeRepositoryImpl @Inject constructor(
                         dubbed = availableDetails.dub.contains(ep),
                         thumbnail = streamingEpisode?.thumbnail ?: details?.thumbnails
                             ?.filter { !(it?.contains("cdnfile") ?: false) }
-                            ?.first { it?.startsWith("http") ?: false },
+                            ?.firstNotNullOf {
+                                it?.let { path ->
+                                    if (path.startsWith("http")) path
+                                    else "$THUMBNAIL_PREFIX$path"
+                                }
+                            },
                         duration = convertToVideoInfo(details?.vidInforssub)?.vidDuration?.toInt(),
                         title = streamingEpisode?.title ?: "Episode $ep",
                         id = details?._id ?: "EP-$showId-$ep"
@@ -136,4 +141,7 @@ class EpisodeRepositoryImpl @Inject constructor(
         }
     }
 
+    companion object {
+        const val THUMBNAIL_PREFIX = "https://wp.youtube-anime.com/aln.youtube-anime.com"
+    }
 }
