@@ -48,5 +48,9 @@ class LocalModule {
 
     @Provides
     @Singleton
+    fun provideEpisodeDao(database: AppDatabase) = database.episodeDao()
+
+    @Provides
+    @Singleton
     fun provideDataStore(@ApplicationContext context: Context) = context.dataStore
 }

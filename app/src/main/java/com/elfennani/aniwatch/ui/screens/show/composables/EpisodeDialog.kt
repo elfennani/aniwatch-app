@@ -71,112 +71,112 @@ fun EpisodeDialog(
                 )
             }
 
-            AnimatedVisibility(
-                visible = episode.state !is DownloadState.NotSaved,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                CompositionLocalProvider(LocalContentColor provides AppTheme.colorScheme.onBackground) {
-                    AnimatedContent(episode.state::class.simpleName, label = "") { state ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(AppTheme.shapes.input)
-                                .background(
-                                    AppTheme.colorScheme.background,
-                                    AppTheme.shapes.input
-                                )
-                                .padding(AppTheme.sizes.medium),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
-                        ) {
-                            when (episode.state) {
-                                is DownloadState.Downloaded -> {
-                                    Icon(Icons.Default.DownloadDone, contentDescription = null)
-                                    Text(
-                                        text = "Downloaded (${episode.state.audio})",
-                                        style = AppTheme.typography.labelNormal
-                                    )
-                                }
-
-                                is DownloadState.Downloading -> {
-                                    Icon(Icons.Default.Downloading, contentDescription = null)
-                                    Column(
-                                        verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
-                                        modifier = Modifier.weight(1f)
-                                    ) {
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            val progressText =
-                                                (episode.state.progress * 100).roundToInt()
-                                            Text(
-                                                text = "Downloading...",
-                                                modifier = Modifier.weight(1f),
-                                                style = AppTheme.typography.labelNormal,
-                                                maxLines = 1
-                                            )
-                                            Spacer(Modifier.width(AppTheme.sizes.medium))
-                                            Text(
-                                                "$progressText%",
-                                                color = AppTheme.colorScheme.primary,
-                                                style = AppTheme.typography.labelNormal.copy(
-                                                    fontWeight = FontWeight.SemiBold
-                                                )
-                                            )
-                                        }
-
-                                        LinearProgressIndicator(
-                                            progress = episode.state.progress,
-                                            modifier = Modifier.fillMaxWidth(),
-                                            color = AppTheme.colorScheme.primary
-                                        )
-                                    }
-                                }
-
-                                is DownloadState.Failure -> {
-                                    Icon(
-                                        Icons.Default.Error,
-                                        contentDescription = null,
-                                        tint = AppTheme.colorScheme.error
-                                    )
-                                    Column {
-                                        Text(
-                                            text = "Download Failed",
-                                            style = AppTheme.typography.labelNormal,
-                                        )
-                                        Spacer(Modifier.height(AppTheme.sizes.smaller))
-                                        Text(
-                                            text = stringResource(episode.state.message),
-                                            style = AppTheme.typography.labelSmall,
-                                        )
-                                    }
-                                }
-
-                                is DownloadState.Pending -> {
-                                    Icon(Icons.Default.Downloading, contentDescription = null)
-                                    Column(
-                                        verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
-                                        modifier = Modifier.weight(1f)
-                                    ) {
-                                        Text(
-                                            text = "Download pending",
-                                            style = AppTheme.typography.labelNormal,
-                                            maxLines = 1
-                                        )
-                                        LinearProgressIndicator(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            color = AppTheme.colorScheme.primary
-                                        )
-                                    }
-                                }
-
-                                else -> {}
-                            }
-                        }
-                    }
-                }
-            }
+//            AnimatedVisibility(
+//                visible = episode.state !is DownloadState.NotSaved,
+//                modifier = Modifier.fillMaxWidth()
+//            ) {
+//                CompositionLocalProvider(LocalContentColor provides AppTheme.colorScheme.onBackground) {
+//                    AnimatedContent(episode.state::class.simpleName, label = "") { state ->
+//                        Row(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .clip(AppTheme.shapes.input)
+//                                .background(
+//                                    AppTheme.colorScheme.background,
+//                                    AppTheme.shapes.input
+//                                )
+//                                .padding(AppTheme.sizes.medium),
+//                            verticalAlignment = Alignment.CenterVertically,
+//                            horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.medium)
+//                        ) {
+//                            when (episode.state) {
+//                                is DownloadState.Downloaded -> {
+//                                    Icon(Icons.Default.DownloadDone, contentDescription = null)
+//                                    Text(
+//                                        text = "Downloaded (${episode.state.audio})",
+//                                        style = AppTheme.typography.labelNormal
+//                                    )
+//                                }
+//
+//                                is DownloadState.Downloading -> {
+//                                    Icon(Icons.Default.Downloading, contentDescription = null)
+//                                    Column(
+//                                        verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
+//                                        modifier = Modifier.weight(1f)
+//                                    ) {
+//                                        Row(
+//                                            modifier = Modifier.fillMaxWidth(),
+//                                            horizontalArrangement = Arrangement.SpaceBetween
+//                                        ) {
+//                                            val progressText =
+//                                                (episode.state.progress * 100).roundToInt()
+//                                            Text(
+//                                                text = "Downloading...",
+//                                                modifier = Modifier.weight(1f),
+//                                                style = AppTheme.typography.labelNormal,
+//                                                maxLines = 1
+//                                            )
+//                                            Spacer(Modifier.width(AppTheme.sizes.medium))
+//                                            Text(
+//                                                "$progressText%",
+//                                                color = AppTheme.colorScheme.primary,
+//                                                style = AppTheme.typography.labelNormal.copy(
+//                                                    fontWeight = FontWeight.SemiBold
+//                                                )
+//                                            )
+//                                        }
+//
+//                                        LinearProgressIndicator(
+//                                            progress = episode.state.progress,
+//                                            modifier = Modifier.fillMaxWidth(),
+//                                            color = AppTheme.colorScheme.primary
+//                                        )
+//                                    }
+//                                }
+//
+//                                is DownloadState.Failure -> {
+//                                    Icon(
+//                                        Icons.Default.Error,
+//                                        contentDescription = null,
+//                                        tint = AppTheme.colorScheme.error
+//                                    )
+//                                    Column {
+//                                        Text(
+//                                            text = "Download Failed",
+//                                            style = AppTheme.typography.labelNormal,
+//                                        )
+//                                        Spacer(Modifier.height(AppTheme.sizes.smaller))
+//                                        Text(
+//                                            text = stringResource(episode.state.message),
+//                                            style = AppTheme.typography.labelSmall,
+//                                        )
+//                                    }
+//                                }
+//
+//                                is DownloadState.Pending -> {
+//                                    Icon(Icons.Default.Downloading, contentDescription = null)
+//                                    Column(
+//                                        verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
+//                                        modifier = Modifier.weight(1f)
+//                                    ) {
+//                                        Text(
+//                                            text = "Download pending",
+//                                            style = AppTheme.typography.labelNormal,
+//                                            maxLines = 1
+//                                        )
+//                                        LinearProgressIndicator(
+//                                            modifier = Modifier.fillMaxWidth(),
+//                                            color = AppTheme.colorScheme.primary
+//                                        )
+//                                    }
+//                                }
+//
+//                                else -> {}
+//                            }
+//                        }
+//                    }
+//                }
+//            }
 
             Column(
                 modifier = Modifier
@@ -206,32 +206,32 @@ fun EpisodeDialog(
                 }
 
 
-                if (episode.state is DownloadState.NotSaved || episode.state is DownloadState.Failure) {
-                    DialogOption(label = "Download SUB", icon = Icons.Default.DownloadForOffline) {
-                        onDownload(EpisodeAudio.SUB)
-                        onDismissRequest()
-                    }
-                    if (episode.dubbed) {
-                        DialogOption(
-                            label = "Download DUB",
-                            icon = Icons.Default.DownloadForOffline
-                        ) {
-                            onDownload(EpisodeAudio.DUB)
-                            onDismissRequest()
-                        }
-                    }
-                }
+//                if (episode.state is DownloadState.NotSaved || episode.state is DownloadState.Failure) {
+//                    DialogOption(label = "Download SUB", icon = Icons.Default.DownloadForOffline) {
+//                        onDownload(EpisodeAudio.SUB)
+//                        onDismissRequest()
+//                    }
+//                    if (episode.dubbed) {
+//                        DialogOption(
+//                            label = "Download DUB",
+//                            icon = Icons.Default.DownloadForOffline
+//                        ) {
+//                            onDownload(EpisodeAudio.DUB)
+//                            onDismissRequest()
+//                        }
+//                    }
+//                }
 
-                if (episode.state is DownloadState.Downloaded) {
-                    DialogOption(
-                        label = "Delete Download",
-                        icon = Icons.Default.Delete,
-                        destructive = true
-                    ) {
-                        onDelete()
-                        onDismissRequest()
-                    }
-                }
+//                if (episode.state is DownloadState.Downloaded) {
+//                    DialogOption(
+//                        label = "Delete Download",
+//                        icon = Icons.Default.Delete,
+//                        destructive = true
+//                    ) {
+//                        onDelete()
+//                        onDismissRequest()
+//                    }
+//                }
             }
         }
 

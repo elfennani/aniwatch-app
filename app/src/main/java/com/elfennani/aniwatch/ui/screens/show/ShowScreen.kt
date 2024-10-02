@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountTree
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -40,6 +42,7 @@ import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.PillButton
 import com.elfennani.aniwatch.ui.screens.characters.navigateToCharactersScreen
 import com.elfennani.aniwatch.ui.screens.relations.navigateToRelationScreen
+import com.elfennani.aniwatch.ui.screens.show.composables.EpisodeCard
 import com.elfennani.aniwatch.ui.screens.show.composables.ShowScreenHeader
 import com.elfennani.aniwatch.ui.screens.show.composables.ShowScreenSkeleton
 import com.elfennani.aniwatch.ui.screens.show.composables.TagsList
@@ -172,40 +175,33 @@ fun ShowScreen(
                     }
                 }
 
-//                items(
-//                    state.show.episodes.sortedBy { it.episode },
-//                    key = { ep -> ep.id }
-//                ) { episode ->
-//                    Log.d(
-//                        "ShowScreen", "ShowScreen: ${
-//                            state.show.progress != null &&
-//                                    episode.episode <= state.show.progress &&
-//                                    state.show.status.isWatching()
-//                        }"
-//                    )
-//                    EpisodeCard(
-//                        modifier = Modifier.let {
-//                            if (
-//                                state.show.progress != null &&
-//                                episode.episode <= state.show.progress &&
-//                                state.show.status.isWatching()
-//                            ) {
-//                                return@let it.alpha(0.5f)
-//                            }
-//
-//                            it
-//                        },
-//                        episode = episode,
-//                        onClick = {
-//                            val audio = when {
-//                                episode.dubbed -> state.defaultAudio ?: EpisodeAudio.SUB
-//                                else -> EpisodeAudio.SUB
-//                            }
-//                            onOpenEpisode(episode.episode, audio)
-//                        },
-//                        onOptions = { selectedEpisode = episode.id }
-//                    )
-//                }
+                items(
+                    state.episodes.sortedBy { it.episode },
+                    key = { ep -> ep.episode }
+                ) { episode ->
+                    EpisodeCard(
+                        modifier = Modifier.let {
+                            if (
+                                state.show.progress != null &&
+                                episode.episode <= state.show.progress &&
+                                state.show.status.isWatching()
+                            ) {
+                                return@let it.alpha(0.5f)
+                            }
+
+                            it
+                        },
+                        episode = episode,
+                        onClick = {
+                            val audio = when {
+                                episode.dubbed -> state.defaultAudio ?: EpisodeAudio.SUB
+                                else -> EpisodeAudio.SUB
+                            }
+                            onOpenEpisode(episode.episode, audio)
+                        },
+                        onOptions = { selectedEpisode = episode.id }
+                    )
+                }
             }
         }
         if (state.isLoading) {

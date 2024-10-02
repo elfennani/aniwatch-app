@@ -1,0 +1,14 @@
+query SearchQuery($search:String!){
+    shows(
+        search: {
+            query: $search
+        }
+        page: 1
+    ) {
+        edges {
+            _id
+            aniListId
+            availableEpisodesDetail
+        }
+    }
+}

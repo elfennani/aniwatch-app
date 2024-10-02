@@ -110,19 +110,19 @@ fun DownloadsScreen(
                             .clip(AppTheme.shapes.card)
                             .combinedClickable(
                                 onClick = {
-                                    if (episode.state is DownloadState.Downloaded)
-//                                        onNavigate(
-////                                            EpisodeRoute(
-////                                                id = show.id,
-////                                                allanimeId = show.allanimeId,
-////                                                episode = episode.episode.toFloat(),
-////                                                audio = episode.state.audio,
-////                                                useSaved = true
-////                                            )
-//                                        )
-                                    else {
-                                        onNavigate(ShowRoute(id = show.id))
-                                    }
+//                                    if (episode.state is DownloadState.Downloaded)
+////                                        onNavigate(
+//////                                            EpisodeRoute(
+//////                                                id = show.id,
+//////                                                allanimeId = show.allanimeId,
+//////                                                episode = episode.episode.toFloat(),
+//////                                                audio = episode.state.audio,
+//////                                                useSaved = true
+//////                                            )
+////                                        )
+//                                    else {
+//                                        onNavigate(ShowRoute(id = show.id))
+//                                    }
                                 },
                                 onLongClick = { onNavigate(ShowRoute(id = show.id)) }
                             )
@@ -151,13 +151,13 @@ fun DownloadsScreen(
                                 text = "Episode ${episode.episode}",
                                 style = AppTheme.typography.labelSmall
                             )
-                            if (episode.state is DownloadState.Downloading) {
-                                LinearProgressIndicator(
-                                    progress = episode.state.progress,
-                                    color = AppTheme.colorScheme.primary,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
+//                            if (episode.state is DownloadState.Downloading) {
+//                                LinearProgressIndicator(
+//                                    progress = episode.state.progress,
+//                                    color = AppTheme.colorScheme.primary,
+//                                    modifier = Modifier.fillMaxWidth()
+//                                )
+//                            }
                         }
                     }
                 }

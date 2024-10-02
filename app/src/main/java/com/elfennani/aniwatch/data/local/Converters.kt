@@ -28,10 +28,10 @@ class Converters {
     )
 
     @TypeConverter
-    fun fromLongToInstant(long: Long) = Instant.fromEpochMilliseconds(long)
+    fun fromLongToInstant(long: Long?) = long?.let { Instant.fromEpochMilliseconds(it)}
 
     @TypeConverter
-    fun fromInstantToLong(instant: Instant) = instant.toEpochMilliseconds()
+    fun fromInstantToLong(instant: Instant?) = instant?.toEpochMilliseconds()
 
     @TypeConverter
     fun toActivityType(string: String) = ActivityType.valueOf(string)

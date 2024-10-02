@@ -1,12 +1,14 @@
 package com.elfennani.aniwatch.di
 
 import com.elfennani.aniwatch.data.repository.DownloadRepositoryImpl
+import com.elfennani.aniwatch.data.repository.EpisodeRepositoryImpl
 import com.elfennani.aniwatch.data.repository.FeedRepositoryImpl
 import com.elfennani.aniwatch.data.repository.ListingRepositoryImpl
 import com.elfennani.aniwatch.data.repository.SessionRepositoryImpl
 import com.elfennani.aniwatch.data.repository.ShowRepositoryImpl
 import com.elfennani.aniwatch.data.repository.UserRepositoryImpl
 import com.elfennani.aniwatch.domain.repositories.DownloadRepository
+import com.elfennani.aniwatch.domain.repositories.EpisodeRepository
 import com.elfennani.aniwatch.domain.repositories.FeedRepository
 import com.elfennani.aniwatch.domain.repositories.ListingRepository
 import com.elfennani.aniwatch.domain.repositories.SessionRepository
@@ -57,4 +59,9 @@ abstract class AppModule {
     abstract fun bindDownloadRepository(
         downloadRepositoryImpl: DownloadRepositoryImpl
     ): DownloadRepository
+
+    @Binds
+    abstract fun bindEpisodeRepository(
+        episodeRepositoryImpl: EpisodeRepositoryImpl
+    ): EpisodeRepository
 }

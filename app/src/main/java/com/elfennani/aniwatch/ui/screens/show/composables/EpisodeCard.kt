@@ -103,7 +103,7 @@ fun EpisodeCard(
                 )
             ) {
                 Text(
-                    text = episode.name,
+                    text = episode.title,
                     style = AppTheme.typography.labelNormal,
                     maxLines = if (minimal) MAX_LINES_MINIMAL else Int.MAX_VALUE,
                     overflow = TextOverflow.Ellipsis
@@ -132,54 +132,54 @@ fun EpisodeCard(
                             color = AppTheme.colorScheme.primary
                         )
                     }
-
-                    if (episode.state !is DownloadState.NotSaved) {
-                        BulletSeparator()
-                    }
-                    when (episode.state) {
-                        is DownloadState.Downloaded ->
-                            Icon(
-                                imageVector = Icons.Default.FileDownloadDone,
-                                contentDescription = null,
-                                modifier = Modifier.size(AppTheme.sizes.medium),
-                                tint = AppTheme.colorScheme.primary
-                            )
-
-                        is DownloadState.Pending ->
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(AppTheme.sizes.medium),
-                                color = AppTheme.colorScheme.primary
-                            )
-
-                        is DownloadState.Downloading -> {
-                            val progressRounded = (episode.state.progress * 100).fastRoundToInt()
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(AppTheme.sizes.medium),
-                                    progress = { episode.state.progress },
-                                    color = AppTheme.colorScheme.primary
-                                )
-                                Text(
-                                    text = "$progressRounded%",
-                                    style = AppTheme.typography.labelSmallBold,
-                                    color = AppTheme.colorScheme.primary
-                                )
-                            }
-                        }
-
-                        is DownloadState.Failure ->
-                            Icon(
-                                imageVector = Icons.Default.Error,
-                                contentDescription = null,
-                                modifier = Modifier.size(AppTheme.sizes.medium),
-                                tint = AppTheme.colorScheme.error
-                            )
-
-                        else -> {}
-                    }
+//
+//                    if (episode.state !is DownloadState.NotSaved) {
+//                        BulletSeparator()
+//                    }
+//                    when (episode.state) {
+//                        is DownloadState.Downloaded ->
+//                            Icon(
+//                                imageVector = Icons.Default.FileDownloadDone,
+//                                contentDescription = null,
+//                                modifier = Modifier.size(AppTheme.sizes.medium),
+//                                tint = AppTheme.colorScheme.primary
+//                            )
+//
+//                        is DownloadState.Pending ->
+//                            CircularProgressIndicator(
+//                                modifier = Modifier.size(AppTheme.sizes.medium),
+//                                color = AppTheme.colorScheme.primary
+//                            )
+//
+//                        is DownloadState.Downloading -> {
+//                            val progressRounded = (episode.state.progress * 100).fastRoundToInt()
+//                            Row(
+//                                horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.smaller),
+//                                verticalAlignment = Alignment.CenterVertically
+//                            ) {
+//                                CircularProgressIndicator(
+//                                    modifier = Modifier.size(AppTheme.sizes.medium),
+//                                    progress = { episode.state.progress },
+//                                    color = AppTheme.colorScheme.primary
+//                                )
+//                                Text(
+//                                    text = "$progressRounded%",
+//                                    style = AppTheme.typography.labelSmallBold,
+//                                    color = AppTheme.colorScheme.primary
+//                                )
+//                            }
+//                        }
+//
+//                        is DownloadState.Failure ->
+//                            Icon(
+//                                imageVector = Icons.Default.Error,
+//                                contentDescription = null,
+//                                modifier = Modifier.size(AppTheme.sizes.medium),
+//                                tint = AppTheme.colorScheme.error
+//                            )
+//
+//                        else -> {}
+//                    }
                 }
             }
             if (!minimal)

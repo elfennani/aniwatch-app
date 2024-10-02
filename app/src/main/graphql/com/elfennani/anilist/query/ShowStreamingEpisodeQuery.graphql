@@ -1,0 +1,11 @@
+query ShowStreamingEpisodeQuery($showId: Int!){
+    media:Media(id: $showId){
+        title {
+            userPreferred
+        }
+        streamingEpisodes {
+            thumbnail
+            title
+        }
+    }
+}

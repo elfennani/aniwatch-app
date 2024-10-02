@@ -1,0 +1,8 @@
+query InfoEpisodesQuery($showId: String!, $max: Float!) {
+    episodeInfos(showId:$showId,  episodeNumStart:0, episodeNumEnd:$max){
+        _id
+        thumbnails
+        episodeIdNum
+        vidInforssub
+    }
+}

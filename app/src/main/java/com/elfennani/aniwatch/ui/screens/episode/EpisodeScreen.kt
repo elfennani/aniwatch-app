@@ -2,23 +2,19 @@ package com.elfennani.aniwatch.ui.screens.episode
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -26,23 +22,12 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import com.elfennani.aniwatch.domain.models.EpisodeAudio
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.KeepScreenON
-import com.elfennani.aniwatch.ui.theme.AppTheme
 import com.elfennani.aniwatch.utils.requireActivity
-import kotlinx.serialization.Serializable
-
-const val TAG = "EpisodeScreen"
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -52,18 +37,9 @@ fun EpisodeScreen(
     onRefresh: () -> Unit = {},
     onErrorDismiss: (errorId: Int) -> Unit,
 ) {
-    val context = LocalContext.current
 
 
-    DisposableEffect(context) {
-        context.requireActivity().requestedOrientation =
-            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-        onDispose {
-            context.requireActivity().requestedOrientation =
-                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-        }
-    }
-
+    KeepLandscape()
     KeepScreenON()
     HideSystemBars()
 
@@ -79,6 +55,15 @@ fun EpisodeScreen(
             )
         }
     ) {
+        if(state.isLoading){
+            Column(
+                modifier = Modifier.padding(it).fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator(color = Color.White)
+            }
+        }
         if (state.exoPlayer != null) {
             Box {
                 AndroidView(
@@ -102,32 +87,16 @@ fun EpisodeScreen(
 }
 
 @Composable
-@OptIn(ExperimentalLayoutApi::class)
-private fun QualitySelector(
-    exoPlayer: ExoPlayer,
-    trackGroup: Tracks.Group,
-    onSetResolution: (index: Int) -> Unit,
-) {
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.normal)) {
-        val isNoneSelected = exoPlayer.trackSelectionParameters.overrides.size == 0
-        for (i in 0 until trackGroup.length) {
-            val isSelected = exoPlayer.trackSelectionParameters.overrides.any { override ->
-                override.value.trackIndices.contains(i)
-            }
-            val trackFormat = trackGroup.getTrackFormat(i)
-            Log.d(TAG, "EpisodeScreen: ")
+private fun KeepLandscape() {
+    val context = LocalContext.current
 
-            Button(
-                colors = ButtonDefaults.buttonColors().copy(
-                    containerColor = AppTheme.colorScheme.primary,
-                    contentColor = AppTheme.colorScheme.onPrimary
-                ),
-                shape = AppTheme.shapes.button,
-                onClick = { onSetResolution(i) },
-                enabled = isNoneSelected || !isSelected
-            ) {
-                Text(text = trackFormat.height.toString())
-            }
+
+    DisposableEffect(context) {
+        context.requireActivity().requestedOrientation =
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        onDispose {
+            context.requireActivity().requestedOrientation =
+                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }
 }
@@ -156,25 +125,3 @@ fun HideSystemBars() {
     }
 }
 
-@Serializable
-data class EpisodeRoute(
-    val id: Int,
-    val allanimeId: String,
-    val episode: Float,
-    val audio: EpisodeAudio,
-    val useSaved: Boolean = false,
-)
-
-@androidx.annotation.OptIn(UnstableApi::class)
-fun NavGraphBuilder.episodeScreen(navController: NavController) {
-    composable<EpisodeRoute> {
-        val viewModel: EpisodeViewModel = hiltViewModel()
-        val state by viewModel.state.collectAsState()
-
-        EpisodeScreen(
-            state = state,
-            onRefresh = viewModel::refresh,
-            onErrorDismiss = viewModel::dismissError
-        )
-    }
-}

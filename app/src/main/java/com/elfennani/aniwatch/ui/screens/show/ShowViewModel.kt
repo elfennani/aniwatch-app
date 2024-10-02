@@ -15,12 +15,16 @@ import com.elfennani.aniwatch.domain.models.Resource
 import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.domain.models.handleError
 import com.elfennani.aniwatch.domain.repositories.DownloadRepository
+import com.elfennani.aniwatch.domain.repositories.EpisodeRepository
 import com.elfennani.aniwatch.domain.repositories.ShowRepository
+import com.elfennani.aniwatch.domain.usecases.FetchEpisodesUseCase
 import com.elfennani.aniwatch.domain.usecases.FetchShowUseCase
 import com.elfennani.aniwatch.domain.usecases.IncrementEpisodeUseCase
 import com.elfennani.aniwatch.services.DownloadService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -35,9 +39,11 @@ import javax.inject.Inject
 @HiltViewModel
 class ShowViewModel @Inject constructor(
     private val showRepository: ShowRepository,
+    private val episodeRepository: EpisodeRepository,
     private val downloadRepository: DownloadRepository,
     private val fetchShowUseCase: FetchShowUseCase,
     private val incrementEpisodeUseCase: IncrementEpisodeUseCase,
+    private val fetchEpisodesUseCase: FetchEpisodesUseCase,
     savedStateHandle: SavedStateHandle,
     @ApplicationContext val context: Context,
 ) : ViewModel() {
@@ -49,22 +55,27 @@ class ShowViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(ShowUiState())
     private val _show = showRepository.showById(id = route.id)
+    private val _episodes = episodeRepository.episodesByShowId(route.id)
 
     val state: StateFlow<ShowUiState> =
-        combine(_state, _show, isSubDefault) { state, show, isSubDefault ->
+        combine(_state, _show, _episodes, isSubDefault) { state, show, episodes, isSubDefault ->
             state.copy(
                 show = show,
                 isLoading = false,
                 defaultAudio = isSubDefault.let {
                     if (isSubDefault != false) EpisodeAudio.SUB
                     else EpisodeAudio.DUB
-                }
+                },
+                episodes = episodes
             )
         }.stateIn(viewModelScope, SharingStarted.Eagerly, ShowUiState())
 
     init {
         viewModelScope.launch {
-            fetchShowUseCase(showId).handleError(::handleError)
+            val showAsync = async { fetchShowUseCase(showId).handleError(::handleError) }
+            val episodesAsync = async { fetchEpisodesUseCase(showId).handleError(::handleError) }
+
+            awaitAll(showAsync, episodesAsync)
         }
     }
 
@@ -121,6 +132,7 @@ class ShowViewModel @Inject constructor(
                         isIncrementingEpisode = false
                     )
                 }
+
                 is Resource.Ok -> _state.update { it.copy(isIncrementingEpisode = false) }
             }
         }
