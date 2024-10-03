@@ -41,6 +41,7 @@ import com.elfennani.aniwatch.domain.models.enums.ShowStatus
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.PillButton
 import com.elfennani.aniwatch.ui.screens.characters.navigateToCharactersScreen
+import com.elfennani.aniwatch.ui.screens.episode.EpisodeRoute
 import com.elfennani.aniwatch.ui.screens.relations.navigateToRelationScreen
 import com.elfennani.aniwatch.ui.screens.show.composables.EpisodeCard
 import com.elfennani.aniwatch.ui.screens.show.composables.ShowScreenHeader
@@ -236,7 +237,13 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
             onBack = navController::popBackStack,
             onErrorDismiss = viewModel::dismissError,
             onOpenEpisode = { episode, audio ->
-
+                navController.navigate(
+                    EpisodeRoute(
+                        showState.show?.id!!,
+                        episode.toFloat(),
+                        audio
+                    )
+                )
             },
             onDownloadEpisode = viewModel::downloadEpisode,
             onDeleteEpisode = viewModel::deleteEpisode,

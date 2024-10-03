@@ -18,6 +18,7 @@ sealed interface AppError {
     companion object {
         fun Exception.handleAppErrors(): AppError {
             return when (this) {
+                is AppErrorException -> error
                 is IOException -> NetworkError
                 is retrofit2.HttpException -> if (code() == 404) NotFoundError else ServerError
                 is JsonDataException -> ParsingError

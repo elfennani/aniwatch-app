@@ -1,5 +1,6 @@
 package com.elfennani.aniwatch.domain.paging
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -42,6 +43,7 @@ class FeedMediator(
                 page = loadKey ?: 1,
                 clearAll = loadType == LoadType.REFRESH
             )
+            Log.d("FeedMediator", "load: $loadKey")
 
             dataStore.edit {
                 if (loadType == LoadType.REFRESH) {
