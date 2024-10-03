@@ -109,17 +109,14 @@ class EpisodeRepositoryImpl @Inject constructor(
 
     private suspend fun fetchAllAnimeShow(showId: Int): Pair<ApolloResponse<ShowStreamingEpisodeQuery.Data>, SearchQuery.Edge?> {
         val show = aniListApolloClient.query(ShowStreamingEpisodeQuery(showId)).execute()
-        val showTitle = when(showId){
-            19 -> "Monster (2004)"
-            else -> show.data?.media?.title?.userPreferred!!
-        }
+        val showTitle = show.data?.media?.title?.userPreferred!!
 
         val searchResponse = retry {
             allAnimeApolloClient.query(SearchQuery(showTitle)).execute()
         }
 
         val allAnimeShow = searchResponse.data?.shows?.edges?.find {
-            (it.aniListId as String?)?.toInt() == showId
+            (it.aniListId as String).toInt() == showId
         }
 
         return Pair(show, allAnimeShow)
