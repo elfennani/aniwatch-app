@@ -1,23 +1,19 @@
 package com.elfennani.aniwatch.data.local.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Upsert
-import com.elfennani.aniwatch.data.local.models.LocalEpisode
-import kotlinx.coroutines.flow.Flow
+import com.elfennani.aniwatch.data.local.entities.EpisodeEntity
 
 @Dao
 interface EpisodeDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(episodes: List<EpisodeEntity>)
 
-    @Query("SELECT * FROM LocalEpisode WHERE showId=:showId ORDER BY episode ASC")
-    fun getListByShowId(showId: Int): Flow<List<LocalEpisode>>
+    @Query("DELETE FROM cached_episodes WHERE animeId=:animeId")
+    suspend fun deleteByAnimeId(animeId: Int)
 
-    @Upsert
-    suspend fun upsert(episode: LocalEpisode)
-
-    @Upsert
-    suspend fun upsert(episodes: List<LocalEpisode>)
-
-    @Query("DELETE FROM LocalEpisode WHERE showId=:showId")
-    suspend fun deleteByShowId(showId: Int)
+    @Query("DELETE FROM cached_episodes WHERE animeId=:showId AND id NOT IN (:epIds)")
+    suspend fun deleteByShowIdAndIds(showId: Int, epIds: List<String>)
 }
