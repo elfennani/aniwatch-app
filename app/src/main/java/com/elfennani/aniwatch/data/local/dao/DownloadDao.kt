@@ -5,16 +5,16 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
-import com.elfennani.aniwatch.data.local.entities.LocalDownloadedEpisode
+import com.elfennani.aniwatch.data.local.entities.DownloadedEpisodeEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DownloadDao {
     @Query("SELECT * FROM downloaded_episodes ORDER BY createdAt DESC")
-    fun getDownloads(): Flow<List<LocalDownloadedEpisode>>
+    fun getDownloads(): Flow<List<DownloadedEpisodeEntity>>
 
     @Upsert
-    suspend fun upsertDownload(downloadedEpisode: LocalDownloadedEpisode)
+    suspend fun upsertDownload(downloadedEpisode: DownloadedEpisodeEntity)
 
     @Query("UPDATE downloaded_episodes SET progress=:progress, state=:state WHERE showId=:showId AND episode=:episode")
     suspend fun updateProgress(
@@ -40,7 +40,7 @@ interface DownloadDao {
     )
 
     @Delete
-    suspend fun deleteDownload(downloadedEpisode: LocalDownloadedEpisode)
+    suspend fun deleteDownload(downloadedEpisode: DownloadedEpisodeEntity)
 
     @Query("DELETE FROM downloaded_episodes WHERE showId=:showId AND episode=:episode")
     suspend fun deleteDownloadByShowId(showId: Int, episode: kotlin.Double)

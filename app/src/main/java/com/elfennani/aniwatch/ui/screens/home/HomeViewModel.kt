@@ -14,27 +14,24 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.elfennani.aniwatch.data.local.Database
 import com.elfennani.aniwatch.data.local.dao.FeedDao
-import com.elfennani.aniwatch.data.local.entities.ActivityDto
+import com.elfennani.aniwatch.data.local.entities.ActivityEntity
 import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
 import com.elfennani.aniwatch.data.local.entities.asDomain
+import com.elfennani.aniwatch.data.local.mappers.asDomain
 import com.elfennani.aniwatch.data.repository.ActivityRepository
 import com.elfennani.aniwatch.data.paging.FeedRemoteMediator
 import com.elfennani.aniwatch.data.repository.DownloadRepository
 import com.elfennani.aniwatch.data.repository.ShowRepository
 import com.elfennani.aniwatch.data.repository.UserRepository
-import com.elfennani.aniwatch.dataStore
-import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.Resource
 import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.services.DownloadService
-import com.elfennani.aniwatch.sessionId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -62,7 +59,7 @@ class HomeViewModel @Inject constructor(
     ) { feedDao.pagingSource() }
 
     val feedPagingFlow = pager.flow
-        .map { it.map(ActivityDto::asDomain) }
+        .map { it.map(ActivityEntity::asDomain) }
         .cachedIn(viewModelScope)
 
 

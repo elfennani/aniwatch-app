@@ -7,9 +7,10 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import com.elfennani.aniwatch.R
-import com.elfennani.aniwatch.data.local.dao.CachedUserDao
-import com.elfennani.aniwatch.data.local.entities.toDomain
-import com.elfennani.aniwatch.data.local.entities.toEntity
+import com.elfennani.aniwatch.data.local.dao.UserDao
+import com.elfennani.aniwatch.data.local.mappers.toDomain
+import com.elfennani.aniwatch.data.local.mappers.toEntity
+
 import com.elfennani.aniwatch.data.remote.APIService
 import com.elfennani.aniwatch.data.remote.models.toDomain
 import com.elfennani.aniwatch.dataStore
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit
 
 class UserRepository(
     private val apiService: APIService,
-    private val cachedUserDao: CachedUserDao,
+    private val userDao: UserDao,
     private val context: Context
 ) {
 
@@ -36,7 +37,7 @@ class UserRepository(
     private fun Preferences.getUserExpiration(id:Int) = this[cacheExpireKey(id)]
 
     suspend fun userFlow(id:Int) = flow{
-        emit(Resource.Success(cachedUserDao.getUser(id)?.toDomain()))
+        emit(Resource.Success(userDao.getUser(id)?.toDomain()))
         val lastFetch = context.dataStore.data.first().getUserExpiration(id) ?: 0L
         val hour = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
         val current = Instant.now().toEpochMilli()
@@ -48,7 +49,7 @@ class UserRepository(
             }
         }
 
-        emitAll(cachedUserDao.getUserFlow(id).map { Resource.Success(it?.toDomain()) })
+        emitAll(userDao.getUserFlow(id).map { Resource.Success(it?.toDomain()) })
     }
 
     suspend fun viewerFlow() = flow {
@@ -90,7 +91,7 @@ class UserRepository(
     suspend fun fetchUser(id: Int): Resource<User> {
         return try {
             val result = apiService.getUserById(id).toDomain()
-            cachedUserDao.upsertUser(result.toEntity())
+            userDao.upsertUser(result.toEntity())
             context.dataStore.edit {
                 it[cacheExpireKey(id)] = Instant.now().toEpochMilli()
             }

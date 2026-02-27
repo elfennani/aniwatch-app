@@ -1,30 +1,13 @@
-package com.elfennani.aniwatch.data.local.entities
+package com.elfennani.aniwatch.data.local.mappers
 
-import androidx.annotation.StringRes
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import com.elfennani.aniwatch.data.local.dao.DownloadDao
+import com.elfennani.aniwatch.data.local.entities.DownloadedEpisodeEntity
+import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
 import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.EpisodeAudio
-import com.elfennani.aniwatch.services.DownloadService
 import java.time.Instant
 import java.util.Date
 
-@Entity(
-    tableName = "downloaded_episodes",
-    primaryKeys = ["showId", "episode"]
-)
-data class LocalDownloadedEpisode(
-    val showId: Int,
-    val episode: Double,
-    val state: LocalDownloadState,
-    @ColumnInfo(defaultValue = "SUB") val audio: EpisodeAudio,
-    val progress: Float,
-    val createdAt: Date,
-    val errorRes: Int?,
-)
-
-fun LocalDownloadedEpisode.toAppModel() = when (state) {
+fun DownloadedEpisodeEntity.toAppModel() = when (state) {
     LocalDownloadState.DONE -> DownloadState.Downloaded(audio)
     LocalDownloadState.DOWNLOADING -> DownloadState.Downloading(progress)
     LocalDownloadState.FAILURE -> DownloadState.Failure(errorRes!!)
@@ -44,8 +27,8 @@ fun DownloadState.toEntity(
     episode: Double,
     audio: EpisodeAudio,
     createdAt: Date = Date.from(Instant.now()),
-): LocalDownloadedEpisode {
-    val download = LocalDownloadedEpisode(
+): DownloadedEpisodeEntity {
+    val download = DownloadedEpisodeEntity(
         showId = showId,
         episode = episode,
         state = LocalDownloadState.PENDING,

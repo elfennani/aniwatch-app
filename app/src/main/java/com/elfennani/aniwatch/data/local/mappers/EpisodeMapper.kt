@@ -1,24 +1,13 @@
-package com.elfennani.aniwatch.data.local.entities
+package com.elfennani.aniwatch.data.local.mappers
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.elfennani.aniwatch.R
+import com.elfennani.aniwatch.data.local.entities.EpisodeEntity
+import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
+import com.elfennani.aniwatch.data.local.entities.DownloadedEpisodeEntity
 import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.Episode
 
-@Entity("cached_episodes")
-data class CachedEpisodeDto(
-    @PrimaryKey val id: String,
-    val allanimeId: String,
-    val animeId: Int,
-    val episode: Double,
-    val name: String,
-    val dubbed: Boolean,
-    val thumbnail: String?,
-    val duration: Int?,
-)
-
-fun CachedEpisodeDto.toDomain(downloadedEpisode: LocalDownloadedEpisode?) = Episode(
+fun EpisodeEntity.toDomain(downloadedEpisode: DownloadedEpisodeEntity?) = Episode(
     id = id,
     allanimeId = allanimeId,
     animeId = animeId,
@@ -38,7 +27,7 @@ fun CachedEpisodeDto.toDomain(downloadedEpisode: LocalDownloadedEpisode?) = Epis
     }
 )
 
-fun Episode.toCached() = CachedEpisodeDto(
+fun Episode.toCached() = EpisodeEntity(
     id = id,
     allanimeId = allanimeId,
     animeId = animeId,

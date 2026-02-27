@@ -1,10 +1,10 @@
 package com.elfennani.aniwatch.di
 
 import android.content.Context
-import com.elfennani.aniwatch.data.local.dao.CachedEpisodesDao
-import com.elfennani.aniwatch.data.local.dao.CachedListingDao
-import com.elfennani.aniwatch.data.local.dao.CachedShowDao
-import com.elfennani.aniwatch.data.local.dao.CachedUserDao
+import com.elfennani.aniwatch.data.local.dao.EpisodeDao
+import com.elfennani.aniwatch.data.local.dao.ListingDao
+import com.elfennani.aniwatch.data.local.dao.ShowDao
+import com.elfennani.aniwatch.data.local.dao.UserDao
 import com.elfennani.aniwatch.data.local.dao.DownloadDao
 import com.elfennani.aniwatch.data.local.dao.SessionDao
 import com.elfennani.aniwatch.data.remote.APIService
@@ -27,14 +27,14 @@ class AppModule {
     @Singleton
     fun provideShowRepository(
         apiService: APIService,
-        cachedListingDao: CachedListingDao,
-        cachedShowDao: CachedShowDao,
-        cachedEpisodesDao: CachedEpisodesDao,
+        listingDao: ListingDao,
+        showDao: ShowDao,
+        cachedEpisodesDao: EpisodeDao,
     ): ShowRepository =
         ShowRepository(
             apiService,
-            cachedListingDao,
-            cachedShowDao,
+            listingDao,
+            showDao,
             cachedEpisodesDao,
         )
 
@@ -51,11 +51,11 @@ class AppModule {
     @Singleton
     fun provideUserRepository(
         apiService: APIService,
-        cachedUserDao: CachedUserDao,
+        userDao: UserDao,
         @ApplicationContext context: Context
     ) = UserRepository(
         apiService = apiService,
-        cachedUserDao = cachedUserDao,
+        userDao = userDao,
         context = context
     )
 

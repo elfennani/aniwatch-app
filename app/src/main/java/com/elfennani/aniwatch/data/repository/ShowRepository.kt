@@ -2,14 +2,14 @@ package com.elfennani.aniwatch.data.repository
 
 import android.util.Log
 import androidx.compose.ui.util.fastAny
-import com.elfennani.aniwatch.data.local.dao.CachedEpisodesDao
-import com.elfennani.aniwatch.data.local.dao.CachedListingDao
-import com.elfennani.aniwatch.data.local.dao.CachedShowDao
-import com.elfennani.aniwatch.data.local.entities.CachedListingDto
-import com.elfennani.aniwatch.data.local.entities.asEntity
-import com.elfennani.aniwatch.data.local.entities.toCached
-import com.elfennani.aniwatch.data.local.entities.toDomain
-import com.elfennani.aniwatch.data.local.entities.toDto
+import com.elfennani.aniwatch.data.local.dao.EpisodeDao
+import com.elfennani.aniwatch.data.local.dao.ListingDao
+import com.elfennani.aniwatch.data.local.dao.ShowDao
+import com.elfennani.aniwatch.data.local.entities.ListingItemEntity
+import com.elfennani.aniwatch.data.local.mappers.asEntity
+import com.elfennani.aniwatch.data.local.mappers.toCached
+import com.elfennani.aniwatch.data.local.mappers.toDomain
+import com.elfennani.aniwatch.data.local.mappers.toDto
 import com.elfennani.aniwatch.data.remote.APIService
 import com.elfennani.aniwatch.data.remote.models.NetworkShowBasic
 import com.elfennani.aniwatch.data.remote.models.asDomain
@@ -35,9 +35,9 @@ import kotlinx.coroutines.withContext
 
 class ShowRepository(
     private val apiService: APIService,
-    private val cachedListingDao: CachedListingDao,
-    private val cachedShowDao: CachedShowDao,
-    private val cachedEpisodesDao: CachedEpisodesDao,
+    private val listingDao: ListingDao,
+    private val showDao: ShowDao,
+    private val cachedEpisodesDao: EpisodeDao,
 ) {
     suspend fun getShowsByStatus(status: ShowStatus) = resourceOf {
         apiService.getShowsByStatus(status.toSerializable()).map { it.toDomain() }
@@ -47,7 +47,7 @@ class ShowRepository(
         apiService.getRelationsByShowId(showId).map { it.asDomain() }
     }
 
-    fun getDownloads(): Flow<List<ShowDetails>> = cachedShowDao
+    fun getDownloads(): Flow<List<ShowDetails>> = showDao
         .getCachedShows()
         .map {
             it.map { show -> show.toDomain() }
@@ -71,13 +71,13 @@ class ShowRepository(
 
     suspend fun syncShowById(showId: Int) = resourceOf {
         val show = apiService.getShowById(showId).toDomain()
-        cachedShowDao.insertCachedShow(show.asEntity())
+        showDao.insertCachedShow(show.asEntity())
         cachedEpisodesDao.deleteByShowIdAndIds(showId, show.episodes.map { it.id })
         cachedEpisodesDao.insertAll(show.episodes.map(Episode::toCached))
     }
 
     fun getShowFlowById(showId: Int): Flow<ShowDetails?> =
-        cachedShowDao.getCachedShow(showId).map { it?.toDomain() }
+        showDao.getCachedShow(showId).map { it?.toDomain() }
 
     suspend fun getShowById(showId: Int) = resourceOf {
         apiService.getShowById(showId).toDomain()
@@ -98,20 +98,21 @@ class ShowRepository(
         val shows = apiService
             .getShowsByStatus(status.toSerializable())
         Log.d("ShowRepository", shows.size.toString())
-        cachedListingDao.deleteUnused(status, shows.map { it.id })
-        cachedListingDao.upsertAll(shows.map(NetworkShowBasic::toDto))
+        listingDao.deleteUnused(status, shows.map { it.id })
+        listingDao.upsertAll(shows.map(NetworkShowBasic::toDto))
     }
 
     fun getListingByStatus(status: ShowStatus): Flow<List<ShowBasic>> {
+
         return flow {
             val show = withContext(Dispatchers.IO) {
-                cachedListingDao.getShowsByStatus(status).map(CachedListingDto::toDomain)
+                listingDao.getShowsByStatus(status).map(ListingItemEntity::toDomain)
             }
             emit(show)
 
             val shows = withContext(Dispatchers.IO) {
-                cachedListingDao.getShowsByStatusFlow(status)
-                    .map { it.map(CachedListingDto::toDomain) }
+                listingDao.getShowsByStatusFlow(status)
+                    .map { it.map(ListingItemEntity::toDomain) }
             }
             emitAll(shows)
         }

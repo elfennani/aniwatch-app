@@ -1,40 +1,14 @@
-package com.elfennani.aniwatch.data.local.entities
+package com.elfennani.aniwatch.data.local.mappers
 
-import androidx.room.ColumnInfo
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.Relation
-import com.elfennani.aniwatch.models.Episode
+import com.elfennani.aniwatch.data.local.entities.EmbeddedShowImage
+import com.elfennani.aniwatch.data.local.entities.ShowEntity
+import com.elfennani.aniwatch.data.local.relations.ShowWithEpisodes
 import com.elfennani.aniwatch.models.ShowDetails
 import com.elfennani.aniwatch.models.ShowImage
-import com.elfennani.aniwatch.models.ShowSeason
-import com.elfennani.aniwatch.models.ShowStatus
-import com.elfennani.aniwatch.models.Tag
 import com.elfennani.aniwatch.utils.toColor
 import com.elfennani.aniwatch.utils.toHexString
 
-@Entity(tableName = "cached_shows")
-data class CachedShowDto(
-    @PrimaryKey val id: Int,
-    val allanimeId: String,
-    val name: String,
-    val description: String,
-    val episodesCount: Int,
-    val genres: List<String>,
-    val season: ShowSeason,
-    val year: Int,
-    val format: String,
-    @Embedded val image: CachedShowImage,
-    val banner: String?,
-    val progress: Int?,
-    val status: ShowStatus?,
-    @ColumnInfo(defaultValue = "[]") val tags: List<Tag>
-)
-
-
-
-fun CachedShowDto.toDomain() = ShowDetails(
+fun ShowEntity.toDomain() = ShowDetails(
     id = id,
     allanimeId = allanimeId,
     name = name,
@@ -57,7 +31,7 @@ fun CachedShowDto.toDomain() = ShowDetails(
     episodes = emptyList()
 )
 
-fun ShowDetails.asEntity() = CachedShowDto(
+fun ShowDetails.asEntity() = ShowEntity(
     id = id,
     allanimeId = allanimeId,
     name = name,
@@ -67,7 +41,7 @@ fun ShowDetails.asEntity() = CachedShowDto(
     season = season,
     year = year,
     format = format,
-    image = CachedShowImage(
+    image = EmbeddedShowImage(
         large = image.large,
         medium = image.medium,
         original = image.original,
@@ -78,3 +52,12 @@ fun ShowDetails.asEntity() = CachedShowDto(
     status = status,
     tags = tags
 )
+
+fun ShowWithEpisodes.toDomain() =
+    show.toDomain().copy(
+        episodes = episodes
+            .map { episode ->
+                val downloaded = downloadedEpisodes.find { it.episode == episode.episode }
+                episode.toDomain(downloaded)
+            }
+    )

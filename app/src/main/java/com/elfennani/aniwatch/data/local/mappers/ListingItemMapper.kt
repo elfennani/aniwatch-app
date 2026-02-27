@@ -1,31 +1,15 @@
-package com.elfennani.aniwatch.data.local.entities
+package com.elfennani.aniwatch.data.local.mappers
 
-import androidx.room.ColumnInfo
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.elfennani.aniwatch.data.local.entities.EmbeddedShowImage
+import com.elfennani.aniwatch.data.local.entities.ListingItemEntity
 import com.elfennani.aniwatch.data.remote.models.NetworkShowBasic
 import com.elfennani.aniwatch.data.remote.models.toDomain
 import com.elfennani.aniwatch.models.ShowBasic
 import com.elfennani.aniwatch.models.ShowImage
-import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.utils.toColor
 import com.elfennani.aniwatch.utils.toHexString
 
-@Entity(tableName = "cached_listing")
-data class CachedListingDto(
-    @PrimaryKey val id: Int,
-    val name: String,
-    val status: ShowStatus?,
-    val description: String?,
-    val episodes: Int?,
-    val progress: Int?,
-    @Embedded val image: CachedShowImage,
-    val banner: String? = null,
-    val updatedAt: Int?
-)
-
-fun CachedListingDto.toDomain() = ShowBasic(
+fun ListingItemEntity.toDomain() = ShowBasic(
     id = id,
     name = name,
     status = status,
@@ -42,14 +26,14 @@ fun CachedListingDto.toDomain() = ShowBasic(
     updatedAt = updatedAt
 )
 
-fun NetworkShowBasic.toDto() = CachedListingDto(
+fun NetworkShowBasic.toDto() = ListingItemEntity(
     id = id,
     name = name,
     status = status?.toDomain(),
     description = description,
     episodes = episodes,
     progress = progress,
-    image = CachedShowImage(
+    image = EmbeddedShowImage(
         large = image.large,
         medium = image.medium,
         original = image.original,

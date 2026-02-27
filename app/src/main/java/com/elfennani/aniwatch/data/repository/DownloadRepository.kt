@@ -2,9 +2,9 @@ package com.elfennani.aniwatch.data.repository
 
 import com.elfennani.aniwatch.data.local.dao.DownloadDao
 import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
-import com.elfennani.aniwatch.data.local.entities.LocalDownloadedEpisode
-import com.elfennani.aniwatch.data.local.entities.toAppModel
-import com.elfennani.aniwatch.data.local.entities.toLocalDownloadState
+import com.elfennani.aniwatch.data.local.entities.DownloadedEpisodeEntity
+import com.elfennani.aniwatch.data.local.mappers.toAppModel
+import com.elfennani.aniwatch.data.local.mappers.toLocalDownloadState
 import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.EpisodeAudio
 import kotlinx.coroutines.flow.first
@@ -15,7 +15,7 @@ class DownloadRepository(
     private val downloadDao: DownloadDao,
 ) {
     suspend fun addDownload(showId: Int, episode: Double, audio: EpisodeAudio): DownloadState {
-        val download = LocalDownloadedEpisode(
+        val download = DownloadedEpisodeEntity(
             showId = showId,
             episode = episode,
             state = LocalDownloadState.PENDING,
@@ -29,7 +29,7 @@ class DownloadRepository(
         return download.toAppModel()
     }
 
-    suspend fun getToBeDownloaded(): List<LocalDownloadedEpisode> {
+    suspend fun getToBeDownloaded(): List<DownloadedEpisodeEntity> {
         return downloadDao.getDownloads().first()
     }
 

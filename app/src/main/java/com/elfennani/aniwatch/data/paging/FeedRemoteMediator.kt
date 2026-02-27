@@ -12,8 +12,8 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.elfennani.aniwatch.data.local.Database
 import com.elfennani.aniwatch.data.local.dao.FeedDao
-import com.elfennani.aniwatch.data.local.entities.ActivityDto
-import com.elfennani.aniwatch.data.local.entities.asEntity
+import com.elfennani.aniwatch.data.local.entities.ActivityEntity
+import com.elfennani.aniwatch.data.local.mappers.asEntity
 import com.elfennani.aniwatch.data.repository.ActivityRepository
 import com.elfennani.aniwatch.dataStore
 import com.elfennani.aniwatch.models.Activity
@@ -33,7 +33,7 @@ class FeedRemoteMediator(
     private val database: Database,
     private val feedDao: FeedDao,
     private val context: Context,
-) : RemoteMediator<Int, ActivityDto>() {
+) : RemoteMediator<Int, ActivityEntity>() {
 
     override suspend fun initialize(): InitializeAction {
         val cacheTimeout = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
@@ -67,7 +67,7 @@ class FeedRemoteMediator(
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, ActivityDto>,
+        state: PagingState<Int, ActivityEntity>,
     ): MediatorResult {
         Log.d("FeedRemoteMediator", loadType.toString())
         Log.d("FeedRemoteMediator", state.toString())
