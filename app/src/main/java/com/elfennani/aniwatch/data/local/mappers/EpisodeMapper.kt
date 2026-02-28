@@ -4,10 +4,11 @@ import com.elfennani.aniwatch.R
 import com.elfennani.aniwatch.data.local.entities.EpisodeEntity
 import com.elfennani.aniwatch.data.local.entities.LocalDownloadState
 import com.elfennani.aniwatch.data.local.entities.DownloadedEpisodeEntity
+import com.elfennani.aniwatch.data.local.entities.LocalEpisodeEntity
 import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.Episode
 
-fun EpisodeEntity.toDomain(downloadedEpisode: DownloadedEpisodeEntity?) = Episode(
+fun EpisodeEntity.toDomain(downloadedEpisode: DownloadedEpisodeEntity?, localEpisodeEntity: LocalEpisodeEntity? = null) = Episode(
     id = id,
     allanimeId = allanimeId,
     animeId = animeId,
@@ -24,7 +25,8 @@ fun EpisodeEntity.toDomain(downloadedEpisode: DownloadedEpisodeEntity?) = Episod
         )
         LocalDownloadState.PENDING -> DownloadState.Pending
         else -> DownloadState.NotSaved
-    }
+    },
+    uri = localEpisodeEntity?.uri
 )
 
 fun Episode.toCached() = EpisodeEntity(

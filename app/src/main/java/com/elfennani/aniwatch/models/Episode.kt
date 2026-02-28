@@ -9,5 +9,6 @@ data class Episode(
     val dubbed: Boolean,
     val thumbnail: String?,
     val duration: Int?,
-    val state: DownloadState
+    val state: DownloadState,
+    val uri: String? = null
 )

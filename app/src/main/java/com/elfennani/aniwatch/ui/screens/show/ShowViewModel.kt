@@ -2,6 +2,7 @@ package com.elfennani.aniwatch.ui.screens.show
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -115,6 +116,25 @@ class ShowViewModel @Inject constructor(
                     it.copy(errors = it.errors + sync.message!!)
                 }
             }
+        }
+    }
+
+    fun linkFileToEpisode(episode: Double, uri: Uri) {
+        val contentResolver = context.contentResolver
+        val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        contentResolver.takePersistableUriPermission(uri, takeFlags)
+        viewModelScope.launch {
+            showRepository.linkFileToEpisode(
+                showId = showId,
+                episode = episode,
+                uri = uri
+            )
+        }
+    }
+
+    fun unlinkFileFromEpisode(episode: Double){
+        viewModelScope.launch {
+            showRepository.unlinkFileFromEpisode(showId, episode)
         }
     }
 

@@ -1,7 +1,10 @@
 package com.elfennani.aniwatch.ui.screens.show
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -37,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastAny
+import androidx.core.app.ActivityOptionsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -75,6 +79,8 @@ fun ShowScreen(
     onClickRelations: (Int) -> Unit = {},
     onToggleAudio: () -> Unit = {},
     onAppendEpisode: () -> Unit = {},
+    onOpenFile: (Double, Uri) -> Unit = { _, _ -> },
+    onUnlinkEpisode: (Double) -> Unit = {}
 ) {
     val lazyListState = rememberLazyListState()
     var selectedEpisode by remember {
@@ -82,6 +88,14 @@ fun ShowScreen(
     }
     var tagsOpen by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(true)
+    var episodePicked by remember {
+        mutableStateOf<Double?>(null)
+    }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) {
+        if (it != null && episodePicked != null)
+            onOpenFile(episodePicked!!, it)
+    }
 
     if (tagsOpen && state.show != null) {
         ModalBottomSheet(
@@ -239,7 +253,12 @@ fun ShowScreen(
                 episode = episode,
                 onOpenEpisode = onOpenEpisode,
                 onDownload = { onDownloadEpisode(episode.episode, it) },
-                onDelete = { onDeleteEpisode(episode.episode) }
+                onDelete = { onDeleteEpisode(episode.episode) },
+                onSelectLocalFile = {
+                    episodePicked = episode.episode
+                    launcher.launch(arrayOf("video/*"),)
+                },
+                onUnlinkEpisode = { onUnlinkEpisode(episode.episode) }
             )
         }
     }
@@ -296,7 +315,9 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
             onClickCharacters = navController::navigateToCharactersScreen,
             onClickRelations = navController::navigateToRelationScreen,
             onToggleAudio = viewModel::toggleAudio,
-            onAppendEpisode = viewModel::appendEpisode
+            onAppendEpisode = viewModel::appendEpisode,
+            onOpenFile = viewModel::linkFileToEpisode,
+            onUnlinkEpisode = viewModel::unlinkFileFromEpisode
         )
     }
 }

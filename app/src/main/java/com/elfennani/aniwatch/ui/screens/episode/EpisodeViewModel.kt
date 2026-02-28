@@ -42,6 +42,8 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 
+private const val TAG = "EpisodeViewModel"
+
 @UnstableApi
 @HiltViewModel
 class EpisodeViewModel @Inject constructor(
@@ -210,11 +212,22 @@ class EpisodeViewModel @Inject constructor(
             return;
         }
 
+        val show = showRepository.getShowFlowById(route.id).first()
+        val ep = show?.episodes?.find { it.episode == route.episode.toDouble() }
+        Log.d(TAG, "Episode URI: ${ep?.uri}")
+
+        if(ep?.uri != null){
+            episode.update { ep.uri }
+            return;
+        }
+
         val res =
             showRepository.getEpisodeById(route.allanimeId, route.episode.toDouble(), route.audio)
 
         when (res) {
-            is Resource.Success -> episode.update { res.data?.hls?.url }
+            is Resource.Success -> {
+                episode.update { res.data?.hls?.url }
+            }
             is Resource.Error -> _state.update { it.copy(errors = it.errors + res.message!!) }
         }
     }

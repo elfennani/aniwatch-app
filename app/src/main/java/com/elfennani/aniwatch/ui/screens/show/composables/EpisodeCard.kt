@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.FileDownloadDone
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -115,6 +116,13 @@ fun EpisodeCard(
                         Alignment.CenterVertically
                     )
                 ) {
+                    if (episode.uri != null) {
+                        Icon(
+                            imageVector = Icons.Default.VideoFile,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
                     if (!subtitle.isNullOrEmpty()) {
                         Text(
                             text = subtitle!!,

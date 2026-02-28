@@ -5,6 +5,7 @@ import androidx.room.Relation
 import com.elfennani.aniwatch.data.local.entities.ShowEntity
 import com.elfennani.aniwatch.data.local.entities.EpisodeEntity
 import com.elfennani.aniwatch.data.local.entities.DownloadedEpisodeEntity
+import com.elfennani.aniwatch.data.local.entities.LocalEpisodeEntity
 import com.elfennani.aniwatch.data.local.mappers.toDomain
 
 data class ShowWithEpisodes(
@@ -21,5 +22,11 @@ data class ShowWithEpisodes(
         entityColumn = "showId"
     )
     val downloadedEpisodes: List<DownloadedEpisodeEntity>,
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "showId"
+    )
+    val localEpisodes: List<LocalEpisodeEntity>
 )
 
