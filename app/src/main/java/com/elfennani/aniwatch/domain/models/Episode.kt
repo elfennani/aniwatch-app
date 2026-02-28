@@ -1,10 +1,14 @@
-package com.elfennani.aniwatch.domain.models
+package com.elfennani.aniwatch.models
 
 data class Episode(
+    val id: String,
+    val allanimeId: String,
+    val animeId: Int,
     val episode: Double,
-    val title: String,
+    val name: String,
     val dubbed: Boolean,
     val thumbnail: String?,
     val duration: Int?,
-    val id: String,
+    val state: DownloadState,
+    val uri: String? = null
 )

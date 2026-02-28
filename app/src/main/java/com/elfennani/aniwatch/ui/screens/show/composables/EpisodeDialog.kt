@@ -22,6 +22,8 @@ import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.DownloadForOffline
 import androidx.compose.material.icons.filled.Downloading
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.FileOpen
+import androidx.compose.material.icons.filled.LinkOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
@@ -48,6 +50,8 @@ fun EpisodeDialog(
     onDownload: (EpisodeAudio) -> Unit,
     onDelete: () -> Unit,
     onOpenEpisode: (episode: Double, audio: EpisodeAudio) -> Unit,
+    onSelectLocalFile: () -> Unit,
+    onUnlinkEpisode: () -> Unit
 ) {
     Dialog(
         onDismissRequest = onDismissRequest,
@@ -194,6 +198,19 @@ fun EpisodeDialog(
                     color = AppTheme.colorScheme.onSecondary
                 )
                 Spacer(modifier = Modifier.size(AppTheme.sizes.small))
+
+                if (episode.uri == null)
+                    DialogOption(
+                        label = "Select File",
+                        icon = Icons.Default.FileOpen,
+                        onClick = { onSelectLocalFile() }
+                    )
+                else
+                    DialogOption(
+                        label = "Unlink File",
+                        icon = Icons.Default.LinkOff,
+                        onClick = { onUnlinkEpisode() }
+                    )
 
                 DialogOption(label = "Watch in SUB", icon = Icons.Default.Audiotrack) {
                     onOpenEpisode(episode.episode, EpisodeAudio.SUB)

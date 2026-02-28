@@ -61,7 +61,7 @@ import com.elfennani.aniwatch.ui.theme.AppTheme
 import com.elfennani.aniwatch.utils.requireActivity
 import kotlinx.serialization.Serializable
 
-const val TAG = "EpisodeScreen"
+private const val TAG = "EpisodeScreen"
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @androidx.annotation.OptIn(UnstableApi::class)

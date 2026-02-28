@@ -58,6 +58,7 @@ fun ShowWithEpisodes.toDomain() =
         episodes = episodes
             .map { episode ->
                 val downloaded = downloadedEpisodes.find { it.episode == episode.episode }
-                episode.toDomain(downloaded)
+                val local = localEpisodes.find { it.episode == episode.episode }
+                episode.toDomain(downloaded, local)
             }
     )

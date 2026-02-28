@@ -1,5 +1,6 @@
 package com.elfennani.aniwatch.data.local
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -16,6 +17,7 @@ import com.elfennani.aniwatch.data.local.entities.ListingItemEntity
 import com.elfennani.aniwatch.data.local.entities.ShowEntity
 import com.elfennani.aniwatch.data.local.entities.UserEntity
 import com.elfennani.aniwatch.data.local.entities.DownloadedEpisodeEntity
+import com.elfennani.aniwatch.data.local.entities.LocalEpisodeEntity
 import com.elfennani.aniwatch.data.local.entities.SessionEntity
 
 @Database(
@@ -26,10 +28,13 @@ import com.elfennani.aniwatch.data.local.entities.SessionEntity
         EpisodeEntity::class,
         ActivityEntity::class,
         UserEntity::class,
-        DownloadedEpisodeEntity::class
+        DownloadedEpisodeEntity::class,
+        LocalEpisodeEntity::class
     ],
-    version = 1,
-    autoMigrations = [],
+    version = 2,
+    autoMigrations = [
+        AutoMigration(1,2)
+    ],
 )
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {

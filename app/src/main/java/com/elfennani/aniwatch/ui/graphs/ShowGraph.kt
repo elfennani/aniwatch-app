@@ -22,12 +22,4 @@ fun NavGraphBuilder.showGraph(navController: NavHostController) {
     searchScreen(navController)
     charactersScreen(navController)
     relationScreen(navController)
-//    navigation<ShowGraph>(startDestination = ShowRoute) {
-//        showScreen(navController)
-//        statusEditorScreen(navController)
-//        episodeScreen(navController)
-//        searchScreen(navController)
-//        charactersScreen(navController)
-//        relationScreen(navController)
-//    }
 }

@@ -1,6 +1,11 @@
 package com.elfennani.aniwatch.ui.screens.show
 
 import android.annotation.SuppressLint
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -14,10 +19,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountTree
 import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -31,19 +38,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.util.fastAny
+import androidx.core.app.ActivityOptionsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.elfennani.aniwatch.domain.models.EpisodeAudio
-import com.elfennani.aniwatch.domain.models.enums.ShowStatus
+import com.elfennani.aniwatch.models.DownloadState
+import com.elfennani.aniwatch.models.EpisodeAudio
+import com.elfennani.aniwatch.models.ShowStatus
 import com.elfennani.aniwatch.ui.composables.ErrorSnackbarHost
 import com.elfennani.aniwatch.ui.composables.PillButton
+import com.elfennani.aniwatch.ui.composables.dummyShow
 import com.elfennani.aniwatch.ui.screens.characters.navigateToCharactersScreen
 import com.elfennani.aniwatch.ui.screens.episode.EpisodeRoute
 import com.elfennani.aniwatch.ui.screens.relations.navigateToRelationScreen
 import com.elfennani.aniwatch.ui.screens.show.composables.EpisodeCard
+import com.elfennani.aniwatch.ui.screens.show.composables.EpisodeDialog
 import com.elfennani.aniwatch.ui.screens.show.composables.ShowScreenHeader
 import com.elfennani.aniwatch.ui.screens.show.composables.ShowScreenSkeleton
 import com.elfennani.aniwatch.ui.screens.show.composables.TagsList
@@ -66,6 +79,8 @@ fun ShowScreen(
     onClickRelations: (Int) -> Unit = {},
     onToggleAudio: () -> Unit = {},
     onAppendEpisode: () -> Unit = {},
+    onOpenFile: (Double, Uri) -> Unit = { _, _ -> },
+    onUnlinkEpisode: (Double) -> Unit = {}
 ) {
     val lazyListState = rememberLazyListState()
     var selectedEpisode by remember {
@@ -73,6 +88,14 @@ fun ShowScreen(
     }
     var tagsOpen by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(true)
+    var episodePicked by remember {
+        mutableStateOf<Double?>(null)
+    }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) {
+        if (it != null && episodePicked != null)
+            onOpenFile(episodePicked!!, it)
+    }
 
     if (tagsOpen && state.show != null) {
         ModalBottomSheet(
@@ -101,7 +124,15 @@ fun ShowScreen(
                     icon = { Icon(Icons.Default.PlayArrow, contentDescription = null) },
                     containerColor = AppTheme.colorScheme.primary,
                     contentColor = AppTheme.colorScheme.onPrimary,
-                    onClick = {}
+                    onClick = {
+                        val nextEpisode = state.show.episodes.find {
+                            it.episode == ((state.show.progress ?: 0) + 1).toDouble()
+                        }?.episode
+
+                        if (nextEpisode != null) {
+                            onOpenEpisode(nextEpisode, state.defaultAudio ?: EpisodeAudio.SUB)
+                        }
+                    }
                 )
             }
         }
@@ -122,7 +153,7 @@ fun ShowScreen(
                         onBack = onBack,
                         onStatusClick = onStatusClick,
                         onAppendEpisode = onAppendEpisode,
-                        isAppendingEpisode = state.isIncrementingEpisode
+                        isAppendingEpisode = state.isAppendingEpisode
                     ) {
                         FlowRow(
                             verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.small),
@@ -162,24 +193,31 @@ fun ShowScreen(
 
                                 .padding(vertical = AppTheme.sizes.medium)
                         )
-//                        if (state.defaultAudio != null && state.show.episodes.fastAny { it.dubbed })
-//                            AnimatedContent(
-//                                targetState = state.defaultAudio,
-//                                label = ""
-//                            ) { defaultAudio ->
-//                                PillButton(
-//                                    onClick = { onToggleAudio() },
-//                                    text = defaultAudio.name,
-//                                    icon = Icons.Default.Language
-//                                )
-//                            }
+                        if (state.defaultAudio != null && state.show.episodes.fastAny { it.dubbed })
+                            AnimatedContent(
+                                targetState = state.defaultAudio,
+                                label = ""
+                            ) { defaultAudio ->
+                                PillButton(
+                                    onClick = { onToggleAudio() },
+                                    text = defaultAudio.name,
+                                    icon = Icons.Default.Language
+                                )
+                            }
                     }
                 }
 
                 items(
-                    state.episodes.sortedBy { it.episode },
-                    key = { ep -> ep.episode }
+                    state.show.episodes.sortedBy { it.episode },
+                    key = { ep -> ep.id }
                 ) { episode ->
+                    Log.d(
+                        "ShowScreen", "ShowScreen: ${
+                            state.show.progress != null &&
+                                    episode.episode <= state.show.progress &&
+                                    state.show.status.isWatching()
+                        }"
+                    )
                     EpisodeCard(
                         modifier = Modifier.let {
                             if (
@@ -208,21 +246,39 @@ fun ShowScreen(
         if (state.isLoading) {
             ShowScreenSkeleton(padding = padding)
         }
-//        if (selectedEpisode != null) {
-//            val episode = state.show?.episodes?.find { it.id == selectedEpisode }!!
-//            EpisodeDialog(
-//                onDismissRequest = { selectedEpisode = null },
-//                episode = episode,
-//                onOpenEpisode = onOpenEpisode,
-//                onDownload = { onDownloadEpisode(episode.episode, it) },
-//                onDelete = { onDeleteEpisode(episode.episode) }
-//            )
-//        }
+        if (selectedEpisode != null) {
+            val episode = state.show?.episodes?.find { it.id == selectedEpisode }!!
+            EpisodeDialog(
+                onDismissRequest = { selectedEpisode = null },
+                episode = episode,
+                onOpenEpisode = onOpenEpisode,
+                onDownload = { onDownloadEpisode(episode.episode, it) },
+                onDelete = { onDeleteEpisode(episode.episode) },
+                onSelectLocalFile = {
+                    episodePicked = episode.episode
+                    launcher.launch(arrayOf("video/*"),)
+                },
+                onUnlinkEpisode = { onUnlinkEpisode(episode.episode) }
+            )
+        }
     }
 }
 
 private fun ShowStatus?.isWatching() = this == ShowStatus.WATCHING || this == ShowStatus.REPEATING
 
+@Preview
+@Composable
+private fun ShowScreenPreview() {
+    AppTheme {
+        ShowScreen(
+            state = ShowUiState(
+                show = dummyShow,
+                isLoading = false,
+                errors = emptyList()
+            )
+        )
+    }
+}
 
 @Serializable
 data class ShowRoute(val id: Int)
@@ -237,11 +293,17 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
             onBack = navController::popBackStack,
             onErrorDismiss = viewModel::dismissError,
             onOpenEpisode = { episode, audio ->
+                val state = showState
+                    .show?.episodes?.find { it.episode == episode }
+                    ?.state
+
                 navController.navigate(
                     EpisodeRoute(
-                        showState.show?.id!!,
-                        episode.toFloat(),
-                        audio
+                        id = showState.show?.id!!,
+                        allanimeId = showState.show?.allanimeId!!,
+                        episode = episode.toFloat(),
+                        audio = if (state is DownloadState.Downloaded) state.audio else audio,
+                        useSaved = state is DownloadState.Downloaded
                     )
                 )
             },
@@ -253,7 +315,9 @@ fun NavGraphBuilder.showScreen(navController: NavController) {
             onClickCharacters = navController::navigateToCharactersScreen,
             onClickRelations = navController::navigateToRelationScreen,
             onToggleAudio = viewModel::toggleAudio,
-            onAppendEpisode = viewModel::appendEpisode
+            onAppendEpisode = viewModel::appendEpisode,
+            onOpenFile = viewModel::linkFileToEpisode,
+            onUnlinkEpisode = viewModel::unlinkFileFromEpisode
         )
     }
 }

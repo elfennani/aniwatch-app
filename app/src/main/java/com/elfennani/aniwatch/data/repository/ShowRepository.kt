@@ -1,11 +1,13 @@
 package com.elfennani.aniwatch.data.repository
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.ui.util.fastAny
 import com.elfennani.aniwatch.data.local.dao.EpisodeDao
 import com.elfennani.aniwatch.data.local.dao.ListingDao
 import com.elfennani.aniwatch.data.local.dao.ShowDao
 import com.elfennani.aniwatch.data.local.entities.ListingItemEntity
+import com.elfennani.aniwatch.data.local.entities.LocalEpisodeEntity
 import com.elfennani.aniwatch.data.local.mappers.asEntity
 import com.elfennani.aniwatch.data.local.mappers.toCached
 import com.elfennani.aniwatch.data.local.mappers.toDomain
@@ -37,7 +39,7 @@ class ShowRepository(
     private val apiService: APIService,
     private val listingDao: ListingDao,
     private val showDao: ShowDao,
-    private val cachedEpisodesDao: EpisodeDao,
+    private val episodeDao: EpisodeDao,
 ) {
     suspend fun getShowsByStatus(status: ShowStatus) = resourceOf {
         apiService.getShowsByStatus(status.toSerializable()).map { it.toDomain() }
@@ -72,8 +74,8 @@ class ShowRepository(
     suspend fun syncShowById(showId: Int) = resourceOf {
         val show = apiService.getShowById(showId).toDomain()
         showDao.insertCachedShow(show.asEntity())
-        cachedEpisodesDao.deleteByShowIdAndIds(showId, show.episodes.map { it.id })
-        cachedEpisodesDao.insertAll(show.episodes.map(Episode::toCached))
+        episodeDao.deleteByShowIdAndIds(showId, show.episodes.map { it.id })
+        episodeDao.insertAll(show.episodes.map(Episode::toCached))
     }
 
     fun getShowFlowById(showId: Int): Flow<ShowDetails?> =
@@ -120,5 +122,19 @@ class ShowRepository(
 
     suspend fun getShowStatusById(showId: Int): Resource<StatusDetails> = resourceOf {
         apiService.getStatusDetailsById(showId).asDomain()
+    }
+
+    suspend fun linkFileToEpisode(showId: Int, episode: Double, uri: Uri) {
+        episodeDao.upsertLocalEpisode(
+            LocalEpisodeEntity(
+                showId = showId,
+                episode = episode,
+                uri = uri.toString()
+            )
+        )
+    }
+
+    suspend fun unlinkFileFromEpisode(showId: Int, episode: Double){
+        episodeDao.deleteLocalEpisode(showId, episode)
     }
 }

@@ -2,7 +2,6 @@ package com.elfennani.aniwatch.data.local.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import com.elfennani.aniwatch.models.DownloadState
 import com.elfennani.aniwatch.models.EpisodeAudio
 import java.time.Instant
 import java.util.Date
